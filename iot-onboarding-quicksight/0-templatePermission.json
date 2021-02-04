@@ -1,0 +1,8 @@
+[
+    {
+        "Principal": "*",
+        "Actions": [
+            "quicksight:DescribeTemplate"
+        ]
+    }
+]

@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("source-map-support/register");
+const cdk = require("@aws-cdk/core");
+const iot_onboarding_infra_stack_1 = require("../lib/iot-onboarding-infra-stack");
+const core_1 = require("@aws-cdk/core");
+const app = new cdk.App();
+const envName = app.node.tryGetContext("envName");
+let stack = new iot_onboarding_infra_stack_1.IOTOnboardingInfraStack(app, 'IOTOnboardingInfraStack' + envName, {
+    env: {
+        account: process.env.CDK_DEFAULT_ACCOUNT,
+        region: process.env.CDK_DEFAULT_REGION,
+    }
+});
+/**************
+ * Tagging all resources in stack
+ */
+core_1.Tag.add(stack, 'application-name', 'iot-onboarding');
+core_1.Tag.add(stack, 'application-env', envName);
+app.synth();
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW90LW9uYm9hcmRpbmctaW5mcmEuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJpb3Qtb25ib2FyZGluZy1pbmZyYS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFDQSx1Q0FBcUM7QUFDckMscUNBQXFDO0FBQ3JDLGtGQUE0RTtBQUM1RSx3Q0FBb0M7QUFFcEMsTUFBTSxHQUFHLEdBQUcsSUFBSSxHQUFHLENBQUMsR0FBRyxFQUFFLENBQUM7QUFDMUIsTUFBTSxPQUFPLEdBQUcsR0FBRyxDQUFDLElBQUksQ0FBQyxhQUFhLENBQUMsU0FBUyxDQUFDLENBQUM7QUFFbEQsSUFBSSxLQUFLLEdBQUcsSUFBSSxvREFBdUIsQ0FBQyxHQUFHLEVBQUUseUJBQXlCLEdBQUcsT0FBTyxFQUFFO0lBQzlFLEdBQUcsRUFBRTtRQUNELE9BQU8sRUFBRSxPQUFPLENBQUMsR0FBRyxDQUFDLG1CQUFtQjtRQUN4QyxNQUFNLEVBQUUsT0FBTyxDQUFDLEdBQUcsQ0FBQyxrQkFBa0I7S0FFekM7Q0FDSixDQUFDLENBQUM7QUFHSDs7R0FFRztBQUNILFVBQUcsQ0FBQyxHQUFHLENBQUMsS0FBSyxFQUFFLGtCQUFrQixFQUFFLGdCQUFnQixDQUFDLENBQUM7QUFDckQsVUFBRyxDQUFDLEdBQUcsQ0FBQyxLQUFLLEVBQUUsaUJBQWlCLEVBQUUsT0FBTyxDQUFDLENBQUM7QUFFM0MsR0FBRyxDQUFDLEtBQUssRUFBRSxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiIyEvdXNyL2Jpbi9lbnYgbm9kZVxuaW1wb3J0ICdzb3VyY2UtbWFwLXN1cHBvcnQvcmVnaXN0ZXInO1xuaW1wb3J0ICogYXMgY2RrIGZyb20gJ0Bhd3MtY2RrL2NvcmUnO1xuaW1wb3J0IHsgSU9UT25ib2FyZGluZ0luZnJhU3RhY2sgfSBmcm9tICcuLi9saWIvaW90LW9uYm9hcmRpbmctaW5mcmEtc3RhY2snO1xuaW1wb3J0IHsgVGFnIH0gZnJvbSBcIkBhd3MtY2RrL2NvcmVcIjtcblxuY29uc3QgYXBwID0gbmV3IGNkay5BcHAoKTtcbmNvbnN0IGVudk5hbWUgPSBhcHAubm9kZS50cnlHZXRDb250ZXh0KFwiZW52TmFtZVwiKTtcblxubGV0IHN0YWNrID0gbmV3IElPVE9uYm9hcmRpbmdJbmZyYVN0YWNrKGFwcCwgJ0lPVE9uYm9hcmRpbmdJbmZyYVN0YWNrJyArIGVudk5hbWUsIHtcbiAgICBlbnY6IHtcbiAgICAgICAgYWNjb3VudDogcHJvY2Vzcy5lbnYuQ0RLX0RFRkFVTFRfQUNDT1VOVCxcbiAgICAgICAgcmVnaW9uOiBwcm9jZXNzLmVudi5DREtfREVGQVVMVF9SRUdJT04sXG5cbiAgICB9XG59KTtcblxuXG4vKioqKioqKioqKioqKipcbiAqIFRhZ2dpbmcgYWxsIHJlc291cmNlcyBpbiBzdGFja1xuICovXG5UYWcuYWRkKHN0YWNrLCAnYXBwbGljYXRpb24tbmFtZScsICdpb3Qtb25ib2FyZGluZycpO1xuVGFnLmFkZChzdGFjaywgJ2FwcGxpY2F0aW9uLWVudicsIGVudk5hbWUpO1xuXG5hcHAuc3ludGgoKTtcbiJdfQ==
