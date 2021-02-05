@@ -1,16 +1,5 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
-
-<!-- PROJECT LOGO -->
-<br />
 <p align="center">
-  <h3 align="center">AWS quickstart-iot-device-connectivity</h3>
+  <h2 align="center">AWS quickstart-iot-device-connectivity</h2>
 
   <p align="center">
     An AWS landing zone for IOT device connectivity in partnership with Aws Partner <a href="https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card">Rigado</a>
@@ -50,10 +39,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-This AWS quickstart aims at hellping AWS IOT custeomr to quicksly get started with a functional IOT landing zone on AWS including:
-* A REST microservice to onboard devices and gateway by serial number. The service Creates the AWS IOT Core resources to secuerly connect to AWS MQTT Broker.
+This AWS quickstart aims at hellping AWS IOT customers to quickly get started with an IOT landing zone on AWS including:
+* A REST microservice to onboard devices and gateway by serial number. The service creates the AWS IOT Core resources to secuerly connect to AWS MQTT Broker.
 * An IOT Datalake ingesting the data from the long term storage and analytics
 * An example AWS Quicksight Dahsboard to display data form the datalake (Compatible devices only)
 * An example IOT Device real time Monitorinig dahsboard uusing AWS IOT SiteWise (Compatible Devices Only)
@@ -65,18 +52,121 @@ The QuickStart is being released in partnership with AWS IOT and Travel adn Hosp
 
 ### Built With
 
+THis repository includes the following folder:
+* ####e2e
+This folder contain end to end tests for the onboarding microservice and MQTT connectivity tests that validate that onboardded devices can connect to the AWS IOT Core MQTT Broker. It use newman, a CLI tool allowing to run test build using Postman and mosquitto as an MQTT CLient
+* ####iot-onboarding-code-pipelines
+This folder contains an AWS CDK project that builds a AWS Code Pipeline project which is used to deploy the architecture decribed above. We use this method to be able to provide consistent build experience for our CDk project independently forom builders environement (NOdeJS version...). The pipeline has the folloriing setps:
+![Alt text](images/quickstart-cicd.png?raw=true "Title")
+
+* ####iot-onboarding-data-processing
+This folder contains a Python ETL (Extract Load Transform) script that flatten the device Json messages to be queried by Amazon Athena and Amazon Quicksight. This ETL script is run by a Glue Job
+* ####iot-onboarding-infra
+This folder contains a CDK project that builds most of the infrastructure components described above except the Quicksight and Sitewise Dahsboards which are not yet supported by AWS CloudFormation at the tiome of construyction of this quickstart.
+* ####iot-onboarding-quicksight
+This folder contains a linux shell script that automate the creation of an AWS Qhicksight Dahsboard based on a public template. Note that this requires for the target account to have activated Amazon QuickSight (add linik here). Also, the example dashboard assumes the following structure for MQTT messages from the device (based on AWS Partner Rigado). 
+
+```
+Topic: data/#
+Body:
+{
+    measurements: {
+        <mesurement name>: <data>,
+        ...
+    },
+    device: {
+        deviceId: <serial number>
+        gatewayid: <rigado gateway ID>,
+        capabilityModelId: <urn:vendor:model:*>",
+    },
+}
+```
+An example message from a rigado Device:
+```json
+{
+  "device": {
+    "gatewayId": "C0300A1930-00366",
+    "deviceId": "ac233fa2129e",
+    "capabilityModelId": "urn:rigado:S1_Sensor:2",
+    "dtmi": "dtmi:rigado:S1Sensor;1"
+  },
+  "measurements": {
+    "batteryLevel": 100,
+    "temperature": 19.02734375,
+    "humidity": 47.7890625,
+    "rssi": -63
+  }
+}
+```
+The base topic can be configured as an input parametter from the CICD pipeline CloudFromation Stack and the IOT Datalake uses glue crawlers to dynamically iidentify the data structure of the incoming MQTT messages. This means that QuickStart users who use different device configuration can quickly adap the dashboard to their specific need.
+
+Note that using AWS CLI comes with limitations compare to CloudFormation and some resources (such as dashbord, dataset and datasource) may need to be manually deleted to be updated or in case of failure during deployemnet. We hope that providing this autromated dahsbord allows you to move faster by relying on an example and will move this to a more robust infrastructure as code solution when available.
+
+The example dashboard looks as follows:
+
+![Alt text](images/quicksight.png?raw=true "Title")
+
+
+* ####iot-onboarding-service
+THis folder contain the Golang Code of the onboarding service lambda function. The function sits behind an AWS API gateway REST API exposing the following Services
+```
+POST {{baseUrl}}api/onboard/{{deviceName}}
+GET {{baseUrl}}api/onboard/{{deviceName}}
+DELET {{baseUrl}}api/onboard/{{deviceName}}
+```
+These endpoint respetively create, retreive and delete a device or gateway including the following AWS IOT resources:
+* A Device Certificate
+* An IOT Thing and Associated policy to publish on the base topic provided as parameter to the quickstart CICD cloudformatioin template
+
+THe service Create and Retreive enpoints return all the data needed to setup the device for AWS connectivity and the message structure is as follow:
+```json
+{
+    "serialNumber": "<device serial number>",
+    "deviceName": "<device name = device serial number>",
+    "thingId": "<ID of teh AWS IOT Core THing>",
+    "credential": {
+        "certificateArn": "<ARN of the certificate created for the IOT Thing>",
+        "certificateId": "<ID of the certificate created for the IOT Thing>",
+        "certificatePem": "<PEM Certificateg>",
+        "privateKey": "<Private Key>",
+        "publicKey": "<Public Key>"
+    },
+    "mqttEndpoint": "<MQTT enpoint of the IOT COre project>",
+    "error": {
+        "code": "<error code>",
+        "msg": "<error message>",
+        "type": "<error type>"
+    }
+}
+```
+The service is secured by Amazon Cognito and a random user is created during infrastructure deployment along with a refresh token. To access te service, the quickStart owner wiill need to access credentials sorted in the S3 architect bucket following the stack successful buidl and generate temporary credentials in teh for of Cognito Access token. MOre information on this flow is porvided blow.
+
+Note that, as part of the partnership with Rigado on this quickstart, the Rigado team created a Web Wizard for Alegro Kit user that takes care of generating the temporary credentials and setiing up the devices based on teh credentials generated by this Microservice. More information at [Rigado.com](add rigado kit url)
+
+* ####iot-onboarding-sitewise
+This forlder coontains a linux shell script that builds AWS IOT SiteWise resourtces needed too build a real time dashboard. THese resources include:
+* a Device model hierarchy, composed of a root device and 4 child devices (based on the Rigado Alegro Kit content)
+* A sitewise project and portal
+
+When working with Rigado devices A few manual steps are required to create the assets and addes the to a dashoard and obtain the following result:
+![Alt text](images/sitewise.png?raw=true "Title")
+
+
 This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 * [Golang](https://getbootstrap.com)
+* [Python](https://getbootstrap.com)
 * [AWS CDK](https://jquery.com)
-* [Laravel](https://laravel.com)
-
+* [newman](https://laravel.com)
+* [jq](https://laravel.com)
+* [mosquitto](https://laravel.com)
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+To get started with this quickstart, download the AWS CloudFormation template
+
+Not that you can also fork this repository and use it as a base for your own IOT project.
 
 ### Prerequisites
 
