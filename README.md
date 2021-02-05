@@ -53,17 +53,17 @@ The QuickStart is being released in partnership with AWS IOT and Travel adn Hosp
 ### Built With
 
 THis repository includes the following folder:
-* ####e2e
+* #### e2e
 This folder contain end to end tests for the onboarding microservice and MQTT connectivity tests that validate that onboardded devices can connect to the AWS IOT Core MQTT Broker. It use newman, a CLI tool allowing to run test build using Postman and mosquitto as an MQTT CLient
-* ####iot-onboarding-code-pipelines
+* #### iot-onboarding-code-pipelines
 This folder contains an AWS CDK project that builds a AWS Code Pipeline project which is used to deploy the architecture decribed above. We use this method to be able to provide consistent build experience for our CDk project independently forom builders environement (NOdeJS version...). The pipeline has the folloriing setps:
 ![Alt text](images/quickstart-cicd.png?raw=true "Title")
 
-* ####iot-onboarding-data-processing
+* #### iot-onboarding-data-processing
 This folder contains a Python ETL (Extract Load Transform) script that flatten the device Json messages to be queried by Amazon Athena and Amazon Quicksight. This ETL script is run by a Glue Job
-* ####iot-onboarding-infra
+* #### iot-onboarding-infra
 This folder contains a CDK project that builds most of the infrastructure components described above except the Quicksight and Sitewise Dahsboards which are not yet supported by AWS CloudFormation at the tiome of construyction of this quickstart.
-* ####iot-onboarding-quicksight
+* #### iot-onboarding-quicksight
 This folder contains a linux shell script that automate the creation of an AWS Qhicksight Dahsboard based on a public template. Note that this requires for the target account to have activated Amazon QuickSight (add linik here). Also, the example dashboard assumes the following structure for MQTT messages from the device (based on AWS Partner Rigado). 
 
 ```
