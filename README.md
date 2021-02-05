@@ -52,19 +52,24 @@ The QuickStart is being released in partnership with AWS IOT and Travel adn Hosp
 
 ### Built With
 
-THis repository includes the following folder:
-* #### e2e
-This folder contain end to end tests for the onboarding microservice and MQTT connectivity tests that validate that onboardded devices can connect to the AWS IOT Core MQTT Broker. It use newman, a CLI tool allowing to run test build using Postman and mosquitto as an MQTT CLient
-* #### iot-onboarding-code-pipelines
-This folder contains an AWS CDK project that builds a AWS Code Pipeline project which is used to deploy the architecture decribed above. We use this method to be able to provide consistent build experience for our CDk project independently forom builders environement (NOdeJS version...). The pipeline has the folloriing setps:
+This repository includes the following folder:
+
+#### e2e
+This folder contains end-to-end tests for the onboarding microservice and MQTT connectivity tests that validate that onboardded devices can connect to the AWS IOT Core MQTT Broker. It use newman, a CLI tool allowing to run Postman tests and mosquitto as an MQTT Client
+
+#### iot-onboarding-code-pipelines
+This folder contains an AWS CDK project that builds a AWS Code Pipeline project which is used to deploy the architecture decribed above. We use this method to be able to provide consistent build experience for our CDK project independently from builders environement (NodeJS version...). The pipeline has the following steps
+
 ![Alt text](images/quickstart-cicd.png?raw=true "Title")
 
-* #### iot-onboarding-data-processing
-This folder contains a Python ETL (Extract Load Transform) script that flatten the device Json messages to be queried by Amazon Athena and Amazon Quicksight. This ETL script is run by a Glue Job
-* #### iot-onboarding-infra
-This folder contains a CDK project that builds most of the infrastructure components described above except the Quicksight and Sitewise Dahsboards which are not yet supported by AWS CloudFormation at the tiome of construyction of this quickstart.
-* #### iot-onboarding-quicksight
-This folder contains a linux shell script that automate the creation of an AWS Qhicksight Dahsboard based on a public template. Note that this requires for the target account to have activated Amazon QuickSight (add linik here). Also, the example dashboard assumes the following structure for MQTT messages from the device (based on AWS Partner Rigado). 
+#### iot-onboarding-data-processing
+This folder contains a Python ETL (Extract Load Transform) script that flatten the device Json messages to be queried by Amazon Athena and Amazon Quicksight. This ETL script is run by a Glue Job.
+
+#### iot-onboarding-infra
+This folder contains a CDK project that builds most of the infrastructure components described above except the Quicksight and Sitewise Dahsboards which are not yet supported by AWS CloudFormation at the time of construction of this quickstart.
+
+#### iot-onboarding-quicksight
+This folder contains a linux shell script that automates the creation of an AWS QuickSight Dahsboard based on a public template. Note that this requires for the target account to have activated Amazon QuickSight (add link here). Also, the example dashboard assumes the following structure for MQTT messages from the device (based on AWS Partner Rigado). 
 
 ```
 Topic: data/#
@@ -81,7 +86,9 @@ Body:
     },
 }
 ```
+
 An example message from a rigado Device:
+
 ```json
 {
   "device": {
@@ -98,32 +105,33 @@ An example message from a rigado Device:
   }
 }
 ```
-The base topic can be configured as an input parametter from the CICD pipeline CloudFromation Stack and the IOT Datalake uses glue crawlers to dynamically iidentify the data structure of the incoming MQTT messages. This means that QuickStart users who use different device configuration can quickly adap the dashboard to their specific need.
 
-Note that using AWS CLI comes with limitations compare to CloudFormation and some resources (such as dashbord, dataset and datasource) may need to be manually deleted to be updated or in case of failure during deployemnet. We hope that providing this autromated dahsbord allows you to move faster by relying on an example and will move this to a more robust infrastructure as code solution when available.
+The base topic can be configured as an input parametter from the CICD pipeline CloudFormation Stack and the IOT Datalake uses glue crawlers to dynamically identify the data structure of the incoming MQTT messages. This means that QuickStart users who use different device configurations can quickly adapy the dashboard to their specific need.
+
+**Note:** Using AWS CLI comes with limitations compared to CloudFormation and some resources (such as dashboard, dataset and datasource) may need to be manually deleted to be updated or in case of failure during deployement. We hope that providing this autromated dahsboard allows you to move faster by relying on an example. We will move this to a more robust infrastructure as code solution when available.
 
 The example dashboard looks as follows:
 
 ![Alt text](images/quicksight.png?raw=true "Title")
 
 
-* #### iot-onboarding-service
-THis folder contain the Golang Code of the onboarding service lambda function. The function sits behind an AWS API gateway REST API exposing the following Services
+#### iot-onboarding-service
+This folder contains the Golang Code of the onboarding service Lambda function. The function sits behind an AWS API gateway REST API exposing the following Services
 ```
 POST {{baseUrl}}api/onboard/{{deviceName}}
 GET {{baseUrl}}api/onboard/{{deviceName}}
 DELET {{baseUrl}}api/onboard/{{deviceName}}
 ```
-These endpoint respetively create, retreive and delete a device or gateway including the following AWS IOT resources:
+These endpoints respetively create, retreive and delete a device or gateway including the following AWS IOT resources:
 * A Device Certificate
 * An IOT Thing and Associated policy to publish on the base topic provided as parameter to the quickstart CICD cloudformatioin template
 
-THe service Create and Retreive enpoints return all the data needed to setup the device for AWS connectivity and the message structure is as follow:
+The service Create and Retreive enpoints return all the data needed to setup the device for AWS connectivity and the message structure is as follow:
 ```json
 {
     "serialNumber": "<device serial number>",
     "deviceName": "<device name = device serial number>",
-    "thingId": "<ID of teh AWS IOT Core THing>",
+    "thingId": "<ID of the AWS IOT Core Thing>",
     "credential": {
         "certificateArn": "<ARN of the certificate created for the IOT Thing>",
         "certificateId": "<ID of the certificate created for the IOT Thing>",
@@ -139,16 +147,21 @@ THe service Create and Retreive enpoints return all the data needed to setup the
     }
 }
 ```
-The service is secured by Amazon Cognito and a random user is created during infrastructure deployment along with a refresh token. To access te service, the quickStart owner wiill need to access credentials sorted in the S3 architect bucket following the stack successful buidl and generate temporary credentials in teh for of Cognito Access token. MOre information on this flow is porvided blow.
 
-Note that, as part of the partnership with Rigado on this quickstart, the Rigado team created a Web Wizard for Alegro Kit user that takes care of generating the temporary credentials and setiing up the devices based on teh credentials generated by this Microservice. More information at [Rigado.com](add rigado kit url)
+The service is secured by Amazon Cognito and a random user is created during infrastructure deployment along with a refresh token. To access the service, the quickStart owner needs to access credentials stored in a S3 bucket following the stack successful build and generate temporary credentials in the form of a Cognito Access token. THese tem;porary credentials can then be used to access the device configuration data. More information on this flow is previded below.
 
-* #### iot-onboarding-sitewise
-This forlder coontains a linux shell script that builds AWS IOT SiteWise resourtces needed too build a real time dashboard. THese resources include:
+**Note:** As part of the partnership with Rigado on this quickstart, the Rigado team created a web-based Wizard for their Alegro Kit user that takes care of generating the temporary credentials and setting up the devices remotely based on the credentials generated by this Microservice. More information at [Rigado.com](add rigado kit url)
+
+#### iot-onboarding-sitewise
+This folder contains a linux shell script that builds AWS IOT SiteWise resourtces needed to build a real time dashboard. These resources include:
 * a Device model hierarchy, composed of a root device and 4 child devices (based on the Rigado Alegro Kit content)
 * A sitewise project and portal
 
-When working with Rigado devices A few manual steps are required to create the assets and addes the to a dashoard and obtain the following result:
+When working with Rigado devices A few manual steps are required to create the assets and add them to a dashoard. The folloowing result can be obtain in just a few minutes with the Rigado Allegro Kit.
+
+**Note 1:** See the AWS IOT SItewise documentation in order to follow required step prior to deployement (Such as creatinng an AWS SSO user)
+**Note 2:** Contrary to the datalake part, the IOT Core broker rule that ingests the data into Sitewise is not model-agnostic. This means that non-Rigado-kit-users need to update both the CDK script in the __iot-onboarding-infra__ folder and the sitewise shell script to acomodate for their device specificity. We hope that the code we provided here is a solid example alowing these user to quickly build their real-time pipeline and may add additional out-of-the-box support for other IOT partners in the future.
+
 ![Alt text](images/sitewise.png?raw=true "Title")
 
 
