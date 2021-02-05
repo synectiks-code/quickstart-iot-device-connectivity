@@ -17,7 +17,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     const account = (props && props.env) ? props.env.account : ""
 
     const envName = this.node.tryGetContext("envName");
-    const gitHubRepo = "iot-onbaodring-quickstart"
+    const gitHubRepo = "aws-quickstart/quickstart-iot-device-connectivity"
 
     //CloudFormatiion Input Parmetters to be provided by end user:
     const contactEmail = new CfnParameter(this, "contactEmail", {
