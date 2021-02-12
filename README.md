@@ -47,6 +47,7 @@
 * add comment about concurent buuild iissue
 * add instruction to validate emaili address using SES
 * add tutorial for sitewise 
+* add tudo for manually creating teh QUicksight dashboard
 * add info about cognito users for cleanup
 * add links to frameworks
 * ensure CF yml template is deomalodable locally
