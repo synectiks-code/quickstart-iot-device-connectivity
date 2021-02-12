@@ -14,10 +14,6 @@ then
     echo "Usage:"
     echo "sh deploy.sh <env> <bucket>"
 else
-if [ $env == $LOCAL_ENV_NAME ]
-    then
-        echo "!!WARNING: BUILD IS IN LOCAL MODE FOR ENV $env!!"
-    fi
 echo "1-Setting up environement"
 export GOPATH=$(pwd)
 echo "GOPATH set to $GOPATH"
@@ -25,9 +21,7 @@ echo "Instaling dependencies"
 
 if [ $env == $LOCAL_ENV_NAME ]
     then
-    rm -rf src/cloudrack-lambda-core
-    aws s3api get-object --bucket cloudrack-infra-artifacts --key $env/cloudrack-lambda-core.zip cloudrack-lambda-core.zip
-    unzip cloudrack-lambda-core.zip -d src/cloudrack-lambda-core/
+    echo "Local environement build"
     else
     sh ./env.sh $env
 fi
