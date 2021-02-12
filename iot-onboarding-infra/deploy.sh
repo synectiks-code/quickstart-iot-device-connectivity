@@ -39,7 +39,7 @@ else
     echo "1.2-Analyzing changes for environment '$env' "
     cdk --app bin/iot-onboarding-infra.js diff -c envName=$env -c artifactBucket=$bucket
     echo "1.3-Deploying infrastructure for environement '$env' "
-    cdk --app bin/iot-onboarding-infra.js deploy IOTOnboardingInfraStack$env -c envName=$env -c artifactBucket=$bucket -c mqttTopic=$mqttTopic -format=json --require-approval never
+    cdk --app bin/iot-onboarding-infra.js deploy IOTOnboardingInfraStack$env -c envName=$env -c artifactBucket=$bucket -c mqttTopic=$mqttTopic --require-approval never
     rc=$?
     if [ $rc -ne 0 ]; then
       echo "CDK Deploy Failed! Existing Build with status $rc" >&2
