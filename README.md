@@ -40,6 +40,7 @@
 #### Add instructions for SSO and QS account creatiion
 #### Add cleaning instructions for dahsbord
 #### Add instruction to get input for Rigado wizard
+#### add where to find quicksight admin user name
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project

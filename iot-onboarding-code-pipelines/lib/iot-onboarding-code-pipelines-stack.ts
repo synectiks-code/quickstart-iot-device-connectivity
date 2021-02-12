@@ -227,6 +227,8 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
               repo: gitHubRepo,
               //TODO: this will need to be removed after publication of teh quickstart
               oauthToken: cdk.SecretValue.secretsManager(GITHUB_TOKEN_SECRET_ID),
+              //TODO: remove this too
+              branch: "feature/iot-quickstart-with-rigado",
               output: sourceOutput,
             }),
           ],
