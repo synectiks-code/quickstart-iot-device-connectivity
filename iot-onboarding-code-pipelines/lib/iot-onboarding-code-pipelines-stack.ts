@@ -67,6 +67,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
             commands: [
               'echo "CodeBuild is running in $AWS_REGION" && aws configure set region $AWS_REGION',
               'npm install -g aws-cdk',
+              'npm -g install typescript',
               'cdk --version',
               'cd iot-onboarding-infra',
               'npm install'

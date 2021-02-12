@@ -895,8 +895,8 @@ Resources:
                 Version: "1"
               Configuration:
                 Owner: grollat
-                Repo: grollat/quickstart-iot-device-connectivity
-                Branch: master
+                Repo: quickstart-iot-device-connectivity
+                Branch: feature/iot-quickstart-with-rigado
                 OAuthToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
                 PollForSourceChanges: false
               Name: GitHub_Source

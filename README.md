@@ -36,11 +36,13 @@
 
 ## TODO BEFORE LAUNCH
 #### remove git credentials
+#### change git repo/owner to aws quiickstart and remove dev branch
 #### change qQS template URL
 #### Add instructions for SSO and QS account creatiion
 #### Add cleaning instructions for dahsbord
 #### Add instruction to get input for Rigado wizard
 #### add where to find quicksight admin user name
+#### add link to the rigado alegro kit
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -187,43 +189,41 @@ To get started with this quickstart, follow the steps below (make sure to follow
 
 ### Prerequisites
 
+#### Service Quotas
+
+You need to ensure the following quotas requirements are met in your account. If not the case, create a request a request from the [AWS Service Quotas Dashboard](https://console.aws.amazon.com/servicequotas/home/)
+
+Input         |    Quota Name |         Value | Comments
+------------- | ------------- | ------------- | -------------
+CodeBuild | Maximum number of concurrent running builds*	| 2 | The QuickStart uses a pipeline with paralel build steps. you need at this 2 concurent builds allowed. see [AWS CodeBuild Quotas](https://docs.aws.amazon.com/codebuild/latest/userguide/limits.html)
+
 #### AWS SSO activation (Optional if you don'd want to use AWS IOT dashboord sitewise)
 AWS SSO provides identity federation for SiteWise Monitor so that you can control access to your portals. With AWS SSO, your users sign in with their corporate email and password instead of an AWS account Follow the steps under Enabling AWS SSO in the [AWS IOT sitewise documentationn](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html)
 
 #### Create a Quicksight account (Optional if you don't want to use AWS Quicksigth dashboard or are already signed up)
 If you haven't already, sign up for quicksight using the steps inthe [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html)
 
+
+
 ### Installation
 
-To get started with the deployment download the [AWS CloudFormation template](https://github.com/aws-quickstart/quickstart-iot-device-connectivity/raw/main/iot-onboarding-int.yml)
-Not that you can also fork this repository and use it as a base for your own IOT project.
+1. To get started with the deployment download the [AWS CloudFormation template](https://github.com/aws-quickstart/quickstart-iot-device-connectivity/raw/main/iot-onboarding-int.yml). Note that you can also fork this repository and use it as a base for your own IOT project.
 
-<!-- USAGE EXAMPLES -->
-## Usage
+2. Go to the aws clouudformation console and launch the stack. The folowing parametters are required inputs
+![Alt text](images/cloudformation-form.png?raw=true "Title")
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Input  | Description
+------------- | -------------
+contactEmail  | Email of an administrator ussed for the AWS IOT sitewise portal creation. (see [AWS documentation](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins))
+quickSightAdminUserName  | The use name of a Quicksight user with an ADMIN role. You can list all quicksight users by going to the [QuickSight administration Screen](https://us-east-1.quicksight.aws.amazon.com/sn/admin). Note that quicksight users can only be administraed form the US-EAST-1 region regardles of the region your dasboard is created in.
+rootMqttTopic  | The root MQTT topic your devices publish to. If you are using the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the default value (data/#) does not need to be changed.
+sourceTemplateArn  | use: **arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev** This is a static location of a public quicksight dashboard template that we created for the purpose of this Quickstart. This allows you to get started quickly with a fully functional dashboard. Note that this example dahsbord is created specifically for the users of the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card). If you are not using rigado devices you will need to create you own dataset, analysis and dahsboard based on the devices you use. The ETL process and Glue Crawler that ingest the data from the IOT Broker to make them available in quicksight are data-model agnostic so you just need to link the created glue table as a datasource in QuickSight
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+Once the template run is successful, go to [AWS Code Pipeline](https://console.aws.amazon.com/codesuite/codepipeline). You should see the pipeline executing as below:
+![Alt text](images/quickstart-cicd-3.png?raw=true "Title")
 
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+If you click on the pipeline name, you can see the steps of the pipeline running:
+![Alt text](images/quickstart-cicd-2.png?raw=true "Title")
 
 
 
@@ -233,11 +233,10 @@ Contributions are what make the open source community such an amazing place to b
 Distributed under the MIT License. See `LICENSE` for more information.
 
 
-
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Quickstart Team - [@your_twitter](https://twitter.com/your_username) - email@example.com
 
 Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
 
