@@ -183,35 +183,20 @@ This section should list any major frameworks that you built your project using.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get started with this quickstart, download the AWS CloudFormation template
-
-Not that you can also fork this repository and use it as a base for your own IOT project.
+To get started with this quickstart, follow the steps below (make sure to follow the prerequisit secctiono first)
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+#### AWS SSO activation (Optional if you don'd want to use AWS IOT dashboord sitewise)
+AWS SSO provides identity federation for SiteWise Monitor so that you can control access to your portals. With AWS SSO, your users sign in with their corporate email and password instead of an AWS account Follow the steps under Enabling AWS SSO in the [AWS IOT sitewise documentationn](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html)
+
+#### Create a Quicksight account (Optional if you don't want to use AWS Quicksigth dashboard or are already signed up)
+If you haven't already, sign up for quicksight using the steps inthe [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html)
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```JS
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
-
+To get started with the deployment download the [AWS CloudFormation template](https://github.com/aws-quickstart/quickstart-iot-device-connectivity/raw/main/iot-onboarding-int.yml)
+Not that you can also fork this repository and use it as a base for your own IOT project.
 
 <!-- USAGE EXAMPLES -->
 ## Usage

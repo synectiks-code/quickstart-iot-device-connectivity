@@ -18,7 +18,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
 
     const envName = this.node.tryGetContext("envName");
     //const gitHubRepo = "aws-quickstart/quickstart-iot-device-connectivity"
-    const gitHubRepo = "grollat/quickstart-iot-device-connectivity"
+    const gitHubRepo = "quickstart-iot-device-connectivity"
 
     //CloudFormatiion Input Parmetters to be provided by end user:
     const contactEmail = new CfnParameter(this, "contactEmail", {
@@ -223,12 +223,13 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
           actions: [
             new codepipeline_actions.GitHubSourceAction({
               actionName: 'GitHub_Source',
-              owner: 'grollat',
               repo: gitHubRepo,
               //TODO: this will need to be removed after publication of teh quickstart
               oauthToken: cdk.SecretValue.secretsManager(GITHUB_TOKEN_SECRET_ID),
               //TODO: remove this too
               branch: "feature/iot-quickstart-with-rigado",
+              //TODO: channge this to aws-quickstart
+              owner: 'grollat',
               output: sourceOutput,
             }),
           ],
