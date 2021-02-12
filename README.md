@@ -46,6 +46,7 @@
 #### Fix e2e test failing by adding delay + retry ti certificate deletion
 #### add comment about concurent buuild iissue
 #### add instruction to validate emaili address using SES
+#### add tutorial for sitewise 
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -206,6 +207,8 @@ AWS SSO provides identity federation for SiteWise Monitor so that you can contro
 #### Create a Quicksight account (Optional if you don't want to use AWS Quicksigth dashboard or are already signed up)
 If you haven't already, sign up for quicksight using the steps inthe [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html)
 
+#### Validate your email adrdess with SES
+this quickstart uses the email address provided in input form the cloud fromation template as both sender and receiver of email notification. These notification will provide you with the key credentials to use the device onboarding MIicroservice. More specifically, for users of the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the email will provide the data necessary to use the Rigado Wizard to automatically onboard the Rigado Gateway. In ordre to be able to use this email address, SES requires a validation describe in the [Amazon SES Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). 
 
 
 ### Installation

@@ -1,19 +1,18 @@
 {
     "AwsAccountId": "__ACCOUNT_ID",
-    "DashboardId": "__DASHBOARD_ID",
+    "AnalysisId": "__DASHBOARD_ID",
     "Name": "Rigado Quickstart Dashboard __ENV",
     "Permissions": [
         {
             "Principal": "__ADMIN_USER_ARN",
             "Actions": [
-                "quicksight:DescribeDashboard",
-                "quicksight:ListDashboardVersions",
-                "quicksight:UpdateDashboardPermissions",
-                "quicksight:QueryDashboard",
-                "quicksight:UpdateDashboard",
-                "quicksight:DeleteDashboard",
-                "quicksight:DescribeDashboardPermissions",
-                "quicksight:UpdateDashboardPublishedVersion"
+                "quicksight:RestoreAnalysis", 
+                "quicksight:UpdateAnalysisPermissions", 
+                "quicksight:DeleteAnalysis", 
+                "quicksight:QueryAnalysis", 
+                "quicksight:DescribeAnalysisPermissions", 
+                "quicksight:DescribeAnalysis", 
+                "quicksight:UpdateAnalysis"
             ]
         }
     ],
@@ -33,17 +32,5 @@
             "Key": "Name",
             "Value": "API-DemoDashboard"
         }
-    ],
-    "VersionDescription": "1",
-    "DashboardPublishOptions": {
-        "AdHocFilteringOption": {
-            "AvailabilityStatus": "ENABLED"
-        },
-        "ExportToCSVOption": {
-            "AvailabilityStatus": "ENABLED"
-        },
-        "SheetControlsOption": {
-            "VisibilityState": "EXPANDED"
-        }
-    }
+    ]
 }

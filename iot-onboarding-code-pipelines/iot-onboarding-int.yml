@@ -943,7 +943,7 @@ Resources:
                 Fn::GetAtt:
                   - IotOnboardingPipelineBuildbuildLambdaCodeCodePipelineActionRole692FC7D5
                   - Arn
-              RunOrder: 1
+              RunOrder: 2
             - ActionTypeId:
                 Category: Build
                 Owner: AWS
@@ -961,7 +961,7 @@ Resources:
                 Fn::GetAtt:
                   - IotOnboardingPipelineBuilddeployInfraCodePipelineActionRole33EA541B
                   - Arn
-              RunOrder: 2
+              RunOrder: 3
           Name: Build
         - Actions:
             - ActionTypeId:
