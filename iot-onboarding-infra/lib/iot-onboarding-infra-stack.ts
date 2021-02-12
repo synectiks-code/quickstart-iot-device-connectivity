@@ -24,6 +24,7 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
 
     const envName = this.node.tryGetContext("envName");
     const artifactBucketName = this.node.tryGetContext("artifactBucket");
+    const mqttTopic = this.node.tryGetContext("mqttTopic");
     const region = (props && props.env) ? props.env.region : ""
     const account = (props && props.env) ? props.env.account : ""
     if (!envName) {
@@ -36,7 +37,7 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
     //Cloudformation parammetters
     const devicesRootTopic = new CfnParameter(this, "devicesRootTopic", {
       type: "String",
-      default: DEVICE_ROOT_TOPIC_DEFAULT,
+      default: mqttTopic ? mqttTopic : DEVICE_ROOT_TOPIC_DEFAULT,
       description: "the root MQTT topic where onboarded devices publish"
     });
 

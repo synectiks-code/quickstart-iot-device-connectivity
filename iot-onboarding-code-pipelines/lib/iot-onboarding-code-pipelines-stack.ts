@@ -76,7 +76,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
           build: {
             commands: [
               'echo "Build and Deploy Infrastructure"',
-              'pwd && sh deploy.sh ' + envName + " " + artifactBucket.bucketName + " " + rootMqttTopic.valueAsString
+              'pwd && sh deploy.sh ' + envName + " " + artifactBucket.bucketName + " " + rootMqttTopic.valueAsString + " " + contactEmail.valueAsString
             ],
           },
         },

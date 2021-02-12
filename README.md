@@ -43,6 +43,9 @@
 #### Add instruction to get input for Rigado wizard
 #### add where to find quicksight admin user name
 #### add link to the rigado alegro kit
+#### Fix e2e test failing by adding delay + retry ti certificate deletion
+#### add comment about concurent buuild iissue
+#### add instruction to validate emaili address using SES
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
