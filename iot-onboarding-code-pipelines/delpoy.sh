@@ -30,7 +30,7 @@ else
         cdk diff -c envName=$env
         echo "1.3-Deploying infrastructure for environement '$env' "
         #TODO: parametterise the approval by environement
-        cdk deploy  -c envName=$env --format=json --require-approval never --parameters contactEmail="grollat@gmail.com" --parameters quickSightAdminUserName="admin/rollatgr-Isengard" --parameters sourceTemplateArn="arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev" --parameters rootMqttTopic="data/#"
+        #cdk deploy  -c envName=$env --format=json --require-approval never --parameters contactEmail="grollat@gmail.com" --parameters quickSightAdminUserName="admin/rollatgr-Isengard" --parameters sourceTemplateArn="arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev" --parameters rootMqttTopic="data/#"
         rc=$?
     if [ $rc -ne 0 ]; then
       echo "CDK Deploy Failed! Existing Build with status $rc" >&2

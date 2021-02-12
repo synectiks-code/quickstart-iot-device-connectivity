@@ -895,7 +895,7 @@ Resources:
                 Version: "1"
               Configuration:
                 Owner: grollat
-                Repo: iot-onbaodring-quickstart
+                Repo: grollat/quickstart-iot-device-connectivity
                 Branch: master
                 OAuthToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
                 PollForSourceChanges: false
