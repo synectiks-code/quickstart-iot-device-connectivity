@@ -35,18 +35,22 @@
 </details>
 
 ## TODO BEFORE LAUNCH
-#### remove git credentials
-#### change git repo/owner to aws quiickstart and remove dev branch
-#### change qQS template URL
-#### Add instructions for SSO and QS account creatiion
-#### Add cleaning instructions for dahsbord
-#### Add instruction to get input for Rigado wizard
-#### add where to find quicksight admin user name
-#### add link to the rigado alegro kit
-#### Fix e2e test failing by adding delay + retry ti certificate deletion
-#### add comment about concurent buuild iissue
-#### add instruction to validate emaili address using SES
-#### add tutorial for sitewise 
+* remove git credentials
+* change git repo/owner to aws quiickstart and remove dev branch
+* change qQS template URL
+* Add instructions for SSO and QS account creatiion
+* Add cleaning instructions for dahsbord
+* Add instruction to get input for Rigado wizard
+* add where to find quicksight admin user name
+* add link to the rigado alegro kit
+* Fix e2e test failing by adding delay + retry ti certificate deletion
+* add comment about concurent buuild iissue
+* add instruction to validate emaili address using SES
+* add tutorial for sitewise 
+* add info about cognito users for cleanup
+* add links to frameworks
+* ensure CF yml template is deomalodable locally
+* add limitation for nnon enterprise user
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -62,7 +66,7 @@ This AWS quickstart aims at hellping AWS IOT customers to quickly get started wi
 
 The QuickStart is being released in partnership with AWS IOT and Travel adn Hospitality Competency Partner Rigado and compatible with [Rigado](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card) newly launched [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card)
 
-### Built With
+### About this repository
 
 This repository includes the following folder:
 
@@ -121,6 +125,7 @@ An example message from a rigado Device:
 The base topic can be configured as an input parametter from the CICD pipeline CloudFormation Stack and the IOT Datalake uses glue crawlers to dynamically identify the data structure of the incoming MQTT messages. This means that QuickStart users who use different device configurations can quickly adapy the dashboard to their specific need.
 
 **Note:** Using AWS CLI comes with limitations compared to CloudFormation and some resources (such as dashboard, dataset and datasource) may need to be manually deleted to be updated or in case of failure during deployement. We hope that providing this autromated dahsboard allows you to move faster by relying on an example. We will move this to a more robust infrastructure as code solution when available.
+**Note2:** The script will only fully succeed for QuickSight Enterprise users. QuickSights users with a standard subscription will need to manually create the dashboard on top of the created Dataset.
 
 The example dashboard looks as follows:
 
@@ -177,7 +182,9 @@ When working with Rigado devices A few manual steps are required to create the a
 ![Alt text](images/sitewise.png?raw=true "Title")
 
 
-This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+### Built With
+
+This project use the folowing tools and frameworks:
 * [Golang](https://getbootstrap.com)
 * [Python](https://getbootstrap.com)
 * [AWS CDK](https://jquery.com)
@@ -213,7 +220,7 @@ this quickstart uses the email address provided in input form the cloud fromatio
 
 ### Installation
 
-1. To get started with the deployment download the [AWS CloudFormation template](https://github.com/aws-quickstart/quickstart-iot-device-connectivity/raw/main/iot-onboarding-int.yml). Note that you can also fork this repository and use it as a base for your own IOT project.
+1. To get started with the deployment download the [AWS CloudFormation template](iot-onboarding-code-pipelines/iot-onboarding-int.yml). Note that you can also fork this repository and use it as a base for your own IOT project.
 
 2. Go to the aws clouudformation console and launch the stack. The folowing parametters are required inputs
 ![Alt text](images/cloudformation-form.png?raw=true "Title")
@@ -231,7 +238,14 @@ Once the template run is successful, go to [AWS Code Pipeline](https://console.a
 If you click on the pipeline name, you can see the steps of the pipeline running:
 ![Alt text](images/quickstart-cicd-2.png?raw=true "Title")
 
+## FAQ
 
+### My Quicksight dashborad display "error"
+### My quicksight deployment script fails with 
+### My code pipeline action fails with error:
+### My Sitewise script fails with...
+### I am using teh Alegro kit and I don't see any columns in my QUuicksight dataset
+### Add more...
 
 <!-- LICENSE -->
 ## License
