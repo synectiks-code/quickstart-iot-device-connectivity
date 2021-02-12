@@ -33,6 +33,7 @@ ASSET_MODEL_NAME_ROOT=RigadoSensors$ASSET_MODEL_PREFIX$env
 
 PORTAL_NAME=RigadoMonitorPortal$env
 PORTAL_CONTACT_EMAIL=$portalContactEmail
+SITEWISE_PROJECT_NAME=RigadoMonitorProject$env
 
 echo "0. getting infra configuration for environement $env"
 aws s3 cp s3://$bucket/infra-config-$env.json infra-config.json
