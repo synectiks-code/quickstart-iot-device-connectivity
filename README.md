@@ -52,6 +52,7 @@
 * add links to frameworks
 * ensure CF yml template is deomalodable locally
 * add limitation for nnon enterprise user
+* add steps to check the connectivity
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -183,6 +184,8 @@ When working with Rigado devices A few manual steps are required to create the a
 ![Alt text](images/sitewise.png?raw=true "Title")
 
 
+
+
 ### Built With
 
 This project use the folowing tools and frameworks:
@@ -238,6 +241,32 @@ Once the template run is successful, go to [AWS Code Pipeline](https://console.a
 
 If you click on the pipeline name, you can see the steps of the pipeline running:
 ![Alt text](images/quickstart-cicd-2.png?raw=true "Title")
+
+
+## Connecting Devices
+### Rigado Devices
+if you are using Rigado devices using the [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), go to the rigado wizard as explain in the email received after the devices are activated. Enter the data as received in the email you should have received from the QuickStart script:
+```
+AWS IOT Connectivity QuickStart Output Values
+
+
+--------------------------------------------------------------------------------------------
+| Cognito URL | https://iot-onboarding-quickstart-<env>.auth.us-east-1.amazoncognito.com/oauth2/token
+--------------------------------------------------------------------------------------------
+| API Gateway URL | https://<api_id>.execute-api.us-east-1.amazonaws.com/
+--------------------------------------------------------------------------------------------
+| Client ID | 228v...t9c3
+--------------------------------------------------------------------------------------------
+| Refresh Token | eyJjdHkiOiJKV1QiLCJl...slN29FrDNqHWo_0e5U85ow
+```
+
+
+### Non-Rigado Devices
+
+## Checking Connnectivity
+In this section we will validate that the divices have been setup correctly and the traffic is flowing as expected.
+
+###
 
 ## FAQ
 

@@ -255,9 +255,10 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
       logoutUrLs: ["http://localhost:4200"]
     })
 
+    //Adding the account ID in order to ensure uniqueness per account per region per env
     const domain = new cognito.CfnUserPoolDomain(this, id + "CognitoDomain", {
       userPoolId: userPool.userPoolId,
-      domain: "iot-onboarding-quickstart-" + envName
+      domain: "iot-onboarding-quickstart-" + account + "-" + envName
     })
 
     //Generating outputs used to obtain refresh token
