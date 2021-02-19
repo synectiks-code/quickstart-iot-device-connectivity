@@ -80,7 +80,7 @@ else
     rm loginInfo.json
 
     summary='
-    <h3>AWS IOT COnnectivity QuickStart Output Values</h3></br>
+    <h3>AWS IOT Connectivity QuickStart Output Values</h3></br>
     --------------------------------------------------------------------------------------------</br>
     | Cognito URL             |  '$tokenEnpoint'</br>
     --------------------------------------------------------------------------------------------</br>
