@@ -34,6 +34,7 @@ cat infra-config.json
 region=$(jq -r .region infra-config.json)
 glueDbName=$(jq -r .glueDbName infra-config.json)
 athenaTableName=$(jq -r .athenaTableName infra-config.json)
+adminUserArn=$(echo "arn:aws:quicksight:$region:$accountId:user/default/$adminUserName" | sed 's/\//\\\//g')
 
 echo "Current region: $region"
 echo "Account: $accountId"

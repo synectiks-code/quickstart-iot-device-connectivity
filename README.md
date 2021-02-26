@@ -53,6 +53,7 @@
 * ensure CF yml template is deomalodable locally
 * add limitation for nnon enterprise user
 * add steps to check the connectivity
+* freeze version of CDK and NPM
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -216,7 +217,7 @@ CodeBuild | Maximum number of concurrent running builds*	| 2 | The QuickStart us
 AWS SSO provides identity federation for SiteWise Monitor so that you can control access to your portals. With AWS SSO, your users sign in with their corporate email and password instead of an AWS account Follow the steps under Enabling AWS SSO in the [AWS IOT sitewise documentationn](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html)
 
 #### Create a Quicksight account (Optional if you don't want to use AWS Quicksigth dashboard or are already signed up)
-If you haven't already, sign up for quicksight using the steps inthe [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html)
+If you haven't already, sign up for quicksight using the steps inthe [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html). If you plan to deploy the default dashboard, you need an QuickSight Entermprise account
 
 #### Validate your email adrdess with SES
 this quickstart uses the email address provided in input form the cloud fromation template as both sender and receiver of email notification. These notification will provide you with the key credentials to use the device onboarding MIicroservice. More specifically, for users of the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the email will provide the data necessary to use the Rigado Wizard to automatically onboard the Rigado Gateway. In ordre to be able to use this email address, SES requires a validation describe in the [Amazon SES Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). 
@@ -266,16 +267,31 @@ AWS IOT Connectivity QuickStart Output Values
 ## Checking Connnectivity
 In this section we will validate that the divices have been setup correctly and the traffic is flowing as expected.
 
-###
+## Cleaninng Up
+1. Empty the buckets
+2. Delete indra stack
+3. Clean up QuickSight Dashboard
+4. Clean up Sitewise Dashboard
 
 ## FAQ
 
 ### My Quicksight dashborad display "error"
 ### My quicksight deployment script fails with 
 ### My code pipeline action fails with error:
-### My Sitewise script fails with...
-### I am using teh Alegro kit and I don't see any columns in my QUuicksight dataset
-### Add more...
+
+### My Sitewise script fails with ResourceAlreadyExistsException
+```
+An error occurred (ResourceAlreadyExistsException) when calling the CreateAssetModel operation: Another resource is already using the name RigadoHoboMX100QsTestint 
+```
+**solution:** Delete the Sitewise resources
+
+### I am using the Alegro kit and I don't see any column in my Quicksight dataset
+Data can take up to one hour to propagate to IOT Datalake due to the schedule chosen for the Crawler for cost optimization purpose.
+**solution:** Ensure data is flowing using IOT Core Monitor and manually trgger the crawlers and jobs.
+
+### Deletinng the infrastructure stack fails
+**solution:** Empty and Delete the buckets
+
 
 <!-- LICENSE -->
 ## License
