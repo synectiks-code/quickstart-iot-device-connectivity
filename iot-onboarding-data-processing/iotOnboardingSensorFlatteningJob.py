@@ -6,6 +6,7 @@ from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
 from awsglue.dynamicframe import DynamicFrame
+from datetime import datetime
 
 glueContext = GlueContext(SparkContext.getOrCreate())
 
@@ -14,7 +15,28 @@ args = getResolvedOptions(sys.argv, ['JOB_NAME','GLUE_DB','SOURCE_TABLE','TEMP_B
 job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
-sensorsData = glueContext.create_dynamic_frame.from_catalog(database=args["GLUE_DB"], table_name=args["SOURCE_TABLE"])
+#pushing predicate aimed ate reducing cost by only fetchinng 48 hous of data
+# the job will run by defautl every day and we include 1 extra da of data for redundancy 
+# in case the job fails
+today = datetime.now()
+yesterday = today - timedelta(days=1)
+todayYear=today.strftime('%Y')
+todayMonth=today.strftime('%m')
+todayDay=today.strftime('%d')
+yesterdayYear=yesterday.strftime('%Y')
+yesterdayMonth=yesterday.strftime('%m')
+yesterdayDay=yesterday.strftime('%d')
+#By default the partitions created by the crawler are named partition_0, partition_1, partition_2
+#these are the names we need to use in our predicate push down expression
+# partition_0 => year
+# partition_1 => month
+# partition_2 => day
+#TODO: the bellow logic should be created by a function that take sthe # days in the past as param
+today = "partition_0='"+todayYear+"' and partition_1='"+todayMonth+"' and partition_2='"+todayDay+"'"
+yesterday = "partition_0=='"+yesterdayYear+"' and partition_1=='"+yesterdayMonth+"' and partition_2=='"+yesterdayDay+"'"
+pdp= "(("+today+") or ("+yesterday+"))"
+
+sensorsData = glueContext.create_dynamic_frame.from_catalog(database=args["GLUE_DB"], table_name=args["SOURCE_TABLE"], push_down_predicate = pdp)
 
 dfc = sensorsData.relationalize("sensor_data_flat", "s3://"+args["TEMP_BUCKET"]+"/temp-dir/")
 

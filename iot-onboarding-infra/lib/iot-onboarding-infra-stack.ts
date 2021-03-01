@@ -161,29 +161,51 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
       role: glueRole.roleArn
     })
 
-    //partitionnning done by firehose is down to the hour so we just need to crawl 2 minutes after the top of the hour
+    //We schedule our crawler to run every day at midnight. This will add the new partitions. 
+    //This can be channged to more frequently, but we want to stay ming for of the cost of running these
     const workflowTrigger = new glue.CfnTrigger(this, "iot-onboarding-sensor-workflow-trigger-" + envName, {
       type: "SCHEDULED",
       name: "iotOnboardingSensorWorkflowTrigger" + envName,
-      schedule: "cron(0 * ? * * *)",
+      schedule: "cron(0 0 * * ? *)",
       startOnCreation: true,
       actions: [
         { crawlerName: glueCrawler.name }
       ]
     })
 
-    //we trigger the job every 2 minutes as Firehose ingestion buffer min is 1 minute (60 sec)
-    //bookmarking should keep the job under 2 minute
+    //We create a onn demand crawler for test purpose. this is required as an alternative to starting the crawler
+    //manually because of the following rule stated in the AWS Glue documentattion:
+    //Jobs or crawlers that run as a result of other jobs or crawlers completing are referred to as dependent. 
+    //Dependent jobs or crawlers are only started if the job or crawler that completes was started by a trigger. 
+    //All jobs or crawlers in a dependency chain must be descendants of a single scheduled or on-demand trigger.
+    //https://docs.aws.amazon.com/glue/latest/dg/about-triggers.html
+    const ondemandTrigger = new glue.CfnTrigger(this, "iot-onboarding-sensor-on-demad-trigger-" + envName, {
+      type: "ON_DEMAND",
+      name: "iotOnboardingSensorWorkflowOnDemandTrigger" + envName,
+      actions: [
+        { crawlerName: glueCrawler.name }
+      ]
+    })
+
+    //We schedule our job to run when the initial crawler successfully completes
     const jobTrigger = new glue.CfnTrigger(this, "iot-onboarding-sensor-flattening-job-trigger-" + envName, {
       type: "SCHEDULED",
       name: "iotOnboardingSensorFlatteningJobTrigger" + envName,
-      schedule: "cron(5 * ? * * *)",
       startOnCreation: true,
+      predicate: {
+        conditions: [
+          {
+            crawlerName: glueCrawler.name,
+            state: "SUCCEEDED",
+            logicalOperator: "EQUALS"
+          }
+        ]
+      },
       actions: [
         { jobName: dataFlatteingJob.name }
       ]
     })
-
+    //We schedule ouur "refined data crawler" to run on Job successful completion
     const refinedCrawlerTrigger = new glue.CfnTrigger(this, "iot-onboarding-sensor-refined-trigger-" + envName, {
       type: "CONDITIONAL",
       name: "iotOnboardingSensorRefinedTrigger-" + envName,

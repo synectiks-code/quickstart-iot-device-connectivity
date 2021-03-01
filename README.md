@@ -38,7 +38,6 @@
 * remove git credentials
 * change git repo/owner to aws quiickstart and remove dev branch
 * change qQS template URL
-* Add instructions for SSO and QS account creatiion
 * Add cleaning instructions for dahsbord
 * Add instruction to get input for Rigado wizard
 * add where to find quicksight admin user name
@@ -54,6 +53,11 @@
 * add limitation for nnon enterprise user
 * add steps to check the connectivity
 * freeze version of CDK and NPM
+* Add cost optimization (pushdown predicate, Recrawl Policy, device sampling, quicksight refresh schedule)
+* Add instructionns to enable logginng
+* Add instruction to give access to S3 data from quicksight
+* Add instruction to create a sitewise dashboard manually
+* Add FAQ about sitewise dashoard delete error because of exising project)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -217,7 +221,7 @@ CodeBuild | Maximum number of concurrent running builds*	| 2 | The QuickStart us
 AWS SSO provides identity federation for SiteWise Monitor so that you can control access to your portals. With AWS SSO, your users sign in with their corporate email and password instead of an AWS account Follow the steps under Enabling AWS SSO in the [AWS IOT sitewise documentationn](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html)
 
 #### Create a Quicksight account (Optional if you don't want to use AWS Quicksigth dashboard or are already signed up)
-If you haven't already, sign up for quicksight using the steps inthe [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html). If you plan to deploy the default dashboard, you need an QuickSight Entermprise account
+If you haven't already, sign up for quicksight using the steps inthe [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html). If you plan to deploy the default dashboard, you need an QuickSight Enterprise account
 
 #### Validate your email adrdess with SES
 this quickstart uses the email address provided in input form the cloud fromation template as both sender and receiver of email notification. These notification will provide you with the key credentials to use the device onboarding MIicroservice. More specifically, for users of the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the email will provide the data necessary to use the Rigado Wizard to automatically onboard the Rigado Gateway. In ordre to be able to use this email address, SES requires a validation describe in the [Amazon SES Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). 
@@ -267,17 +271,57 @@ AWS IOT Connectivity QuickStart Output Values
 ## Checking Connnectivity
 In this section we will validate that the divices have been setup correctly and the traffic is flowing as expected.
 
+## Visualizing the data  (Alegro Kit Users only)
+As describe in the archotecture above, the data sent to the IOT Core MQTT broker is ingested into an IOT Datalake for aposteriori visualization and into AWS SiteWise for live monitoring. The paragraphe below describe how to sccess these visualization.
+### Visualizing the data using Amazon QuickSight
+In ordre to speed up your IOT project, this QuickStart deploys a predefinned dahsboard within AWS QuickSight. To benefit from this feature, you need:
+- To have an AWS QuickSight Enterprise customer
+- To be using the Rigado Allegro Kit as devices (while the Glue ETL ingestinng and processing the data is not device agnostic, the Dahsbords does make assumption onf the name of the field received annd will therefore only work out-of-the-box for Rigado Allegro Kit users)
+By Default, the data is processed by a scheduled Glue Crawler and ETL ever 24H. this default value is choosen to minimize the cost of running the IOT datalake initially and can be updated easily by changing a CRON expression in the AWS CDK script or directly from the AWS console. 
+When accessing the AWS QuickSight Dashbord for the first time, you need to provide access to the Amazon S3 Bucket that contains the refeined data (by refined data, we mean the data processed by the ETL script). Giving QuickSIght Access to Amazon S3 bucjert is described in teh [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/troubleshoot-connect-athena.html).
+Following the deployment of the QuickStart, you should see ann analysis called :Rigado QuickStart Dahsbord in your quicksight account as shown below.
+![Alt text](images/rigado-dahsboard.png?raw=true "Title")
+This Dashboard is configured to query 48 hours of data in the past (this is to limit both cost and improve dashboard load time as the quantity of data increases in the future). THere are multiple ways you can change this setup while scaling with large amount of data by using [QuickSight SPICE](https://docs.aws.amazon.com/quicksight/latest/user/spice.html). Note that using SPICE will come with an additional cost.
+
+**Note for non-alegro Kit user:** If you are not an allegro kit user, you will need to create you own Analysis and  datasource targeting the Athena Table for refined data mentioned earlier. This can be done in just a few clicks following the AWS QUickSIght documenttation. Note that the Glue job that refined the data is device agnistic as it justs flatten the JSON nested fields. It may, however not lead to practical result for deeply nested data.
+
+### Visualizing the data using AWS SiteWise
+Similarly to teh Qiucksight dashboard the The QuickStart created Sitewise Assets Model creates 1 root asset model and 4 children assets models. It also creates a Portal. In order to start visualizing the data in the prortal, you need to following teh setps below:
+1. Create a SiteWise Asset and Alias for each device you wish to monitor
+2. Assign ann SSO admiinistrator to the portal
+3. in the portal, select the created asset to visualize the data live.
+
+From this point, you can use the created portal to design dashboard for your devices as descrived in teh AWS IOT Sitewise documentation.
+
+**Note for non-alegro Kit user:** If you are not an allegro kit user, you will need to create your own AWS IOT Core Broker rule (following the same model than gthe one created in thei quickStart) to ingest the properly formated data into SiteWise. You will also need to manually create the Assets models and Assets following teh AWS SIteWise documentation.
+
+
 ## Cleaninng Up
-1. Empty the buckets
-2. Delete indra stack
-3. Clean up QuickSight Dashboard
-4. Clean up Sitewise Dashboard
+In this quickstart, we use a combination of CLI and CDK for AWS Resources deployement. This is because some services like QuickSight and Sitewise are not supported by CloudFromation jut yet. Consequently, several manual steps will be required to clean up the deployed resources in the use account. These steps are described below:
+1. Empty the S3 buckets
+Identify the bucket created by the stack (they are prefixed by "iotonboardinginfrastack") and ensure you clean the content of these buckets before deleting the stack.
+2. Delete infra stack
+Go to CloudFormation and Delete the infrastructuure stack named **IOTOnboardingInfraStackint**
+3. Delete Code Pipeline stack
+Go to CloudFormation and Delete code pipeline stack you created
+4. Clean up QuickSight Dashboard
+You can manually delete the resources created in quicksight followiing the AWS Quicksight Documentation. Note that, if youo created a QuickSIght Account just for the purpose of this QuickStart you can unsubscribe to the service by following the steps described [here](https://docs.aws.amazon.com/quicksight/latest/user/closing-account.html)
+5. Clean up Sitewise Dashboard
+You need to delete the following resources (deletion procedure is described in teh AWS Documentation),:
+- SiteWise Assets.
+- Sitewise Assets Models (the quickStart creates 1 root asset model andn 4 children assets models).
+- Sitewise Projects and Dashboards.
 
 ## FAQ
 
 ### My Quicksight dashborad display "error"
-### My quicksight deployment script fails with 
-### My code pipeline action fails with error:
+Errors displayed in the widgets of the QuickSight Dashboard typically results form one of the following causes:
+1. Access to the S3 Bucket created by the CDK script
+**solution:** Follow the AWS QuickSightt instruction to provide access to the bucket. The Bucket name
+2. No Data yest available in the datalake (data either not yet crawled or not yet received)
+
+### My quicksight deployment script fails with error
+### My code pipeline action fails with error
 
 ### My Sitewise script fails with ResourceAlreadyExistsException
 ```
