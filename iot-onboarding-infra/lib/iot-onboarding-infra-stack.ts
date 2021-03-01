@@ -196,7 +196,7 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
         conditions: [
           {
             crawlerName: glueCrawler.name,
-            state: "SUCCEEDED",
+            crawlState: "SUCCEEDED",
             logicalOperator: "EQUALS"
           }
         ]

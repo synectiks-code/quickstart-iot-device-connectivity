@@ -250,7 +250,7 @@ If you click on the pipeline name, you can see the steps of the pipeline running
 
 ## Connecting Devices
 ### Rigado Devices
-if you are using Rigado devices using the [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), go to the rigado wizard as explain in the email received after the devices are activated. Enter the data as received in the email you should have received from the QuickStart script:
+If you are using Rigado devices using the [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), go to the rigado wizard as explain in the email received after the devices are activated. Enter the data as received in the email you should have received from the QuickStart script:
 ```
 AWS IOT Connectivity QuickStart Output Values
 
@@ -264,9 +264,54 @@ AWS IOT Connectivity QuickStart Output Values
 --------------------------------------------------------------------------------------------
 | Refresh Token | eyJjdHkiOiJKV1QiLCJl...slN29FrDNqHWo_0e5U85ow
 ```
+Following the completion of the Rigado Wizard flow, the Rigado gateway will be setup to automatically and securely send traffic to AWS IOT Core using MQTT. To validat the the traffic is flowing through correctly, go to the AWS IOT Core console and subscribe top the topic provided in input of the CloudFromationn Template (by default data/# for Rigado). Provided at least one sensor has been turned on, you should see messages flowing through as shown below. 
+![Alt text](images/iot-core-mqtt-test.png?raw=true "Title")
 
+Once you validated that the traffic is flowing throught, see section **Visualizing the data** below to visualize the data.
 
 ### Non-Rigado Devices
+For non rigado devices, you need to manually configure you device in ordre to alloow it to communicate with AWS IOT Core. The Lambda function deployed by the quickstart allows you to generate the device certificate and keypair to be used for secured communication between the device and IOT Core. It also creates the IOT Thing and appropriate policy. It returns:
+-	The Mqtt Endpoint of the AWS IOT Core broker. 
+-	The certificate generated on the fly 
+-	The keypair (public and private key) generated on the fly
+-	Other information about the device
+
+Below and example of exchange with the onboarding service
+
+We first get the session token by using the client ID and the refresh token
+
+```curl --location --request POST 'https://<cognito_domain>.auth.<region>.amazoncognito.com/oauth2/token?grant_type=refresh_token&client_id=<client_id>&refresh_token=<refresh_token> \
+--header 'Content-Type: application/x-www-form-urlencoded'
+{
+    "id_token": "<id_token>",
+    "access_token": "<access_token>",
+    "expires_in": 3600,
+    "token_type": "Bearer"
+}
+```
+Then we can call the onboarding service to create the device. 
+```
+curl --location --request POST '<api_gateway_url>/api/onboard/<device_serial_number> \
+--header 'Authorization: Bearer <access_token>'
+{
+    "serialNumber": "<device_serial_number> ",
+    "deviceName": "<device_serial_number> ",
+    "thingId": "<iot_thing_id>",
+    "credential": {
+        "certificateId": "<certificate_id>",
+        "certificatePem": "<certificate data>",
+        "privateKey": "<private key data>",
+        "publicKey": "<public key data>"
+    },
+    "mqttEndpoint": "https://data.iot.<region>.amazonaws.com",
+    "error": {
+        "code": "",
+        "msg": "",
+        "type": ""
+    }
+}
+```
+The response contains the necessary certificates and keys to be used to configure the device. Refer to the [AWS IOT Core documentation](https://docs.aws.amazon.com/iot/latest/developerguide/connect-to-iot.html) for details on configuring IOT device to communicate with AWS.
 
 ## Checking Connnectivity
 In this section we will validate that the divices have been setup correctly and the traffic is flowing as expected.
@@ -288,10 +333,10 @@ This Dashboard is configured to query 48 hours of data in the past (this is to l
 ### Visualizing the data using AWS SiteWise
 Similarly to teh Qiucksight dashboard the The QuickStart created Sitewise Assets Model creates 1 root asset model and 4 children assets models. It also creates a Portal. In order to start visualizing the data in the prortal, you need to following teh setps below:
 1. Create a SiteWise Asset and Alias for each device you wish to monitor
-2. Assign ann SSO admiinistrator to the portal
-3. in the portal, select the created asset to visualize the data live.
+2. Assign ann SSO administrator to the portal
+3. In the portal, select the created asset to visualize the data live.
 
-From this point, you can use the created portal to design dashboard for your devices as descrived in teh AWS IOT Sitewise documentation.
+From this point, you can use the created portal to design dashboard for your devices as descrived in the AWS IOT Sitewise documentation.
 
 **Note for non-alegro Kit user:** If you are not an allegro kit user, you will need to create your own AWS IOT Core Broker rule (following the same model than gthe one created in thei quickStart) to ingest the properly formated data into SiteWise. You will also need to manually create the Assets models and Assets following teh AWS SIteWise documentation.
 
