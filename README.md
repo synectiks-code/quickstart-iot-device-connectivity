@@ -38,13 +38,7 @@
 * remove git credentials
 * change git repo/owner to aws quiickstart and remove dev branch
 * change qQS template URL
-* Add cleaning instructions for dahsbord
-* Add instruction to get input for Rigado wizard
-* add where to find quicksight admin user name
 * add link to the rigado alegro kit
-* Fix e2e test failing by adding delay + retry ti certificate deletion
-* add comment about concurent buuild iissue
-* add instruction to validate emaili address using SES
 * add tutorial for sitewise 
 * add tudo for manually creating teh QUicksight dashboard
 * add info about cognito users for cleanup
@@ -224,20 +218,20 @@ AWS SSO provides identity federation for SiteWise Monitor so that you can contro
 If you haven't already, sign up for quicksight using the steps inthe [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html). If you plan to deploy the default dashboard, you need an QuickSight Enterprise account
 
 #### Validate your email adrdess with SES
-this quickstart uses the email address provided in input form the cloud fromation template as both sender and receiver of email notification. These notification will provide you with the key credentials to use the device onboarding MIicroservice. More specifically, for users of the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the email will provide the data necessary to use the Rigado Wizard to automatically onboard the Rigado Gateway. In ordre to be able to use this email address, SES requires a validation describe in the [Amazon SES Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). 
+This quickstart uses the email address provided in input form the AWS cloudFormation template as both sender and receiver of email notification. These notification will provide you with the key credentials to use the device onboarding MIicroservice. More specifically, for users of the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the email will provide the data necessary to use the Rigado Wizard to automatically onboard the Rigado Gateway. In order to be able to use this email address, SES requires you to verify the provided email as described in the [Amazon SES Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). 
 
 
 ### Installation
 
 1. To get started with the deployment download the [AWS CloudFormation template](iot-onboarding-code-pipelines/iot-onboarding-int.yml). Note that you can also fork this repository and use it as a base for your own IOT project.
 
-2. Go to the aws clouudformation console and launch the stack. The folowing parametters are required inputs
+2. Go to the AWS cloudFormation console and launch the stack. The folowing parametters are required inputs
 ![Alt text](images/cloudformation-form.png?raw=true "Title")
 
 Input  | Description
 ------------- | -------------
 contactEmail  | Email of an administrator ussed for the AWS IOT sitewise portal creation. (see [AWS documentation](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins))
-quickSightAdminUserName  | The use name of a Quicksight user with an ADMIN role. You can list all quicksight users by going to the [QuickSight administration Screen](https://us-east-1.quicksight.aws.amazon.com/sn/admin). Note that quicksight users can only be administraed form the US-EAST-1 region regardles of the region your dasboard is created in.
+quickSightAdminUserName  | The use name of a Quicksight user with an ADMIN role. You can list all quicksight users by going to the [QuickSight administration Screen](https://us-east-1.quicksight.aws.amazon.com/sn/admin).
 rootMqttTopic  | The root MQTT topic your devices publish to. If you are using the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the default value (data/#) does not need to be changed.
 sourceTemplateArn  | use: **arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev** This is a static location of a public quicksight dashboard template that we created for the purpose of this Quickstart. This allows you to get started quickly with a fully functional dashboard. Note that this example dahsbord is created specifically for the users of the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card). If you are not using rigado devices you will need to create you own dataset, analysis and dahsboard based on the devices you use. The ETL process and Glue Crawler that ingest the data from the IOT Broker to make them available in quicksight are data-model agnostic so you just need to link the created glue table as a datasource in QuickSight
 
@@ -363,10 +357,11 @@ You need to delete the following resources (deletion procedure is described in t
 Errors displayed in the widgets of the QuickSight Dashboard typically results form one of the following causes:
 1. Access to the S3 Bucket created by the CDK script
 **solution:** Follow the AWS QuickSightt instruction to provide access to the bucket. The Bucket name
-2. No Data yest available in the datalake (data either not yet crawled or not yet received)
+2. No Data is available yet in the datalake (data either not yet crawled or not yet received)
 
 ### My quicksight deployment script fails with error
-### My code pipeline action fails with error
+### My code pipeline action fails with error about concurent build allowed
+Some AWS accounnts are by default configure to only allow 1 concurent build using Code Pipeline. A workaround to this issue is to retry the pipeline stage. this will rety onnly the failed build. A long term solution consists in requesting a Code Build Service limite increase by contactinng AWS Support.
 
 ### My Sitewise script fails with ResourceAlreadyExistsException
 ```
