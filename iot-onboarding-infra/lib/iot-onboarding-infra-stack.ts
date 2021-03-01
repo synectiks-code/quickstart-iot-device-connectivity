@@ -187,9 +187,9 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
       ]
     })
 
-    //We schedule our job to run when the initial crawler successfully completes
+    //We run our job to run when the initial crawler successfully completes
     const jobTrigger = new glue.CfnTrigger(this, "iot-onboarding-sensor-flattening-job-trigger-" + envName, {
-      type: "SCHEDULED",
+      type: "CONDITIONAL",
       name: "iotOnboardingSensorFlatteningJobTrigger" + envName,
       startOnCreation: true,
       predicate: {
