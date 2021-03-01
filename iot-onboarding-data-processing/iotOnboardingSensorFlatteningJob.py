@@ -6,7 +6,7 @@ from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
 from awsglue.dynamicframe import DynamicFrame
-from datetime import datetime
+from datetime import datetime, timedelta
 
 glueContext = GlueContext(SparkContext.getOrCreate())
 

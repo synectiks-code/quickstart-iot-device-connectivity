@@ -39,19 +39,12 @@
 * change git repo/owner to aws quiickstart and remove dev branch
 * change qQS template URL
 * add link to the rigado alegro kit
-* add tutorial for sitewise 
-* add tudo for manually creating teh QUicksight dashboard
 * add info about cognito users for cleanup
 * add links to frameworks
-* ensure CF yml template is deomalodable locally
-* add limitation for nnon enterprise user
-* add steps to check the connectivity
 * freeze version of CDK and NPM
 * Add cost optimization (pushdown predicate, Recrawl Policy, device sampling, quicksight refresh schedule)
-* Add instructionns to enable logginng
-* Add instruction to give access to S3 data from quicksight
-* Add instruction to create a sitewise dashboard manually
 * Add FAQ about sitewise dashoard delete error because of exising project)
+* Change default public template ARN
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -220,6 +213,9 @@ If you haven't already, sign up for quicksight using the steps inthe [AWS docume
 #### Validate your email adrdess with SES
 This quickstart uses the email address provided in input form the AWS cloudFormation template as both sender and receiver of email notification. These notification will provide you with the key credentials to use the device onboarding MIicroservice. More specifically, for users of the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the email will provide the data necessary to use the Rigado Wizard to automatically onboard the Rigado Gateway. In order to be able to use this email address, SES requires you to verify the provided email as described in the [Amazon SES Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). 
 
+#### Enable Logginng for AWS IOT Core
+Enablling logging for AWS IOT Core will facilitate troubleshooting of device connectivity. This is especially useful is you are not using a rigado device. See instruction in the [AWS IOT Core documentation](https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html)
+
 
 ### Installation
 
@@ -317,7 +313,7 @@ In ordre to speed up your IOT project, this QuickStart deploys a predefinned dah
 - To have an AWS QuickSight Enterprise customer
 - To be using the Rigado Allegro Kit as devices (while the Glue ETL ingestinng and processing the data is not device agnostic, the Dahsbords does make assumption onf the name of the field received annd will therefore only work out-of-the-box for Rigado Allegro Kit users)
 By Default, the data is processed by a scheduled Glue Crawler and ETL ever 24H. this default value is choosen to minimize the cost of running the IOT datalake initially and can be updated easily by changing a CRON expression in the AWS CDK script or directly from the AWS console. 
-When accessing the AWS QuickSight Dashbord for the first time, you need to provide access to the Amazon S3 Bucket that contains the refeined data (by refined data, we mean the data processed by the ETL script). Giving QuickSIght Access to Amazon S3 bucjert is described in teh [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/troubleshoot-connect-athena.html).
+When accessing the AWS QuickSight Dashbord for the first time, you need to provide access to the Amazon S3 Bucket that contains the refined data (by refined data, we mean the data processed by the ETL script). Giving QuickSIght Access to Amazon S3 buckert is described in the [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/troubleshoot-connect-athena.html).
 Following the deployment of the QuickStart, you should see ann analysis called :Rigado QuickStart Dahsbord in your quicksight account as shown below.
 ![Alt text](images/rigado-dahsboard.png?raw=true "Title")
 This Dashboard is configured to query 48 hours of data in the past (this is to limit both cost and improve dashboard load time as the quantity of data increases in the future). THere are multiple ways you can change this setup while scaling with large amount of data by using [QuickSight SPICE](https://docs.aws.amazon.com/quicksight/latest/user/spice.html). Note that using SPICE will come with an additional cost.
@@ -325,10 +321,20 @@ This Dashboard is configured to query 48 hours of data in the past (this is to l
 **Note for non-alegro Kit user:** If you are not an allegro kit user, you will need to create you own Analysis and  datasource targeting the Athena Table for refined data mentioned earlier. This can be done in just a few clicks following the AWS QUickSIght documenttation. Note that the Glue job that refined the data is device agnistic as it justs flatten the JSON nested fields. It may, however not lead to practical result for deeply nested data.
 
 ### Visualizing the data using AWS SiteWise
-Similarly to teh Qiucksight dashboard the The QuickStart created Sitewise Assets Model creates 1 root asset model and 4 children assets models. It also creates a Portal. In order to start visualizing the data in the prortal, you need to following teh setps below:
-1. Create a SiteWise Asset and Alias for each device you wish to monitor
-2. Assign ann SSO administrator to the portal
-3. In the portal, select the created asset to visualize the data live.
+Similarly to teh QuickSight dashboard the QuickStart created Sitewise Assets Model creates 1 root asset model and 4 children assets models. It also creates a Portal. In order to start visualizing the data in the prortal, you need to following teh setps below:
+1. Go to AWS IoT QuickSight and select Build > Models
+2. Choose the Asset model that correcponds to your Rigado Device (if the device you are using does not correspond to any existing asset model, refer to AWS IOT Sitewise documentation to route the traffic of your device to the aporpriate alias)
+3. Create an asset for this asset model using the deviceId in the device name
+4. Once created, go to "Edit" and enter a property alias for each of the model Measurement. For consistency with the IOT Core Broker rule, the alias value must be as follow:
+```
+<deviceId><MeasurementNameWithoutDoubleQuotes>
+```
+See example below for device **ffcfed4dd3ab**
+![Alt text](images/sitewise-property-alias-setup.png?raw=true "Title")
+Repeat this for all devices sending traffic behing the Rigado Gateway. (not that, using the Quicksight Dashboard, you can have a list of all devices sending traffic though the Gateway)
+
+5. Once the asset is created youu can access the portal created by the QuickStart or create a portal from scratch following the AWS IOT Sitewise documentation. It will then just take a few minutes to add your assets to dedicated dashboards.
+
 
 From this point, you can use the created portal to design dashboard for your devices as descrived in the AWS IOT Sitewise documentation.
 
