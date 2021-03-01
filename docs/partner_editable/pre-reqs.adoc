@@ -2,8 +2,16 @@
 
 ==== Prepare your AWS account
 
-_Describe any setup required in the AWS account prior to template launch_
+#### AWS SSO activation (Optional if you don'd want to use AWS IOT dashboord sitewise)
+AWS SSO provides identity federation for SiteWise Monitor so that you can control access to your portals. With AWS SSO, your users sign in with their corporate email and password instead of an AWS account Follow the steps under Enabling AWS SSO in the [AWS IOT sitewise documentationn](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html)
 
+#### Create a Quicksight account (Optional if you don't want to use AWS Quicksigth dashboard or are already signed up)
+If you haven't already, sign up for quicksight using the steps inthe [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html). If you plan to deploy the default dashboard, you need an QuickSight Entermprise account
+
+#### Validate your email adrdess with SES
+this quickstart uses the email address provided in input form the cloud fromation template as both sender and receiver of email notification. These notification will provide you with the key credentials to use the device onboarding MIicroservice. More specifically, for users of the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the email will provide the data necessary to use the Rigado Wizard to automatically onboard the Rigado Gateway. In ordre to be able to use this email address, SES requires a validation describe in the [Amazon SES Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). 
+
+//TODO: remove the below if not required
 ==== Prepare your {partner-company-name} account
 
 _Describe any setup required in the partner portal/account prior to template launch_
