@@ -45,6 +45,7 @@
 * Add cost optimization (pushdown predicate, Recrawl Policy, device sampling, quicksight refresh schedule)
 * Add FAQ about sitewise dashoard delete error because of exising project)
 * Change default public template ARN
+* Add instruction to manually trigger Glue ETL
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -181,18 +182,18 @@ When working with Rigado devices A few manual steps are required to create the a
 ### Built With
 
 This project use the folowing tools and frameworks:
-* [Golang](https://getbootstrap.com)
-* [Python](https://getbootstrap.com)
-* [AWS CDK](https://jquery.com)
-* [newman](https://laravel.com)
-* [jq](https://laravel.com)
-* [mosquitto](https://laravel.com)
+* [Golang](https://golang.org/)
+* [Python](https://www.python.org/)
+* [AWS CDK](https://aws.amazon.com/cdk/)
+* [newman](https://learning.postman.com/docs/running-collections/using-newman-cli/command-line-integration-with-newman/)
+* [jq](https://stedolan.github.io/jq/)
+* [mosquitto](https://mosquitto.org/)
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get started with this quickstart, follow the steps below (make sure to follow the prerequisit secctiono first)
+To get started with this AWS Quickstart, follow the steps below (make sure to follow the prerequisits section first)
 
 ### Prerequisites
 
@@ -312,11 +313,15 @@ As describe in the archotecture above, the data sent to the IOT Core MQTT broker
 In ordre to speed up your IOT project, this QuickStart deploys a predefinned dahsboard within AWS QuickSight. To benefit from this feature, you need:
 - To have an AWS QuickSight Enterprise customer
 - To be using the Rigado Allegro Kit as devices (while the Glue ETL ingestinng and processing the data is not device agnostic, the Dahsbords does make assumption onf the name of the field received annd will therefore only work out-of-the-box for Rigado Allegro Kit users)
-By Default, the data is processed by a scheduled Glue Crawler and ETL ever 24H. this default value is choosen to minimize the cost of running the IOT datalake initially and can be updated easily by changing a CRON expression in the AWS CDK script or directly from the AWS console. 
+By Default, the data is processed by a scheduled Glue Crawler and ETL ever 24H. this default value is choosen to minimize the cost of running the IOT datalake initially and can be updated easily by changing a CRON expression in the AWS CDK script or directly from the AWS console. The QuickStart also creates a glue trigger that can start the data refresh on demand directly from the AWS Glue Console.
+
 When accessing the AWS QuickSight Dashbord for the first time, you need to provide access to the Amazon S3 Bucket that contains the refined data (by refined data, we mean the data processed by the ETL script). Giving QuickSIght Access to Amazon S3 buckert is described in the [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/troubleshoot-connect-athena.html).
 Following the deployment of the QuickStart, you should see ann analysis called :Rigado QuickStart Dahsbord in your quicksight account as shown below.
 ![Alt text](images/rigado-dahsboard.png?raw=true "Title")
-This Dashboard is configured to query 48 hours of data in the past (this is to limit both cost and improve dashboard load time as the quantity of data increases in the future). THere are multiple ways you can change this setup while scaling with large amount of data by using [QuickSight SPICE](https://docs.aws.amazon.com/quicksight/latest/user/spice.html). Note that using SPICE will come with an additional cost.
+
+This Dashboard is configured to query 48 hours of data in the past (this is to limit both cost and improve dashboard load time as the quantity of data increases in the future). There are multiple ways you can change this setup while scaling with large amount of data by using [QuickSight SPICE](https://docs.aws.amazon.com/quicksight/latest/user/spice.html). Note that using SPICE will come with an additional cost.
+
+Note that the Glue ETL that processes the data into a flat structure is also optimize to only query 48 hours o fdata in the past using [push down predicate](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-partitions.html). this can easily be changed with a minur updtate to the Pythonn script dirrectly accessfible from the AWS Glue Console.
 
 **Note for non-alegro Kit user:** If you are not an allegro kit user, you will need to create you own Analysis and  datasource targeting the Athena Table for refined data mentioned earlier. This can be done in just a few clicks following the AWS QUickSIght documenttation. Note that the Glue job that refined the data is device agnistic as it justs flatten the JSON nested fields. It may, however not lead to practical result for deeply nested data.
 
@@ -382,23 +387,13 @@ Data can take up to one hour to propagate to IOT Datalake due to the schedule ch
 ### Deletinng the infrastructure stack fails
 **solution:** Empty and Delete the buckets
 
-
 <!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-
 <!-- CONTACT -->
 ## Contact
 
 Quickstart Team - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
 Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-
 
