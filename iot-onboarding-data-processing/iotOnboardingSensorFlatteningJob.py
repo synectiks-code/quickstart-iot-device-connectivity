@@ -46,6 +46,9 @@ sensorsDataFlat = sensorsDataFlat.rename_field("partition_1", "month")
 sensorsDataFlat = sensorsDataFlat.rename_field("partition_2", "day")
 sensorsDataFlat = sensorsDataFlat.rename_field("partition_3", "hour")
 
+#By default, spark dataframe overwites all data (even partitions that do not have new data). 
+#We use the partitionOverwriteMode=dunamic to only overwrite new partitions.
+spark.conf.set('spark.sql.sources.partitionOverwriteMode','dynamic')
 sensorsDataFlat.toDF().write.partitionBy("year","month","day","hour").mode("overwrite").format("parquet").save("s3://"+args["DEST_BUCKET"]+"/all")
 
 job.commit()
