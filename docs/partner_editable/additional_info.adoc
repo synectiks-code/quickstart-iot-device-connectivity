@@ -1,0 +1,63 @@
+// Add steps as necessary for accessing the software, post-configuration, and testing. Don’t include full usage instructions for your software, but add links to your product documentation for that information.
+//Should any sections not be applicable, remove them
+
+Once the template has deployed successfully, open AWS Code Pipeline to see the pipeline executing as below:
+
+[#codePipeline1]
+.Code Pipeline console
+image::../images/quickstart-cicd-3.png[CodePipeline]
+
+Choose the pipeline name to see the steps of the pipeline running:
+[#codePipeline2]
+.Code Pipeline console
+image::../images/quickstart-cicd-2.png[ExecutingPipeline]
+
+
+== Test the deployment
+// If steps are required to test the deployment, add them here. If not, remove the heading
+
+== Post-deployment steps
+// If post-deployment steps are required, add them here. If not, remove the heading
+
+== Connecting devices
+=== Rigado Devices
+if you are using Rigado devices using the [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), go to the rigado wizard as explain in the email received after the devices are activated. Enter the data as received in the email you should have received from the QuickStart script:
+```
+AWS IOT Connectivity QuickStart Output Values
+
+
+--------------------------------------------------------------------------------------------
+| Cognito URL | https://iot-onboarding-quickstart-<env>.auth.us-east-1.amazoncognito.com/oauth2/token
+--------------------------------------------------------------------------------------------
+| API Gateway URL | https://<api_id>.execute-api.us-east-1.amazonaws.com/
+--------------------------------------------------------------------------------------------
+| Client ID | 228v...t9c3
+--------------------------------------------------------------------------------------------
+| Refresh Token | eyJjdHkiOiJKV1QiLCJl...slN29FrDNqHWo_0e5U85ow
+```
+
+=== Non-Rigado Devices
+
+== Checking Connnectivity
+In this section we will validate that the divices have been setup correctly and the traffic is flowing as expected.
+
+== Cleaninng Up
+1. Empty the buckets
+2. Delete indra stack
+3. Clean up QuickSight Dashboard
+4. Clean up Sitewise Dashboard
+
+== Best practices for using {partner-product-short-name} on AWS
+// Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
+
+_Add any best practices for using the software._
+
+== Security
+// Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
+
+_Add any security-related information._
+
+== Other useful information
+//Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
+
+_Add any other details that will help the customer use the software on AWS._
