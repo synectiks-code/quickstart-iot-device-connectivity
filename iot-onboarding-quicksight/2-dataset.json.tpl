@@ -7,7 +7,7 @@
                 "CustomSql": {
                     "DataSourceArn": "arn:aws:quicksight:__AWS_REGION:__ACCOUNT_ID:datasource/__DATASOURCE_ID",
                     "Name": "rigado_sensors_data",
-                    "SqlQuery": "SELECT *\nFROM \"__GLUE_DB\".\"__ATHENA_TABLE_NAME\"\nWHERE \"year\" = date_format(current_date,'%Y')\n        AND \"month\"=date_format(current_date,'%m')\n        AND \"day\"=date_format(current_date,'%d')",
+                    "SqlQuery": "SELECT *\nFROM \"__GLUE_DB\".\"__ATHENA_TABLE_NAME\"\nWHERE (\"year\" = date_format(current_date,'%Y')\n        AND \"month\"=date_format(current_date,'%m')\n        AND \"day\"=date_format(current_date,'%d')) OR (\"year\" = date_format(current_date - interval '1' day,'%Y')\n        AND \"month\"=date_format(current_date - interval '1' day,'%m')\n        AND \"day\"=date_format(current_date - interval '1' day,'%d')) ",
                     "Columns": [
                         {
                             "Name": "device.dtmi",

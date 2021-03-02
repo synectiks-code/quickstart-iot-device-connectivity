@@ -187,16 +187,16 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
       ]
     })
 
-    //We schedule our job to run when the initial crawler successfully completes
+    //We run our job to run when the initial crawler successfully completes
     const jobTrigger = new glue.CfnTrigger(this, "iot-onboarding-sensor-flattening-job-trigger-" + envName, {
-      type: "SCHEDULED",
-      name: "iotOnboardingSensorFlatteningJobTrigger" + envName,
+      type: "CONDITIONAL",
+      name: "iotOnboardingSensorJobTrigger" + envName,
       startOnCreation: true,
       predicate: {
         conditions: [
           {
             crawlerName: glueCrawler.name,
-            state: "SUCCEEDED",
+            crawlState: "SUCCEEDED",
             logicalOperator: "EQUALS"
           }
         ]
@@ -205,6 +205,7 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
         { jobName: dataFlatteingJob.name }
       ]
     })
+
     //We schedule ouur "refined data crawler" to run on Job successful completion
     const refinedCrawlerTrigger = new glue.CfnTrigger(this, "iot-onboarding-sensor-refined-trigger-" + envName, {
       type: "CONDITIONAL",
