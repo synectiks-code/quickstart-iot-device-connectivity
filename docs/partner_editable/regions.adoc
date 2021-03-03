@@ -1,6 +1,9 @@
-This Quick Start supports the following Regions:
+This Quick Start supports all Regions supported by teh followings services:
 
-* us-east-1, US East (N. Virginia) (EXAMPLE)
-* us-east-2, US East (Ohio) (EXAMPLE)
+* AWS IoT Sitewise
+* AWS IoT Core
+* Amazon QuickSight
+
+Please refer to the dedicated service regional availability to validate that a specific region is included.
 
 //Full list: https://docs.aws.amazon.com/general/latest/gr/rande.html

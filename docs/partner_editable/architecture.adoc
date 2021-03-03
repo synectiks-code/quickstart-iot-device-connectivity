@@ -12,12 +12,10 @@ image::../images/iot-quickstart-archtecture.png[Architecture]
 
 As shown in <<architecture1>>, the Quick Start sets up the following:
 
-* A REST microservice to onboard devices and gateway by serial number. The service creates the AWS IOT Core resources to secuerly connect to AWS MQTT Broker.
-* An IOT Datalake ingesting the data from the long term storage and analytics
-* An example AWS Quicksight Dahsboard to display data form the datalake (Compatible devices only)
-* An example IOT Device real time Monitorinig dahsboard uusing AWS IOT SiteWise (Compatible Devices Only)
+* A REST serverless microservice to onboard devices and gateways by serial number. The service creates the AWS IoT Core resources to securely connect to AWS MQTT Broker.
+* An IoT Datalake ingesting the data from the long term storage and analytics.
+* An example AWS Quicksight Dahsboard to display data form the datalake (Compatible devices only).
+* An example IoT Device real-time Monitoring dahsboard using AWS IoT SiteWise (Compatible devices Only).
 // Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram. End each bullet with a period.
 //TODO: extend the bullet points to include all the details in the arch diag
-* <describe any additional components>.
-
 // [.small]#* The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#

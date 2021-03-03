@@ -29,7 +29,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     const quickSightAdminUserName = new CfnParameter(this, "quickSightAdminUserName", {
       type: "String",
       allowedPattern: ".+",
-      description: "The Name of an existing Amin user created for Amazon Quicksihght (see quickstart guide)"
+      description: "The Name of an existing Amin user created for Amazon Quicksihght (see quickstart guide). Omit this oonput if you do not want to deploy a QuickSight dashboard"
     });
     const sourceTemplateArn = new CfnParameter(this, "sourceTemplateArn", {
       type: "String",
@@ -66,8 +66,8 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
             },
             commands: [
               'echo "CodeBuild is running in $AWS_REGION" && aws configure set region $AWS_REGION',
-              'npm install -g aws-cdk',
-              'npm -g install typescript',
+              'npm install -g aws-cdk@1.91.0',
+              'npm -g install typescript@4.2.2',
               'cdk --version',
               'cd iot-onboarding-infra',
               'npm install'
@@ -190,7 +190,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
             commands: [
               "yum -y install epel-release",
               "yum -y install mosquitto",
-              "npm install -g newman"
+              "npm install -g newman@5.2.2"
             ]
           },
           build: {
@@ -209,6 +209,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
 
 
 
+    //Output Artifacts
     const sourceOutput = new codepipeline.Artifact();
     const cdkBuildOutputLambda = new codepipeline.Artifact('CdkBuildOutputLambda');
     const cdkBuildOutputETL = new codepipeline.Artifact('CdkBuildOutputETL');
@@ -216,88 +217,99 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     const cdkBuildOutputTest = new codepipeline.Artifact('CdkBuildOutputTest');
     const siteWiseOutput = new codepipeline.Artifact('siteWiseOutput');
     const quickSightOutput = new codepipeline.Artifact('quickSightOutput');
+
+    let stages: codepipeline.StageProps[] = []
+    //Source  stage
+    stages.push({
+      stageName: 'Source',
+      actions: [
+        new codepipeline_actions.GitHubSourceAction({
+          actionName: 'GitHub_Source',
+          repo: gitHubRepo,
+          //TODO: this will need to be removed after publication of teh quickstart
+          oauthToken: cdk.SecretValue.secretsManager(GITHUB_TOKEN_SECRET_ID),
+          //TODO: remove this too
+          branch: "feature/iot-quickstart-with-rigado",
+          //TODO: channge this to aws-quickstart
+          owner: 'grollat',
+          output: sourceOutput,
+        }),
+      ],
+    })
+    //Build  stage
+    stages.push({
+      stageName: 'Build',
+      actions: [
+        new codepipeline_actions.CodeBuildAction({
+          actionName: 'uploadELTScript',
+          project: glueEtlBuild,
+          input: sourceOutput,
+          runOrder: 1,
+          outputs: [cdkBuildOutputETL],
+        }),
+        new codepipeline_actions.CodeBuildAction({
+          actionName: 'buildLambdaCode',
+          project: lambdaBuild,
+          input: sourceOutput,
+          runOrder: 2,
+          outputs: [cdkBuildOutputLambda],
+        }),
+        new codepipeline_actions.CodeBuildAction({
+          actionName: 'deployInfra',
+          project: infraBuild,
+          input: sourceOutput,
+          runOrder: 3,
+          outputs: [cdkBuildOutputInfra],
+        }),
+      ],
+    })
+    //Test Stage
+    stages.push({
+      stageName: 'Test',
+      actions: [
+        new codepipeline_actions.CodeBuildAction({
+          actionName: 'testOnboardingService',
+          project: onboardingTest,
+          input: sourceOutput,
+          outputs: [cdkBuildOutputTest],
+        }),
+      ],
+    })
+    //Deploy Stages
+    let deployStage: codepipeline.StageProps = {
+      stageName: 'Deploy',
+      actions: [],
+    }
+    if (deployStage.actions) {
+      deployStage.actions.push(new codepipeline_actions.S3DeployAction({
+        actionName: "deployInfraConfigToS3",
+        bucket: artifactBucket,
+        runOrder: 1,
+        input: cdkBuildOutputInfra
+      }))
+      //QuickSight dashboard is conditionally added if a Quicksight admin user is provided
+      if (quickSightAdminUserName.valueAsString) {
+        deployStage.actions.push(new codepipeline_actions.CodeBuildAction({
+          actionName: 'setupQuicksight',
+          project: quicksightBuild,
+          input: sourceOutput,
+          runOrder: 2,
+          outputs: [quickSightOutput],
+        }))
+      }
+      deployStage.actions.push(new codepipeline_actions.CodeBuildAction({
+        actionName: 'setupSitewise',
+        project: siteWiseBuild,
+        input: sourceOutput,
+        runOrder: 2,
+        outputs: [siteWiseOutput],
+      }))
+    }
+    stages.push(deployStage)
+
     new codepipeline.Pipeline(this, 'IotOnboardingPipeline', {
       pipelineName: "code-pipeline-iot-onboarding-" + envName,
-      stages: [
-        {
-          stageName: 'Source',
-          actions: [
-            new codepipeline_actions.GitHubSourceAction({
-              actionName: 'GitHub_Source',
-              repo: gitHubRepo,
-              //TODO: this will need to be removed after publication of teh quickstart
-              oauthToken: cdk.SecretValue.secretsManager(GITHUB_TOKEN_SECRET_ID),
-              //TODO: remove this too
-              branch: "feature/iot-quickstart-with-rigado",
-              //TODO: channge this to aws-quickstart
-              owner: 'grollat',
-              output: sourceOutput,
-            }),
-          ],
-        },
-        {
-          stageName: 'Build',
-          actions: [
-            new codepipeline_actions.CodeBuildAction({
-              actionName: 'uploadELTScript',
-              project: glueEtlBuild,
-              input: sourceOutput,
-              runOrder: 1,
-              outputs: [cdkBuildOutputETL],
-            }),
-            new codepipeline_actions.CodeBuildAction({
-              actionName: 'buildLambdaCode',
-              project: lambdaBuild,
-              input: sourceOutput,
-              runOrder: 2,
-              outputs: [cdkBuildOutputLambda],
-            }),
-            new codepipeline_actions.CodeBuildAction({
-              actionName: 'deployInfra',
-              project: infraBuild,
-              input: sourceOutput,
-              runOrder: 3,
-              outputs: [cdkBuildOutputInfra],
-            }),
-          ],
-        },
-        {
-          stageName: 'Test',
-          actions: [
-            new codepipeline_actions.CodeBuildAction({
-              actionName: 'testOnboardingService',
-              project: onboardingTest,
-              input: sourceOutput,
-              outputs: [cdkBuildOutputTest],
-            }),
-          ],
-        },
-        {
-          stageName: 'Deploy',
-          actions: [
-            new codepipeline_actions.S3DeployAction({
-              actionName: "deployInfraConfigToS3",
-              bucket: artifactBucket,
-              runOrder: 1,
-              input: cdkBuildOutputInfra
-            }),
-            new codepipeline_actions.CodeBuildAction({
-              actionName: 'setupSitewise',
-              project: siteWiseBuild,
-              input: sourceOutput,
-              runOrder: 2,
-              outputs: [siteWiseOutput],
-            }),
-            new codepipeline_actions.CodeBuildAction({
-              actionName: 'setupQuicksight',
-              project: quicksightBuild,
-              input: sourceOutput,
-              runOrder: 2,
-              outputs: [quickSightOutput],
-            })
-          ],
-        },
-      ],
+      stages: stages,
     });
 
   }
