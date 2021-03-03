@@ -77,11 +77,23 @@ if [ $env == $LOCAL_ENV_NAME ]
     sed -i "s/S1_ASSET_MODEL_ID/$s1ModelId/g" sitewiseResources/sitewise-root-asset-model.json
 fi
 
-
+#The asset model creation can take a little time and trigger a race condition. We implement 
+# exponential retry 
 echo "Waiting 5 sec for asset models creation completion"
 sleep 5
 aws iotsitewise create-asset-model --asset-model-name $ASSET_MODEL_NAME_ROOT --cli-input-json file://sitewiseResources/sitewise-root-asset-model.json
-
+rc=$?
+if [ $rc -ne 0 ]; then
+      echo "Root asset model Creation Failed: Retry ing after 10 seconds"
+      sleep 10
+      aws iotsitewise create-asset-model --asset-model-name $ASSET_MODEL_NAME_ROOT --cli-input-json file://sitewiseResources/sitewise-root-asset-model.json
+      rc=$?
+      if [ $rc -ne 0 ]; then
+        echo "Root asset model Creation Failed: Retry ing after 30 seconds"
+        sleep 30
+        aws iotsitewise create-asset-model --asset-model-name $ASSET_MODEL_NAME_ROOT --cli-input-json file://sitewiseResources/sitewise-root-asset-model.json
+      fi 
+fi
 
 ##################################################
 # III. Portal
