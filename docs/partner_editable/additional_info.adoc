@@ -7,7 +7,7 @@ Once the template has deployed successfully, open AWS Code Pipeline to see the p
 .Code Pipeline console
 image::../images/quickstart-cicd-3.png[CodePipeline]
 
-Choose the pipeline name to see the steps of the pipeline running:
+If you click on the pipeline name, you can see the steps of the pipeline running:
 [#codePipeline2]
 .Code Pipeline console
 image::../images/quickstart-cicd-2.png[ExecutingPipeline]
@@ -21,7 +21,7 @@ image::../images/quickstart-cicd-2.png[ExecutingPipeline]
 
 == Connecting devices
 === Rigado Devices
-if you are using Rigado devices using the [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), go to the rigado wizard as explain in the email received after the devices are activated. Enter the data as received in the email you should have received from the QuickStart script:
+If you are using Rigado devices using the https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card[Alegro Kit], go to the rigado wizard as explained in the email received after the devices were activated. Enter the data as received in the email you should have received from the QuickStart script:
 ```
 AWS IOT Connectivity QuickStart Output Values
 
@@ -35,17 +35,122 @@ AWS IOT Connectivity QuickStart Output Values
 --------------------------------------------------------------------------------------------
 | Refresh Token | eyJjdHkiOiJKV1QiLCJl...slN29FrDNqHWo_0e5U85ow
 ```
+Following the completion of the Rigado Wizard flow, the Rigado gateway will be setup to automatically and securely send traffic to AWS IoT Core using MQTT.
+
+Note that the build script create a new Amazon Cognito user each time it runs. If you are using the pipeline to manage your own CICD process, you should cleanup your Amazon cognito user pool users regularly to avoid unecessary charges. You only need one active user to be able to access the API gateway to onboard devices.
 
 === Non-Rigado Devices
+For non-rigado devices (or devices not supported by the allegro kit), you need to manually configure you device in ordre to allow it to communicate with AWS IoT Core. The Lambda function deployed by the quickstart allows you to generate the device certificate and keypair to be used for secured communication between the device and IoT Core. It also creates the IoT Thing and appropriate policy. It returns:
+
+* The Mqtt Endpoint of the AWS IoT Core broker.
+* The certificate generated during the service call
+* The keypair (public and private key) generated during the service call
+* Other information about the device
+
+Below and example of exchange with the onboarding service. We first get the session token by using the client ID and the refresh token.
+```
+--header 'Content-Type: application/x-www-form-urlencoded'
+{
+    "id_token": "<id_token>",
+    "access_token": "<access_token>",
+    "expires_in": 3600,
+    "token_type": "Bearer"
+}
+```
+Then we can call the onboarding service to create the device.
+
+```
+curl --location --request POST '<api_gateway_url>/api/onboard/<device_serial_number> \
+--header 'Authorization: Bearer <access_token>'
+{
+    "serialNumber": "<device_serial_number> ",
+    "deviceName": "<device_serial_number> ",
+    "thingId": "<iot_thing_id>",
+    "credential": {
+        "certificateId": "<certificate_id>",
+        "certificatePem": "<certificate data>",
+        "privateKey": "<private key data>",
+        "publicKey": "<public key data>"
+    },
+    "mqttEndpoint": "https://data.iot.<region>.amazonaws.com",
+    "error": {
+        "code": "",
+        "msg": "",
+        "type": ""
+    }
+}
+```
+
+The response contains the necessary certificates and keys to be used to configure the device. Refer to the https://docs.aws.amazon.com/iot/latest/developerguide/connect-to-iot.html[AWS IoT Core documentation] for details on configuring IoT device to communicate with AWS.
 
 == Checking Connnectivity
-In this section we will validate that the divices have been setup correctly and the traffic is flowing as expected.
+
+To validate that traffic is flowing throught correctly, go to the AWS IoT Core console and subscribe to the MQTT topic provided in input of the CloudFormation Template (by default data/# for Rigado). Provided at least one sensor has been turned on, you should see messages flowing through as shown below.
+[#iotCodeMqttTest]
+.Testing device connectivity on AWS IoT Core
+image::../images/iot-core-mqtt-test.png[ExecutingPipeline]
+
+Once you validated that the traffic is going throught, see section Visualizing the data (Alegro Kit Users only) below to visualize the data.
+
+== Visualizing the data (Alegro Kit Users only)
+
+As described in the architecture above, the data sent to the IoT Core MQTT broker is ingested into an IoT Datalake for a posteriori visualization and into AWS IoT SiteWise for live monitoring. The paragraph below describes how to setup these visualizations.
+
+Visualizing the data using Amazon QuickSight
+In order to speed up your IoT project, this QuickStart deploys a predefined dahsboard within Amazon QuickSight. To benefit from this feature, you need:
+
+* To have an Amazon QuickSight Enterprise customer.
+* To be using the Rigado Allegro Kit as devices (while the Glue ETL ingesting and processing the data is not device agnostic, the Dahsboards does make assumptions on the name of the fields received and will therefore only work out-of-the-box for Rigado Allegro Kit users) By Default, the data is processed by a scheduled Glue Crawler and ETL ever 24H. this default value is choosen to minimize the cost of running the IoT datalake initially and can be updated easily by changing a CRON expression in the AWS CDK script or directly from the AWS Glue console. The QuickStart also creates a glue trigger that can start the data refresh on demand directly from the AWS Glue Console.
+
+When accessing the Amazon QuickSight Dashboard for the first time, you need to provide access to the Amazon S3 Bucket that contains the refined data (by refined data, we mean the data processed by the ETL script). Instructions to give Amazon QuickSight Access to Amazon S3 bucket is described in the https://docs.aws.amazon.com/quicksight/latest/user/troubleshoot-connect-athena.html[AWS documentation]. Following the deployment of the QuickStart, you should see an Analysis called Rigado QuickStart Dahsbord in your Amazon QuickSight account in the selected regions as shown below.
+[#quickSightAnalysis]
+.New created Analysis in Amazon QuickSight
+image::../images/rigado-dahsboard.png
+[QuickSightAnalysis]
+
+
+This Dashboard is configured to query 48 hours of data in the past (this is to limit both cost and improve dashboard load time as the quantity of data increases in the future). There are multiple ways you can change this setup while scaling with large amounts of data by using https://docs.aws.amazon.com/quicksight/latest/user/spice.html[QuickSight SPICE]. Note that using SPICE will come with an additional cost.
+
+The Glue ETL that processes the data into a flat structure is also optimized to only query 48 hours of data in the past using https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-partitions.html[push down predicate]. this can easily be changed with a minor update to the Python script directly accessible from the AWS Glue Console.
+
+*Note for non-alegro Kit user:* If you are not a Rigado allegro kit user, you will need to create you own Analysis and datasource targeting the Athena Table for refined data mentioned earlier. This can be done in just a few clicks following the Amazon QuickSight documentation. The Glue job that refines the data is device agnostic as it justs flatten the JSON nested fields. It may, however not lead to practical result for deeply nested data.
+
+==== Visualizing the data using AWS SiteWise
+The QuickStart creates an AWS IoT Sitewise Assets Model Hierarchy composed 1 root asset model and 4 children assets models. It also creates a Portal. In order to start visualizing the data in the portal, you need to follow the steps below:
+
+Go to AWS IoT SiteWise and select Build > Models
+Choose the Asset model that corresponds to your Rigado Device (if the device you are using does not correspond to any existing asset model, refer to AWS IoT Sitewise documentation to create a dedicated asset model and route the traffic of your device through the apropriate alias using AWS IoT Core)
+Create an asset under this asset model using the deviceId in the device name
+Once created, go to "Edit" and enter a property alias for each of the model Measurements. For consistency with the IoT Core Broker rule, the alias value must be as follow:
+```
+<deviceId><MeasurementNameWithoutDoubleQuotes>
+```
+See example below for device ffcfed4dd3ab
+[#siteWiseAliasSetup]
+.Setting Up AWS IoT SiteWise Property Alias
+image::../images/sitewise-property-alias-setup.png[SitewiseAliasSetup]
+
+Repeat this for all devices sending traffic behing the Rigado Gateway. (Using the Amazon QuickSight Dashboard, you can have a list of all devices sending traffic though the Gateway and use this list too setup love monitoring with AWS IoT SiteWise)
+
+Once the asset is created you can access the portal created by the QuickStart or create a portal from scratch following the AWS IoT SiteWise documentation. It will then just take a few minutes to add your assets to dedicated dashboards.
+From this point, you can use the created portal to design dashboards for your devices as described in the AWS IoT SiteWise documentation.
+
+*Note for non-alegro Kit user:* If you are not an allegro kit user, you will need to create your own AWS IoT Core Broker rule (following the same model than the one created in the QuickStart) to ingest the properly formated data into AWS IoT SiteWise. You will also need to manually create the Assets Models and Assets following the AWS IoT SiteWise documentation.
+
+
+
 
 == Cleaninng Up
-1. Empty the buckets
-2. Delete indra stack
-3. Clean up QuickSight Dashboard
-4. Clean up Sitewise Dashboard
+In this quickstart, we use a combination of CLI and CDK for AWS Resources deployement. This is because some services like Amazon QuickSight and AWS IoT Sitewise are not supported by CloudFormation jut yet. Consequently, several manual steps will be required to clean up the deployed resources in the user account. These steps are described below:
+
+1. Empty the Amazon S3 buckets Identify the buckets created by the stack (they are prefixed by "iotonboardinginfrastack") and ensure you clean the content of these buckets before deleting the stack.
+2. Delete the infrastructure CloudFormation stack Go to CloudFormation and Delete the infrastructuure stack starting with IoTOnboardingInfraStack
+3. Delete Code Pipeline CloudFormation stack Go to CloudFormation and Delete code pipeline stack you created.
+4. Clean-up Amazon QuickSight Dashboard You can manually delete the resources created in Amazon QuickSight following the Amazon Quicksight Documentation. If you created an Amazon QuickSight Account just for the purpose of this QuickStart you can unsubscribe to the service by following the steps described here
+5. Clean-up AWS IoT Sitewise Dashboard You need to delete the following resources (The deletion procedure is provided in the AWS Documentation):
+* SiteWise Assets.
+* Sitewise Assets Models (the quickStart creates 1 root asset model and 4 child asset models).
+* Sitewise Projects and Dashboards.
 
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.

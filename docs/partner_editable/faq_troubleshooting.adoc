@@ -15,26 +15,37 @@ For more information, see https://docs.aws.amazon.com/AWSCloudFormation/latest/U
 
 *A.* Launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template-size limitations. For more information, see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html[AWS CloudFormation quotas^].
 
-*Q.* My Quicksight dashborad display "error"
+*Q.* My Amazon QuickSight dashborad displays errors in the Widgets.
 
-*A.* 
+*A.* Errors displayed in the widgets of the QuickSight Dashboard typically results from one of the following causes:
 
-*Q.* My quicksight deployment script fails with 
+1. Access to the S3 Bucket created by the CDK script to store the data solution: Follow the Amazon QuickSightt instructions to provide access to the bucket.
+2. No Data is not available yet in the datalake (data either not yet crawled or not yet received) solution: If data has already been received, you can manually trigger the on-demand trigger from the Glue console
 
-*A.* 
+*Q.* My quicksight deployment script fails with an error.
 
-*Q.* My code pipeline action fails with error:
+*A.* This can happen when the deployment of a previous version has been only partially completed. As a result, some resources already exists and others not yet. solution: Go to QuickSight and delete the existing dashboard and dataset before you retry the pipeline stage.
 
-*A.* 
+*Q.* My code pipeline action fails with errors about concurent build allowed.
 
-*Q.* My Sitewise script fails with ResourceAlreadyExistsException
+*A.* Some AWS accounts are by default configured to only allow 1 concurent build using Code Pipeline. A workaround to this issue is to retry the pipeline stage. This will only retry the failed build. A long term solution consists in requesting a Code Build Service limit increase by contacting AWS Support.
 
-*A.* 
+*Q.* My Sitewise script fails with ResourceAlreadyExistsException.
+
+*A.* To solve the following error:
 ```
-An error occurred (ResourceAlreadyExistsException) when calling the CreateAssetModel operation: Another resource is already using the name RigadoHoboMX100QsTestint 
+An error occurred (ResourceAlreadyExistsException) when calling the CreateAssetModel operation: Another resource is already using the name RigadoHoboMX100QsTestint.
 ```
-**solution:** Delete the Sitewise resources
+Delete the Sitewise resources and re-run the pipeline stage.
 
-== Troubleshooting
+*Q.* I am using the Alegro kit and I don't see any column in my AWS Quicksight dataset.
 
-<Steps for troubleshooting the deployment.>
+*A.* Data takes up to one day to propagate to IoT Datalake due to the schedule chosen for the Crawler for cost optimization reason. Ensure data is flowing using IoT Core Monitor and manually trigger the crawlers and jobs using the ON_DEMAND trigger from the Glue Console
+
+*Q.* Deleting the infrastructure stack fails.
+
+*A.* A common issue when deleteing the stack is when Amazon S3 buckets contain data. In this case, they fail to delete to avoid unintended data loss. S3 Buckets must be manually emptied and deleted prior to retying the stack deletion.
+
+*Q.* Deleting AWS IoT SiteWise Portal fails.
+
+*A.* A common issue while deleting a Sitewise portal is the existence of a project associated to the portal. You can delete the project from the created portal if you can login as administrator. If you are unable to login as an admin, you can delete the underlying project using the AWS IoT Sitewise CLI.
