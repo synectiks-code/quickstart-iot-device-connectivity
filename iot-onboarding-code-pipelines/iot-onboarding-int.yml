@@ -6,7 +6,7 @@ Parameters:
   quickSightAdminUserName:
     Type: String
     AllowedPattern: .+
-    Description: The Name of an existing Amin user created for Amazon Quicksihght (see quickstart guide). Omit this oonput if you do not want to deploy a QuickSight dashboard
+    Description: The Name of an existing Amin user created for Amazon Quicksihght (see quickstart guide). Omit this input if you do not want to deploy a QuickSight dashboard
   sourceTemplateArn:
     Type: String
     AllowedPattern: .+
