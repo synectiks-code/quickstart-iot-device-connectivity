@@ -1,18 +1,21 @@
-// Replace the content in <>
-// Briefly describe the software. Use consistent and clear branding. 
-// Include the benefits of using the software on AWS, and provide details on usage scenarios.
+This AWS QuickStart deploys the AWS resources accelerating the onboarding of IOT devices on AWS. It sets up:
+* A REST serverless microservice to onboard devices and gateways by serial number. The service creates the AWS IoT Core resources to securely connect to AWS MQTT Broker.
+* An IoT Datalake ingesting the data from the long term storage and analytics.
+* An example AWS Quicksight Dahsboard to display data form the datalake (Compatible devices only).
+* An example IoT Device real-time Monitoring dahsboard using AWS IoT SiteWise (Compatible devices Only).
 
-//TODO Give an overview of the QS itself, as well as some additional detail on the Rigado kit too.
-// Make sure to talk about Allegro kit before using it as a heading, so that customers know its from Rigado.
+Typical use cases for this quickstart include Smart Kitchen or Smart Retail Store.
+
+The QuickStart is launched in partnership with AWS IoT and Travel and Hospitality partner https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card[Rigado]. While it can be adapted for any device supporting standard MQTT connectivity, it is preconfigured for the newly released http://rigado.com/knowledge-base/introduction-to-the-rigado-allegro-kit[Rigado Allegro Kit]
 
 === The Allegro Kit for AWS
 
-This AWS QuickSitart has been created and pre-configured for the Rigado Allegro Kit for AWS. The kit aims at accelerating IoT proofs of concepts and pilot projects. It can be setup in a few minutes to demonstrate real-world scenarios with live data for a variety of commercial spaces: retail, travel &
+The kit aims at accelerating IoT proofs of concepts and pilot projects. It can be setup in a few minutes to demonstrate real-world scenarios with live data for a variety of commercial spaces: retail, travel &
 hospitality, smart buildings, and more. It uses  production sensors and cloud components based on Rigado and AWS IoT reference architectures. It is composed of:
 
 * The Rigado Plug & Play Sensor Network: Cascade gateways, temperature & humidity sensors, alert buttons, door sensors, asset trackers, and more.
-* QuickStart Onboarding: A pre-integrated setup wizard creates a live demo application in minutes.
-* Preconfigured dashboard in AWS IoT SiteWise and Amazon QuickSight providing a no-code approach to quickly building a pilot IoT project on AWS.
+* The QuickStart: A pre-integrated setup wizard that creates a live demo application in minutes.
+* Preconfigured dashboards in AWS IoT SiteWise and Amazon QuickSight providing a no-code approach to quickly building a pilot IoT project on AWS.
 
 
 
