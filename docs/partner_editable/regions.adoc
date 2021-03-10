@@ -1,4 +1,4 @@
-This Quick Start supports all Regions supported by teh followings services:
+This Quick Start supports all Regions supported by the followings services:
 
 * AWS IoT Sitewise
 * AWS IoT Core

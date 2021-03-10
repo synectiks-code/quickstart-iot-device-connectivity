@@ -2,7 +2,9 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-//TODO
+//TODO Give an overview of the QS itself, as well as some additional detail on the Rigado kit too.
+// Make sure to talk about Allegro kit before using it as a heading, so that customers know its from Rigado.
+
 === The Allegro Kit for AWS
 
 This AWS QuickSitart has been created and pre-configured for the Rigado Allegro Kit for AWS. The kit aims at accelerating IoT proofs of concepts and pilot projects. It can be setup in a few minutes to demonstrate real-world scenarios with live data for a variety of commercial spaces: retail, travel &

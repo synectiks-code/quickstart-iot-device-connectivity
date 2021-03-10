@@ -12,6 +12,31 @@ image::../images/iot-quickstart-archtecture.png[Architecture]
 
 As shown in <<architecture1>>, the Quick Start sets up the following:
 
+//TODO: expand on all the points below
+
+For the device onboarding:
+* IoT Certificate & MQTT Endpoint : 
+* API Gateway : 
+* Cognito :
+* Lambda Function : 
+* Endpoints : 
+* Bucket : 
+* Dynamo : 
+
+Then in the.....
+* IoT MQTT protocol :
+* AWS IoT Core :
+** IoT rule :
+** IoT topic :
+* IoT Events : 
+* Dynamo DB : 
+* Datalake consisting of:
+** Kenisis : 
+** S3 : 
+** Glue : 
+** Athena : 
+** Quicksight :
+
 * A REST serverless microservice to onboard devices and gateways by serial number. The service creates the AWS IoT Core resources to securely connect to AWS MQTT Broker.
 * An IoT Datalake ingesting the data from the long term storage and analytics.
 * An example AWS Quicksight Dahsboard to display data form the datalake (Compatible devices only).
@@ -19,3 +44,5 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 // Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram. End each bullet with a period.
 //TODO: extend the bullet points to include all the details in the arch diag
 // [.small]#* The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#
+
+
