@@ -4,45 +4,34 @@ Deploying this Quick Start into an AWS Region with
 default parameters builds the following {partner-product-short-name} environment in the
 AWS Cloud.
 
-// Replace this example diagram with your own. Follow our wiki guidelines: https://w.amazon.com/bin/view/AWS_Quick_Starts/Process_for_PSAs/#HPrepareyourarchitecturediagram. Upload your source PowerPoint file to the GitHub {deployment name}/docs/images/ directory in this repo. 
-
 [#architecture1]
 .Quick Start architecture for {partner-product-short-name} on AWS
 image::../images/iot-quickstart-archtecture.png[Architecture]
 
-As shown in <<architecture1>>, the Quick Start sets up the following:
+As shown in <<architecture1>>, the Quick Start sets up a control plane to onboard devices and a data plane to ingest sensors data.
 
-//TODO: expand on all the points below
+=== Control plane: The device onboarding service:
 
-For the device onboarding:
-* IoT Certificate & MQTT Endpoint : 
-* API Gateway : 
-* Cognito :
-* Lambda Function : 
-* Endpoints : 
-* Bucket : 
-* Dynamo : 
+* IoT Certificate & MQTT Endpoint : The onboarding microservice creates IoT Certificates and returns the MQTT Endpoint to which the device traffic can be sent.
+* Amazon API Gateway : The API Gateway exposes 3 endpoint respectively creating, retrieving and deleting onboarded devices.
+* Amazon Cognito : Amazon Cognito is used to secure the onboarding microservice. A refresh token is generated upon QuickStart creation allowing users to obtain a session token from Amazon Cognito.
+* AWS Lambda Function : The AWS Lambda function runs an executable writtten in Golang used as a backend for creating, retrieving and deleting onboarded devices 
+* Amazon S3 Bucket : Created certificates are stored in Amazon S3
+* Amazon DynamoDB : Created metadata per onboarded device is stotred in DynamoDB.
 
-Then in the.....
-* IoT MQTT protocol :
-* AWS IoT Core :
-** IoT rule :
-** IoT topic :
-* IoT Events : 
-* Dynamo DB : 
-* Datalake consisting of:
-** Kenisis : 
-** S3 : 
-** Glue : 
-** Athena : 
-** Quicksight :
+=== Data plane: The IoT ingestion layer
 
-* A REST serverless microservice to onboard devices and gateways by serial number. The service creates the AWS IoT Core resources to securely connect to AWS MQTT Broker.
-* An IoT Datalake ingesting the data from the long term storage and analytics.
-* An example AWS Quicksight Dahsboard to display data form the datalake (Compatible devices only).
-* An example IoT Device real-time Monitoring dahsboard using AWS IoT SiteWise (Compatible devices Only).
-// Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram. End each bullet with a period.
-//TODO: extend the bullet points to include all the details in the arch diag
-// [.small]#* The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#
+* IoT MQTT protocol : Data can be sent using MQTT to the IoT Core MQTT Endpoint returned by the onboarding service.
+* AWS IoT Core : AWS Iot Core MQTT Broker securely receives the traffic from authorized devices on the configured MQTT Topic.
+** IoT rule : Forward the trafic to both the AWS IoT Sitewise monitor and the IoT Datalake. Additional rules can be added to extend the use of this QuickStart to additional use cases.
+** IoT topic : The Iot Topic can be configured form the QuickStart CloudFormation template.
+* IOT Sitewise: Data ingested in IOT sitewise can be monitored in real time.
+* IoT Datalake: The IoT Datalake ingest cold data for a posteriori monitoring. It is configured by default to display data with a 24 hours freshness. 
+** Amazon Kinesis Firehose : Used to ingest the data into Amazon S3.
+** Amazon S3 : Stores raw data ingested fomr the sensors along with refined data processed by the ETL script.
+** AWS Glue : Hosts the Data catalog, Crawlers and Serverless ETL jobs for the IoT Datalake.
+** Amazon Athena : Used to query the sensor data for teh purpose of display in QuickSight dashboards
+** Amazon Quicksight : Amazon QuickSight is used to display the sensor data in a preconfigured dashboard. Additional dahsboards can be added.
+
 
 
