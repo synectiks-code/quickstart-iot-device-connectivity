@@ -1,38 +1,40 @@
 :xrefstyle: short
 
-Deploying this Quick Start into an AWS Region with
-default parameters builds the following {partner-product-short-name} environment in the
-AWS Cloud.
+Deploying this Quick Start into an AWS Region with default parameters builds the following {partner-product-short-name} environment in the AWS Cloud.
 
 [#architecture1]
 .Quick Start architecture for {partner-product-short-name} on AWS
-image::../images/iot-quickstart-architecture.png[Architecture]
+image::../images/rigado-iot-device-connectivity-architecture-diagram.png[Architecture]
 
-As shown in <<architecture1>>, the Quick Start sets up a control plane to onboard devices and a data plane to ingest sensors data.
+As shown in <<architecture1>>, the Quick Start sets up two planes--a control plane to onboard devices and a data plane to ingest sensor data.
 
-*Control plane: The device onboarding service:*
+For the control plane:
 
-* the IoT Certificate & MQTT Endpoint is used by the onboarding microservice to create IoT Certificates and return the MQTT Endpoint to which the device traffic can be sent.
-* The Amazon API Gateway exposes 3 endpoints respectively; creating, retrieving and deleting onboarded devices.
-* Amazon Cognito is used to secure the onboarding microservice. A refresh token is generated upon QuickStart creation allowing users to obtain a session token from Amazon Cognito.
-* The AWS Lambda function runs an executable written in Golang used as a backend for creating, retrieving and deleting onboarded devices 
-* Created certificates are stored in an Amazon S3 Bucket
-* Created metadata per onboarded device is stored in Amazon DynamoDB.
+* A serverless microservice for onboarding IoT devices through an REST API call.
+* IoT security certificates and MQTT endpoints for the onboarding microservice to use when sending device traffic.
+* Amazon API Gateway to expose three REST endpoints for creating, retrieving, and deleting onboarded devices.
+* Amazon Cognito to secure the onboarding microservice. The Quick Start generates a refresh token so users can obtain a session token from Amazon Cognito.
+* A Lambda function to host a service for creating, retrieving, and deleting onboarded devices. 
+* Amazon S3 bucket to store IoT certificates.
+* Amazon DynamoDB to store metadata from onboarded devices.
 
-*Data plane: The IoT ingestion layer*
+For the data plane:
 
-* IoT MQTT protocol : Data can be sent using MQTT to the IoT Core MQTT Endpoint returned by the onboarding service.
-* AWS Iot Core MQTT Broker securely receives the traffic from authorized devices on the configured MQTT Topic.
-** IoT rule is used to forward the traffic to both the AWS IoT Sitewise monitor and the IoT Datalake. Additional rules can be added 
-to extend the use of this QuickStart to additional use cases.
-** The Iot Topic can be configured form the QuickStart CloudFormation template.
-* Data ingested in IOT sitewise can be monitored in real time.
-* The IoT Datalake ingests cold data for posteriori monitoring. It is configured by default to display data within the last 24 hours. 
-** Amazon Kinesis Firehose is used to ingest the data into Amazon S3.
-** Amazon S3 stores raw data ingested from the sensors along with refined data processed by the ETL script.
-** AWS Glue hosts the Data catalog, Crawlers and Serverless ETL jobs for the IoT Datalake.
-** Amazon Athena is used to query the sensor data for teh purpose of display in QuickSight dashboards
-** Amazon QuickSight is used to display the sensor data in a preconfigured dashboard. Additional dahsboards can be added.
+* A device gateway to allow the AWS Cloud to ingest traffic from IoT devices.
+* MQTT protocol so data can be sent to the MQTT endpoint from the onboarding microservice. 
+* AWS IoT Core, including an MQTT broker that securely receives traffic from authorized devices that are filtered by the IoT topic. Resources include:
+
+** IoT rule to forward traffic to both the AWS IoT Sitewise Monitor and the IoT data lake. You can add more rules to extend the Quick Start for other use cases.
+** The IoT topic to filter messages. The topic is configured within the CloudFormation template.
+
+* AWS IoT SiteWise to monitor data in real time.
+* An IoT data lake to ingest cold data for posteriori monitoring. By default, the data lake is configured to display data from the last 24 hours. 
+
+** Amazon Kinesis Data Firehose to move the data into Amazon S3.
+** Amazon S3 to store raw data ingested from the sensors along with refined data processed by the extract, transform, load (ETL) script.
+** AWS Glue to host the data catalog, crawlers, and serverless ETL jobs for the IoT data lake.
+** Amazon Athena to query the sensor data for display in dashboards.
+** Amazon QuickSight to display the sensor data in a preconfigured dashboard. You can configure additional dashboards, if desired. 
 
 
 
