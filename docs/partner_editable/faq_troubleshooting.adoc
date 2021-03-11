@@ -15,26 +15,26 @@ For more information, see https://docs.aws.amazon.com/AWSCloudFormation/latest/U
 
 *A.* Launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template-size limitations. For more information, see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html[AWS CloudFormation quotas^].
 
-*Q.* My Amazon QuickSight dashborad displays errors in the Widgets.
+*Q.* My Amazon QuickSight dashboard displays errors in the Widgets.
 
 *A.* Errors displayed in the widgets of the QuickSight Dashboard typically results from one of the following causes:
 
-1. Access to the S3 Bucket created by the CDK script to store the data solution: Follow the Amazon QuickSightt instructions to provide access to the bucket.
+1. Access to the S3 Bucket created by the CDK script to store the data solution: Follow the Amazon QuickSight instructions to provide access to the bucket.
 2. No Data is not available yet in the datalake (data either not yet crawled or not yet received) solution: If data has already been received, you can manually trigger the on-demand trigger from the Glue console
 
 *Q.* My quicksight deployment script fails with an error.
 
 *A.* This can happen when the deployment of a previous version has been only partially completed. As a result, some resources already exists and others not yet. solution: Go to QuickSight and delete the existing dashboard and dataset before you retry the pipeline stage.
 
-*Q.* My code pipeline action fails with errors about concurent build allowed.
+*Q.* My code pipeline action fails with errors about concurrent build allowed.
 
-*A.* Some AWS accounts are by default configured to only allow 1 concurent build using Code Pipeline. A workaround to this issue is to retry the pipeline stage. This will only retry the failed build. A long term solution consists in requesting a Code Build Service limit increase by contacting AWS Support.
+*A.* Some AWS accounts are by default configured to only allow 1 concurrent build using Code Pipeline. A workaround to this issue is to retry the pipeline stage. This will only retry the failed build. A long term solution consists in requesting a Code Build Service limit increase by contacting AWS Support.
 
 *Q.* My Sitewise script fails with ResourceAlreadyExistsException.
 
 *A.* To solve the following error:
 ```
-An error occurred (ResourceAlreadyExistsException) when calling the CreateAssetModel operation: Another resource is already using the name RigadoHoboMX100QsTestint.
+An error occurred (ResourceAlreadyExistsException) when calling the CreateAssetModel operation: Another resource is already using the name `RigadoHoboMX100QsTestint`.
 ```
 Delete the Sitewise resources and re-run the pipeline stage.
 
@@ -44,7 +44,7 @@ Delete the Sitewise resources and re-run the pipeline stage.
 
 *Q.* Deleting the infrastructure stack fails.
 
-*A.* A common issue when deleteing the stack is when Amazon S3 buckets contain data. In this case, they fail to delete to avoid unintended data loss. S3 Buckets must be manually emptied and deleted prior to retying the stack deletion.
+*A.* A common issue when deleting the stack is when Amazon S3 buckets contain data. In this case, they fail to delete to avoid unintended data loss. S3 Buckets must be manually emptied and deleted prior to retying the stack deletion.
 
 *Q.* Deleting AWS IoT SiteWise Portal fails.
 

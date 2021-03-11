@@ -1,15 +1,17 @@
-// If no preperation is required, remove all content from here
+// If no preparation is required, remove all content from here
 
 ==== Prepare your AWS account
 
-===== AWS SSO activation (Optional if you don'd want to use AWS IOT dashboord sitewise)
+===== AWS SSO activation (Optional)
+This is optional if you don't want to use an AWS IOT Sitewise dashboard.
 AWS SSO provides identity federation for AWS IoT SiteWise Monitor so that you can control access to your portals. With AWS SSO, users sign-in with their corporate email and password instead of an AWS account. Follow the steps under Enabling AWS SSO in the https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html[AWS IOT sitewise documentationn]
 
-===== Create a Quicksight account (Optional if you don't want to use AWS Quicksigth dashboard or are already signed up)
+===== Create a Quicksight account (Optional)
+This is optional if you don't want to use an AWS Quicksight dashboard or are already signed up for AWS QuickSight.
 If you haven't already, sign-up for Amazon QuickSight using the steps in the https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html[AWS documentation]. If you plan to deploy the default dashboard, you need an Amazon QuickSight Enterprise account.
 
-===== Validate your email adrdess with SES
+===== Validate your email address with SES
 This QuickStart uses the email address provided in input to the AWS CloudFormation template as both sender and receiver of email notifications. These notifications will provide you with the key credentials to use the device onboarding Micro-services. More specifically, for users of the https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card[Alegro Kit], the email will provide the data necessary to use the Rigado Wizard to automatically onboard the Rigado Gateway. In order to be able to use this email address, SES requires you to verify the provided email as described in the https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html[Amazon SES Documentation]. 
 
-==== Enable Logginng for AWS IoT Core
-Enablling logging for AWS IoT Core will facilitate troubleshooting of device connectivity. This is especially useful is you are not using a Rigado device. See instruction in the https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html[AWS IoT Core documentation]
+==== Enable Logging for AWS IoT Core
+Enabling logging for AWS IoT Core will facilitate troubleshooting of device connectivity. This is especially useful is you are not using a Rigado device. See instruction in the https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html[AWS IoT Core documentation]

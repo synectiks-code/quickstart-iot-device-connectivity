@@ -5,7 +5,7 @@
 :partner-product-short-name: IoT Device Connectivity
 // If there's no partner, comment partner-company-name and partner-contributors.
 :partner-company-name: Rigado
-:doc-month: February
+:doc-month: March
 :doc-year: 2021
 // For the following "contributor" attributes, if the partner agrees to include names in the byline, 
 // enter names for everyone (partner-contributors and aws- or quickstart-contributors). 
