@@ -20,6 +20,11 @@ Parameters:
     Default: data/#
     AllowedPattern: .+
     Description: the root MQTT topic where onboarded devices publish (see quickstart guide)
+  environment:
+    Type: String
+    Default: int
+    AllowedPattern: .+
+    Description: Environment name. Change only if you would like to deploy the same stack several time in the same region and account
 Resources:
   iotOnboardingArtifacts020AADAB:
     Type: AWS::S3::Bucket
@@ -413,7 +418,9 @@ Resources:
                     "build": {
                       "commands": [
                         "echo \"Build and Deploy Infrastructure\"",
-                        "pwd && sh deploy.sh int 
+                        "pwd && sh deploy.sh 
+              - Ref: environment
+              - " "
               - Ref: iotOnboardingArtifacts020AADAB
               - " "
               - Ref: rootMqttTopic
@@ -427,7 +434,10 @@ Resources:
                   "artifacts": {
                     "discard-path": "yes",
                     "files": [
-                      "iot-onboarding-infra/infra-config-int.json"
+                      "iot-onboarding-infra/infra-config-
+              - Ref: environment
+              - >-
+                .json"
                     ]
                   }
                 }
@@ -471,7 +481,9 @@ Resources:
                       "commands": [
                         "echo \"Build and Deploy lambda Function\"",
                         "cd iot-onboarding-service",
-                        "pwd && sh lbuild.sh int 
+                        "pwd && sh lbuild.sh 
+              - Ref: environment
+              - " "
               - Ref: iotOnboardingArtifacts020AADAB
               - >-
                 "
@@ -484,7 +496,11 @@ Resources:
         Fn::GetAtt:
           - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
           - Arn
-      Name: code-build-iot-onboarding-lambda-int
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-lambda-
+            - Ref: environment
     Metadata:
       aws:cdk:path: IotOnboardingCodePipelinesStackint/lambdaBuilProject/Resource
   glueETLBuilProject6FDBBD31:
@@ -514,7 +530,9 @@ Resources:
                       "commands": [
                         "echo \"Uploading ETK script to s3\"",
                         "cd iot-onboarding-data-processing",
-                        "pwd && sh ./deploy.sh int 
+                        "pwd && sh ./deploy.sh 
+              - Ref: environment
+              - " "
               - Ref: iotOnboardingArtifacts020AADAB
               - >-
                 "
@@ -527,7 +545,11 @@ Resources:
         Fn::GetAtt:
           - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
           - Arn
-      Name: code-build-iot-onboarding-etl-int
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-etl-
+            - Ref: environment
     Metadata:
       aws:cdk:path: IotOnboardingCodePipelinesStackint/glueETLBuilProject/Resource
   siteWiseBuildProject4DE67409:
@@ -557,7 +579,9 @@ Resources:
                       "commands": [
                         "echo \"Building sitewise Assets model and project\"",
                         "cd iot-onboarding-sitewise",
-                        "pwd && sh ./sitewise.sh int 
+                        "pwd && sh ./sitewise.sh 
+              - Ref: environment
+              - " "
               - Ref: iotOnboardingArtifacts020AADAB
               - " "
               - Ref: contactEmail
@@ -572,7 +596,11 @@ Resources:
         Fn::GetAtt:
           - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
           - Arn
-      Name: code-build-iot-onboarding-sitewise-int
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-sitewise-
+            - Ref: environment
     Metadata:
       aws:cdk:path: IotOnboardingCodePipelinesStackint/siteWiseBuildProject/Resource
   quicksightBuildProject76314B23:
@@ -602,7 +630,9 @@ Resources:
                       "commands": [
                         "echo \"Building Quicksight Dashboard\"",
                         "cd iot-onboarding-quicksight",
-                        "pwd && sh ./create-dashboard.sh int 
+                        "pwd && sh ./create-dashboard.sh 
+              - Ref: environment
+              - " "
               - Ref: iotOnboardingArtifacts020AADAB
               - " "
               - Ref: quickSightAdminUserName
@@ -619,7 +649,11 @@ Resources:
         Fn::GetAtt:
           - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
           - Arn
-      Name: code-build-iot-onboarding-quicksight-int
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-quicksight-
+            - Ref: environment
     Metadata:
       aws:cdk:path: IotOnboardingCodePipelinesStackint/quicksightBuildProject/Resource
   testProject6C027672:
@@ -659,7 +693,9 @@ Resources:
                       "commands": [
                         "echo \"Testing Deployed on boarding service\"",
                         "cd e2e",
-                        "pwd && sh ./test.sh int 
+                        "pwd && sh ./test.sh 
+              - Ref: environment
+              - " "
               - Ref: iotOnboardingArtifacts020AADAB
               - >-
                 "
@@ -672,7 +708,11 @@ Resources:
         Fn::GetAtt:
           - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
           - Arn
-      Name: code-build-iot-onboarding-test-int
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-test-
+            - Ref: environment
     Metadata:
       aws:cdk:path: IotOnboardingCodePipelinesStackint/testProject/Resource
   IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E:
@@ -1052,7 +1092,11 @@ Resources:
         Location:
           Ref: IotOnboardingPipelineArtifactsBucket4D14A4F9
         Type: S3
-      Name: code-pipeline-iot-onboarding-int
+      Name:
+        Fn::Join:
+          - ""
+          - - code-pipeline-iot-onboarding-
+            - Ref: environment
     DependsOn:
       - IotOnboardingPipelineRoleDefaultPolicy2C555B7B
       - IotOnboardingPipelineRoleBE3C14BE
