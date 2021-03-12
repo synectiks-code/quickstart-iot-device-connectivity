@@ -45,12 +45,12 @@ The deployment takes about {deployment_time} to complete.
 
 
 // TODO the blow to be removed
-|===
-|Input |Description
+// |===
+// |Input |Description
 
-// Space needed to maintain table headers
-|contactEmail |Email of an administrator used for the AWS IoT SiteWise portal creation. (see AWS documentation)
-|quickSightAdminUserName |The username of an Amazon QuickSight user with an ADMIN role. You can list all Amazon QuickSight users by going to the Amazon QuickSight administration Screen. If Omitted, the CICD pipeline will not include the QuickSight dashboard
-|rootMqttTopic |The root MQTT topic your devices publishes to. If you are using the Rigado Alegro Kit, the default value (data/#) does not need to be changed.
-|sourceTemplateArn |use: arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev This is a static location of a public QuickSight dashboard template that we created for the purpose of this QuickStart. This allows you to get started quickly with a fully functional dashboard. Note that this example dashboard is created specifically for the users of the Rigado Alegro Kit. If you are not using Rigado devices you will need to create you own dataset, analysis and dashboard based on the devices you use. The ETL process and Glue Crawler that ingest the data from the IoT Broker to make them available in Amazon QuickSight are data-model agnostic so you just need to link the created AWS Glue table as a datasource in Amazon QuickSight
-|===
+// // Space needed to maintain table headers
+// |contactEmail |Email of an administrator used for the AWS IoT SiteWise portal creation. (see AWS documentation)
+// |quickSightAdminUserName |The username of an Amazon QuickSight user with an ADMIN role. You can list all Amazon QuickSight users by going to the Amazon QuickSight administration Screen. If Omitted, the CICD pipeline will not include the QuickSight dashboard
+// |rootMqttTopic |The root MQTT topic your devices publishes to. If you are using the Rigado Alegro Kit, the default value (data/#) does not need to be changed.
+// |sourceTemplateArn |use: arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev This is a static location of a public QuickSight dashboard template that we created for the purpose of this QuickStart. This allows you to get started quickly with a fully functional dashboard. Note that this example dashboard is created specifically for the users of the Rigado Alegro Kit. If you are not using Rigado devices you will need to create you own dataset, analysis and dashboard based on the devices you use. The ETL process and Glue Crawler that ingest the data from the IoT Broker to make them available in Amazon QuickSight are data-model agnostic so you just need to link the created AWS Glue table as a datasource in Amazon QuickSight
+// |===

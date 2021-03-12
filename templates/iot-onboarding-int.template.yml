@@ -1,3 +1,7 @@
+Description: Deploys the IoT Device connectivity pipeline to run the CDK deployment (qs-1rmapn8de).
+Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Launch Deployment Pipeline"
 Parameters:
   contactEmail:
     Type: String
