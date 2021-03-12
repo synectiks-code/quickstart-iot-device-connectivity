@@ -31,6 +31,11 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
       allowedPattern: ".+",
       description: "The Name of an existing Amin user created for Amazon Quicksihght (see quickstart guide). Omit this input if you do not want to deploy a QuickSight dashboard"
     });
+    const quickSightAdminUserRegion = new CfnParameter(this, "quickSightAdminUserRegion", {
+      type: "String",
+      allowedPattern: ".+",
+      description: "The region where the existing Amin user was created for Amazon Quicksihght (see quickstart guide)"
+    });
     const sourceTemplateArn = new CfnParameter(this, "sourceTemplateArn", {
       type: "String",
       allowedPattern: ".+",
@@ -173,7 +178,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
             commands: [
               'echo "Building Quicksight Dashboard"',
               'cd iot-onboarding-quicksight',
-              'pwd && sh ./create-dashboard.sh ' + envNameVal.valueAsString + " " + artifactBucket.bucketName + " " + quickSightAdminUserName.valueAsString + " " + sourceTemplateArn.valueAsString
+              'pwd && sh ./create-dashboard.sh ' + envNameVal.valueAsString + " " + artifactBucket.bucketName + " " + quickSightAdminUserName.valueAsString + " " + sourceTemplateArn.valueAsString + " " + quickSightAdminUserRegion.valueAsString
             ],
           },
         }

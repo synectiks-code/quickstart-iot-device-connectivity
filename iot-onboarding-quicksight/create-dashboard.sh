@@ -4,6 +4,7 @@ env=$1
 bucket=$2
 adminUserName=$3
 sourceTemplateArn=$4
+qsUserRegion=$5
 
 #update this variable to specify the name of your loval env
 LOCAL_ENV_NAME=dev
@@ -34,7 +35,7 @@ cat infra-config.json
 region=$(jq -r .region infra-config.json)
 glueDbName=$(jq -r .glueDbName infra-config.json)
 athenaTableName=$(jq -r .athenaTableName infra-config.json)
-adminUserArn=$(echo "arn:aws:quicksight:$region:$accountId:user/default/$adminUserName" | sed 's/\//\\\//g')
+adminUserArn=$(echo "arn:aws:quicksight:$qsUserRegion:$accountId:user/default/$adminUserName" | sed 's/\//\\\//g')
 
 echo "Current region: $region"
 echo "Account: $accountId"
