@@ -34,8 +34,9 @@
 * remove git credentials
 * change git repo/owner to aws quickstart and remove dev branch
 * change qQS template URL
-* add link to the rigado alegro kit
 * Change default public template ARN
+* add flic button.
+* add case issue in FAQ when IOT core rule fail.
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -386,6 +387,9 @@ A common issue when deleteing the stack is when Amazon S3 buckets contain data. 
 ### Deleting AWS IoT SiteWise Portal fails
 A common issue while deleting a Sitewise portal is the existence of a project associated to the portal. 
 **solution:** You can delete the project from the created portal if you can login as administrator. If you are unable to login as an admin, you can delete the underlying project using the AWS IoT Sitewise CLI.
+
+### I added a new AWS IoT Core rule for AWS IoT Sitewise for a device displayed inn my QuickSight dashboard but I can see traffic in Sitewise
+First, you should validate that the device has been setup correctly by subscribing to the MQTT topic or downloading raw data ingested in S3. Once you validate that the traffic is indeed flowing correctly, make sure that the field name used in the rule matches the raw data. It is important to note that the fields name ingested in the datalake are lowercased and should therefore not be used as-is in IoT Core rules.
 
 <!-- LICENSE -->
 ## License
