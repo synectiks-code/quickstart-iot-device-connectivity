@@ -12,6 +12,12 @@ If you click on the pipeline name, you can see the steps of the pipeline running
 .Code Pipeline console
 image::../images/quickstart-cicd-2.png[ExecutingPipeline]
 
+Once the pipeline has completed the deployment of the CDK code, open up the CloudFormation console, select the template which will have a name similar to `IOTOnboardingInfraStackint`, then choose *outputs* to view the created resources.
+[#codePipeline3]
+.Outputs after pipeline CDK deployment
+image::../images/quickstart-cicd-4.png[ExecutingPipelineCFNOutputs]
+
+
 == Connecting devices
 === Rigado Devices
 If you are using Rigado devices using the https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card[Alegro Kit], go to the Rigado wizard as explained in the email received after the devices were activated. Enter the data as received in the email you should have received from the QuickStart script:
