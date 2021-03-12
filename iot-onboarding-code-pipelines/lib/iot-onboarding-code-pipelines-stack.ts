@@ -10,6 +10,7 @@ import { Role, ServicePrincipal, ManagedPolicy } from "@aws-cdk/aws-iam";
 var GITHUB_TOKEN_SECRET_ID = "rollagrgithubtoken"
 
 export class IotOnboardingCodePipelinesStack extends cdk.Stack {
+
   constructor(scope: cdk.Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
