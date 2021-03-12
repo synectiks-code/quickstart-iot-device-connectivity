@@ -42,7 +42,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
       default: "data/#",
       description: "the root MQTT topic where onboarded devices publish (see quickstart guide)"
     });
-    const environment = new CfnParameter(this, "environment", {
+    const envNameVal = new CfnParameter(this, "environment", {
       type: "String",
       allowedPattern: ".+",
       default: "int",
@@ -82,14 +82,14 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
           build: {
             commands: [
               'echo "Build and Deploy Infrastructure"',
-              'pwd && sh deploy.sh ' + environment + " " + artifactBucket.bucketName + " " + rootMqttTopic.valueAsString + " " + contactEmail.valueAsString
+              'pwd && sh deploy.sh ' + envNameVal.valueAsString + " " + artifactBucket.bucketName + " " + rootMqttTopic.valueAsString + " " + contactEmail.valueAsString
             ],
           },
         },
         artifacts: {
           "discard-path": "yes",
           files: [
-            'iot-onboarding-infra/infra-config-' + environment + '.json',
+            'iot-onboarding-infra/infra-config-' + envNameVal.valueAsString + '.json',
           ],
         },
       }),
@@ -99,7 +99,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     });
 
     const lambdaBuild = new codebuild.PipelineProject(this, 'lambdaBuilProject', {
-      projectName: "code-build-iot-onboarding-lambda-" + environment,
+      projectName: "code-build-iot-onboarding-lambda-" + envNameVal.valueAsString,
       role: buildProjectRole,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
@@ -113,7 +113,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
             commands: [
               'echo "Build and Deploy lambda Function"',
               'cd iot-onboarding-service',
-              'pwd && sh lbuild.sh ' + environment + " " + artifactBucket.bucketName
+              'pwd && sh lbuild.sh ' + envNameVal.valueAsString + " " + artifactBucket.bucketName
             ],
           },
         }
@@ -124,7 +124,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     });
 
     const glueEtlBuild = new codebuild.PipelineProject(this, 'glueETLBuilProject', {
-      projectName: "code-build-iot-onboarding-etl-" + environment,
+      projectName: "code-build-iot-onboarding-etl-" + envNameVal.valueAsString,
       role: buildProjectRole,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
@@ -133,7 +133,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
             commands: [
               'echo "Uploading ETK script to s3"',
               'cd iot-onboarding-data-processing',
-              'pwd && sh ./deploy.sh ' + environment + " " + artifactBucket.bucketName
+              'pwd && sh ./deploy.sh ' + envNameVal.valueAsString + " " + artifactBucket.bucketName
             ],
           },
         }
@@ -144,7 +144,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     });
 
     const siteWiseBuild = new codebuild.PipelineProject(this, 'siteWiseBuildProject', {
-      projectName: "code-build-iot-onboarding-sitewise-" + environment,
+      projectName: "code-build-iot-onboarding-sitewise-" + envNameVal.valueAsString,
       role: buildProjectRole,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
@@ -153,7 +153,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
             commands: [
               'echo "Building sitewise Assets model and project"',
               'cd iot-onboarding-sitewise',
-              'pwd && sh ./sitewise.sh ' + environment + " " + artifactBucket.bucketName + " " + contactEmail.valueAsString
+              'pwd && sh ./sitewise.sh ' + envNameVal.valueAsString + " " + artifactBucket.bucketName + " " + contactEmail.valueAsString
             ],
           },
         }
@@ -164,7 +164,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     });
 
     const quicksightBuild = new codebuild.PipelineProject(this, 'quicksightBuildProject', {
-      projectName: "code-build-iot-onboarding-quicksight-" + environment,
+      projectName: "code-build-iot-onboarding-quicksight-" + envNameVal.valueAsString,
       role: buildProjectRole,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
@@ -173,7 +173,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
             commands: [
               'echo "Building Quicksight Dashboard"',
               'cd iot-onboarding-quicksight',
-              'pwd && sh ./create-dashboard.sh ' + environment + " " + artifactBucket.bucketName + " " + quickSightAdminUserName.valueAsString + " " + sourceTemplateArn.valueAsString
+              'pwd && sh ./create-dashboard.sh ' + envNameVal.valueAsString + " " + artifactBucket.bucketName + " " + quickSightAdminUserName.valueAsString + " " + sourceTemplateArn.valueAsString
             ],
           },
         }
@@ -184,7 +184,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     });
 
     const onboardingTest = new codebuild.PipelineProject(this, 'testProject', {
-      projectName: "code-build-iot-onboarding-test-" + environment,
+      projectName: "code-build-iot-onboarding-test-" + envNameVal.valueAsString,
       role: buildProjectRole,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
@@ -203,7 +203,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
             commands: [
               'echo "Testing Deployed on boarding service"',
               'cd e2e',
-              'pwd && sh ./test.sh ' + environment + " " + artifactBucket.bucketName
+              'pwd && sh ./test.sh ' + envNameVal.valueAsString + " " + artifactBucket.bucketName
             ],
           },
         }
@@ -314,7 +314,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     stages.push(deployStage)
 
     new codepipeline.Pipeline(this, 'IotOnboardingPipeline', {
-      pipelineName: "code-pipeline-iot-onboarding-" + environment,
+      pipelineName: "code-pipeline-iot-onboarding-" + envNameVal.valueAsString,
       stages: stages,
     });
 
