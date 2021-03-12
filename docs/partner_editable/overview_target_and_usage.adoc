@@ -3,6 +3,7 @@ This Quick Start helps AWS Internet of Things (IoT) customers get started with a
 This architecture is built in partnership with AWS IoT Partner https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card[Rigado], a travel and hospitality AWS Partner. The Quick Start is designed to provide an optimized onboarding experience for users of the http://rigado.com/knowledge-base/introduction-to-the-rigado-allegro-kit[Rigado Allegro Kit], although it can be adapted for any device that supports standard MQ Telemetry Transport (MQTT) connectivity.
 
 The Quick Start sets up:
+
 * A REST serverless microservice to onboard devices and gateways by serial number. The service creates the AWS IoT Core resources to securely connect to the MQ Telemetry Transport (MQTT) broker.
 * An IoT data lake for ingesting data from the long-term storage and analytics.
 * An example AWS Quicksight dashboard to display data form the data lake (compatible devices only).

@@ -1,4 +1,6 @@
 // Edit this placeholder text to accurately describe your architecture.
 
-This Quick Start deploys a CICD Pipeline using AWS Code Pipeline. You can choose to exclude the Amazon QuickSight dashboard from the deployment if you prefer to avoid signing up. To do so, you simply can omit the QuickSight ADMIN username as input from the AWS CloudFormation template. This will exclude the deployment action for Amazon QuickSight.
+This Quick Start deploys a continuous delivery and/or continuous deployment (CICD) pipeline using AWS CodePipeline. 
+
+If you prefer not to sign up with Amazon QuickSight, you can exclude the QuickSight dashboard from the deployment by omitting the QuickSight ADMIN user name on the AWS CloudFormation template. 
 
