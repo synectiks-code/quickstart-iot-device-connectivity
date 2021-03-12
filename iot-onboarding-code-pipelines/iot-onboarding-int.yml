@@ -11,6 +11,10 @@ Parameters:
     Type: String
     AllowedPattern: .+
     Description: The Name of an existing Amin user created for Amazon Quicksihght (see quickstart guide). Omit this input if you do not want to deploy a QuickSight dashboard
+  quickSightAdminUserRegion:
+    Type: String
+    AllowedPattern: .+
+    Description: The region where the existing Amin user was created for Amazon Quicksihght (see quickstart guide)
   sourceTemplateArn:
     Type: String
     AllowedPattern: .+
@@ -638,6 +642,8 @@ Resources:
               - Ref: quickSightAdminUserName
               - " "
               - Ref: sourceTemplateArn
+              - " "
+              - Ref: quickSightAdminUserRegion
               - >-
                 "
                       ]
