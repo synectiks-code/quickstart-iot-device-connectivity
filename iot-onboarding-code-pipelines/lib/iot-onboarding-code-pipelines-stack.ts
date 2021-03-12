@@ -28,17 +28,14 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     });
     const quickSightAdminUserName = new CfnParameter(this, "quickSightAdminUserName", {
       type: "String",
-      allowedPattern: ".+",
       description: "The Name of an existing Amin user created for Amazon Quicksihght (see quickstart guide). Omit this input if you do not want to deploy a QuickSight dashboard"
     });
     const quickSightAdminUserRegion = new CfnParameter(this, "quickSightAdminUserRegion", {
       type: "String",
-      allowedPattern: ".+",
       description: "The region where the existing Amin user was created for Amazon Quicksihght (see quickstart guide)"
     });
     const sourceTemplateArn = new CfnParameter(this, "sourceTemplateArn", {
       type: "String",
-      allowedPattern: ".+",
       description: "The Arn of a the source public template (see quickstart guide)"
     });
     const rootMqttTopic = new CfnParameter(this, "rootMqttTopic", {
