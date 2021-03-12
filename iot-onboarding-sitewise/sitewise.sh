@@ -102,8 +102,8 @@ echo "2.1 Create Portal"
 aws iotsitewise create-portal --portal-name $PORTAL_NAME --portal-contact-email $PORTAL_CONTACT_EMAIL --role-arn $iotSitewiseServiceRoleArn > sitewiseResources/sitewisePortalRes.json
 portalUrl=$(jq -r .portalStartUrl sitewiseResources/sitewisePortalRes.json)
 portalId=$(jq -r .portalId sitewiseResources/sitewisePortalRes.json)
-echo "2.2 Create Project "
-aws iotsitewise create-project --portal-id $portalId --project-name $SITEWISE_PROJECT_NAME > sitewiseResources/sitewiseProject.json
+#echo "2.2 Create Project "
+#aws iotsitewise create-project --portal-id $portalId --project-name $SITEWISE_PROJECT_NAME > sitewiseResources/sitewiseProject.json
 rc=$?
 if [ $rc -ne 0 ]; then
       echo "Sitewise Portal Build Failed! Please contact the AWS Quickstart Support" >&2
