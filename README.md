@@ -38,7 +38,7 @@
 * add flic button.
 * add case issue in FAQ when IOT core rule fail.
 * add description of new parameters (env and quicksight user region) : aws quicksight list-users  --aws-account-id 045495081976 --namespace default
-
+* comments on the duplicate fields issue
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
