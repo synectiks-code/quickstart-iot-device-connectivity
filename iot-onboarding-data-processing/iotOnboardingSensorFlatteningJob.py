@@ -46,6 +46,9 @@ sensorsDataFlat = sensorsDataFlat.rename_field("partition_1", "month")
 sensorsDataFlat = sensorsDataFlat.rename_field("partition_2", "day")
 sensorsDataFlat = sensorsDataFlat.rename_field("partition_3", "hour")
 
+#temporary workaround: drop here duplicate fields created by lowercasing
+sensorsDataFlat = sensorsDataFlat.drop_fields(['lastadvertisement.datalen'])
+
 #By default, spark dataframe overwites all data (even partitions that do not have new data). 
 #We use the partitionOverwriteMode=dunamic to only overwrite new partitions.
 spark = glueContext.spark_session
