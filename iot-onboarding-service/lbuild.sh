@@ -3,7 +3,7 @@
 env=$1
 bucket=$2
 #update this variable to specify the name of your loval env
-LOCAL_ENV_NAME=dev
+LOCAL_ENV_NAME=local_dev_env
 
 echo "**********************************************"
 echo "* IOT Onboarding Service deployement for env '$env' "
