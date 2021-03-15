@@ -52,6 +52,8 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     });
 
     const artifactBucket = new Bucket(this, "iotOnboardingArtifacts", {
+      //fix for issue with CF that generate the same name for the bucket encryption key
+      bucketName: "iot-onboarding-artifacts-bucket-" + region + "-" + envNameVal.valueAsString,
       removalPolicy: RemovalPolicy.DESTROY,
       versioned: true
     })

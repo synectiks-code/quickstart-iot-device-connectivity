@@ -30,6 +30,11 @@ Resources:
   iotOnboardingArtifacts020AADAB:
     Type: AWS::S3::Bucket
     Properties:
+      BucketName:
+        Fn::Join:
+          - ""
+          - - iot-onboarding-artifacts-bucket--
+            - Ref: environment
       VersioningConfiguration:
         Status: Enabled
     UpdateReplacePolicy: Delete
