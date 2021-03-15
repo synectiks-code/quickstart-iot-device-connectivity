@@ -3,8 +3,9 @@ import codebuild = require('@aws-cdk/aws-codebuild');
 import codepipeline = require('@aws-cdk/aws-codepipeline');
 import codepipeline_actions = require('@aws-cdk/aws-codepipeline-actions');
 import { CfnParameter, StackProps, RemovalPolicy } from "@aws-cdk/core";
-import { Bucket } from "@aws-cdk/aws-s3";
+import { Bucket, BucketEncryption } from "@aws-cdk/aws-s3";
 import { Role, ServicePrincipal, ManagedPolicy } from "@aws-cdk/aws-iam";
+import kms = require('@aws-cdk/aws-kms');
 
 //TODO: this will need to be removed after publication of teh quickstart
 var GITHUB_TOKEN_SECRET_ID = "rollagrgithubtoken"
@@ -52,9 +53,9 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     });
 
     const artifactBucket = new Bucket(this, "iotOnboardingArtifacts", {
-      //fix for issue with CF that generate the same name for the bucket encryption key
       bucketName: "iot-onboarding-artifacts-bucket-" + region + "-" + envNameVal.valueAsString,
       removalPolicy: RemovalPolicy.DESTROY,
+      encryption: BucketEncryption.KMS_MANAGED,
       versioned: true
     })
 

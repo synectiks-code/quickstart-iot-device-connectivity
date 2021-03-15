@@ -30,6 +30,10 @@ Resources:
   iotOnboardingArtifacts020AADAB:
     Type: AWS::S3::Bucket
     Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
       BucketName:
         Fn::Join:
           - ""
