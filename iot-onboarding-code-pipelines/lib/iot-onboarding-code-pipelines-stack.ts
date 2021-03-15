@@ -6,6 +6,7 @@ import { CfnParameter, StackProps, RemovalPolicy } from "@aws-cdk/core";
 import { Bucket, BucketEncryption } from "@aws-cdk/aws-s3";
 import { Role, ServicePrincipal, ManagedPolicy } from "@aws-cdk/aws-iam";
 import kms = require('@aws-cdk/aws-kms');
+import { Key } from '@aws-cdk/aws-kms';
 
 //TODO: this will need to be removed after publication of teh quickstart
 var GITHUB_TOKEN_SECRET_ID = "rollagrgithubtoken"
@@ -49,13 +50,11 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
       type: "String",
       allowedPattern: ".+",
       default: "int",
-      description: "Environment name. Change only if you would like to deploy the same stack several time in the same region and account"
+      description: "Environment name. Change only if you would like to deploy the samse stack several time in the same region and account"
     });
 
     const artifactBucket = new Bucket(this, "iotOnboardingArtifacts", {
-      bucketName: "iot-onboarding-artifacts-bucket-" + region + "-" + envNameVal.valueAsString,
       removalPolicy: RemovalPolicy.DESTROY,
-      encryption: BucketEncryption.KMS_MANAGED,
       versioned: true
     })
 
@@ -318,9 +317,16 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     }
     stages.push(deployStage)
 
+    //creating a dedicated bucker to avoid erroor with Key generated with identical id
+    const pipelineArtifactBucket = new Bucket(this, "iotOnboardingPipelineArtifacts", {
+      removalPolicy: RemovalPolicy.DESTROY,
+      versioned: true
+    })
+
     new codepipeline.Pipeline(this, 'IotOnboardingPipeline', {
       pipelineName: "code-pipeline-iot-onboarding-" + envNameVal.valueAsString,
       stages: stages,
+      artifactBucket: pipelineArtifactBucket
     });
 
   }

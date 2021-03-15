@@ -25,20 +25,11 @@ Parameters:
     Type: String
     Default: int
     AllowedPattern: .+
-    Description: Environment name. Change only if you would like to deploy the same stack several time in the same region and account
+    Description: Environment name. Change only if you would like to deploy the samse stack several time in the same region and account
 Resources:
   iotOnboardingArtifacts020AADAB:
     Type: AWS::S3::Bucket
     Properties:
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: aws:kms
-      BucketName:
-        Fn::Join:
-          - ""
-          - - iot-onboarding-artifacts-bucket--
-            - Ref: environment
       VersioningConfiguration:
         Status: Enabled
     UpdateReplacePolicy: Delete
@@ -354,35 +345,14 @@ Resources:
             Effect: Allow
             Resource:
               - Fn::GetAtt:
-                  - IotOnboardingPipelineArtifactsBucket4D14A4F9
+                  - iotOnboardingPipelineArtifacts25940A30
                   - Arn
               - Fn::Join:
                   - ""
                   - - Fn::GetAtt:
-                        - IotOnboardingPipelineArtifactsBucket4D14A4F9
+                        - iotOnboardingPipelineArtifacts25940A30
                         - Arn
                     - /*
-          - Action:
-              - kms:Decrypt
-              - kms:DescribeKey
-              - kms:Encrypt
-              - kms:ReEncrypt*
-              - kms:GenerateDataKey*
-            Effect: Allow
-            Resource:
-              Fn::GetAtt:
-                - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-                - Arn
-          - Action:
-              - kms:Decrypt
-              - kms:Encrypt
-              - kms:ReEncrypt*
-              - kms:GenerateDataKey*
-            Effect: Allow
-            Resource:
-              Fn::GetAtt:
-                - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-                - Arn
         Version: "2012-10-17"
       PolicyName: buildRoleDefaultPolicyA2B1D36E
       Roles:
@@ -452,10 +422,7 @@ Resources:
                   }
                 }
         Type: CODEPIPELINE
-      EncryptionKey:
-        Fn::GetAtt:
-          - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-          - Arn
+      EncryptionKey: alias/aws/s3
       Name:
         Fn::Join:
           - ""
@@ -506,10 +473,7 @@ Resources:
                   }
                 }
         Type: CODEPIPELINE
-      EncryptionKey:
-        Fn::GetAtt:
-          - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-          - Arn
+      EncryptionKey: alias/aws/s3
       Name:
         Fn::Join:
           - ""
@@ -555,10 +519,7 @@ Resources:
                   }
                 }
         Type: CODEPIPELINE
-      EncryptionKey:
-        Fn::GetAtt:
-          - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-          - Arn
+      EncryptionKey: alias/aws/s3
       Name:
         Fn::Join:
           - ""
@@ -606,10 +567,7 @@ Resources:
                   }
                 }
         Type: CODEPIPELINE
-      EncryptionKey:
-        Fn::GetAtt:
-          - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-          - Arn
+      EncryptionKey: alias/aws/s3
       Name:
         Fn::Join:
           - ""
@@ -661,10 +619,7 @@ Resources:
                   }
                 }
         Type: CODEPIPELINE
-      EncryptionKey:
-        Fn::GetAtt:
-          - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-          - Arn
+      EncryptionKey: alias/aws/s3
       Name:
         Fn::Join:
           - ""
@@ -720,10 +675,7 @@ Resources:
                   }
                 }
         Type: CODEPIPELINE
-      EncryptionKey:
-        Fn::GetAtt:
-          - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-          - Arn
+      EncryptionKey: alias/aws/s3
       Name:
         Fn::Join:
           - ""
@@ -731,123 +683,15 @@ Resources:
             - Ref: environment
     Metadata:
       aws:cdk:path: IotOnboardingCodePipelinesStackint/testProject/Resource
-  IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E:
-    Type: AWS::KMS::Key
-    Properties:
-      KeyPolicy:
-        Statement:
-          - Action:
-              - kms:Create*
-              - kms:Describe*
-              - kms:Enable*
-              - kms:List*
-              - kms:Put*
-              - kms:Update*
-              - kms:Revoke*
-              - kms:Disable*
-              - kms:Get*
-              - kms:Delete*
-              - kms:ScheduleKeyDeletion
-              - kms:CancelKeyDeletion
-              - kms:GenerateDataKey
-              - kms:TagResource
-              - kms:UntagResource
-            Effect: Allow
-            Principal:
-              AWS:
-                Fn::Join:
-                  - ""
-                  - - "arn:"
-                    - Ref: AWS::Partition
-                    - ":iam::"
-                    - Ref: AWS::AccountId
-                    - :root
-            Resource: "*"
-          - Action:
-              - kms:Decrypt
-              - kms:DescribeKey
-              - kms:Encrypt
-              - kms:ReEncrypt*
-              - kms:GenerateDataKey*
-            Effect: Allow
-            Principal:
-              AWS:
-                Fn::GetAtt:
-                  - IotOnboardingPipelineRoleBE3C14BE
-                  - Arn
-            Resource: "*"
-          - Action:
-              - kms:Decrypt
-              - kms:DescribeKey
-              - kms:Encrypt
-              - kms:ReEncrypt*
-              - kms:GenerateDataKey*
-            Effect: Allow
-            Principal:
-              AWS:
-                Fn::GetAtt:
-                  - buildRoleDCAA7F5D
-                  - Arn
-            Resource: "*"
-          - Action:
-              - kms:Decrypt
-              - kms:Encrypt
-              - kms:ReEncrypt*
-              - kms:GenerateDataKey*
-            Effect: Allow
-            Principal:
-              AWS:
-                Fn::GetAtt:
-                  - buildRoleDCAA7F5D
-                  - Arn
-            Resource: "*"
-          - Action:
-              - kms:Decrypt
-              - kms:DescribeKey
-            Effect: Allow
-            Principal:
-              AWS:
-                Fn::GetAtt:
-                  - IotOnboardingPipelineDeploydeployInfraConfigToS3CodePipelineActionRole1E8B9F93
-                  - Arn
-            Resource: "*"
-        Version: "2012-10-17"
-    UpdateReplacePolicy: Delete
-    DeletionPolicy: Delete
-    Metadata:
-      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/ArtifactsBucketEncryptionKey/Resource
-  IotOnboardingPipelineArtifactsBucketEncryptionKeyAlias8333C861:
-    Type: AWS::KMS::Alias
-    Properties:
-      AliasName: alias/codepipeline-iotonboardingcodepipelinesstackintiotonboardingpipelinece2c75dd
-      TargetKeyId:
-        Fn::GetAtt:
-          - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-          - Arn
-    UpdateReplacePolicy: Delete
-    DeletionPolicy: Delete
-    Metadata:
-      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/ArtifactsBucketEncryptionKeyAlias/Resource
-  IotOnboardingPipelineArtifactsBucket4D14A4F9:
+  iotOnboardingPipelineArtifacts25940A30:
     Type: AWS::S3::Bucket
     Properties:
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              KMSMasterKeyID:
-                Fn::GetAtt:
-                  - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-                  - Arn
-              SSEAlgorithm: aws:kms
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        BlockPublicPolicy: true
-        IgnorePublicAcls: true
-        RestrictPublicBuckets: true
-    UpdateReplacePolicy: Retain
-    DeletionPolicy: Retain
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
     Metadata:
-      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/ArtifactsBucket/Resource
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/iotOnboardingPipelineArtifacts/Resource
   IotOnboardingPipelineRoleBE3C14BE:
     Type: AWS::IAM::Role
     Properties:
@@ -875,25 +719,14 @@ Resources:
             Effect: Allow
             Resource:
               - Fn::GetAtt:
-                  - IotOnboardingPipelineArtifactsBucket4D14A4F9
+                  - iotOnboardingPipelineArtifacts25940A30
                   - Arn
               - Fn::Join:
                   - ""
                   - - Fn::GetAtt:
-                        - IotOnboardingPipelineArtifactsBucket4D14A4F9
+                        - iotOnboardingPipelineArtifacts25940A30
                         - Arn
                     - /*
-          - Action:
-              - kms:Decrypt
-              - kms:DescribeKey
-              - kms:Encrypt
-              - kms:ReEncrypt*
-              - kms:GenerateDataKey*
-            Effect: Allow
-            Resource:
-              Fn::GetAtt:
-                - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-                - Arn
           - Action: sts:AssumeRole
             Effect: Allow
             Resource:
@@ -1099,14 +932,8 @@ Resources:
               RunOrder: 2
           Name: Deploy
       ArtifactStore:
-        EncryptionKey:
-          Id:
-            Fn::GetAtt:
-              - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-              - Arn
-          Type: KMS
         Location:
-          Ref: IotOnboardingPipelineArtifactsBucket4D14A4F9
+          Ref: iotOnboardingPipelineArtifacts25940A30
         Type: S3
       Name:
         Fn::Join:
@@ -1336,22 +1163,14 @@ Resources:
             Effect: Allow
             Resource:
               - Fn::GetAtt:
-                  - IotOnboardingPipelineArtifactsBucket4D14A4F9
+                  - iotOnboardingPipelineArtifacts25940A30
                   - Arn
               - Fn::Join:
                   - ""
                   - - Fn::GetAtt:
-                        - IotOnboardingPipelineArtifactsBucket4D14A4F9
+                        - iotOnboardingPipelineArtifacts25940A30
                         - Arn
                     - /*
-          - Action:
-              - kms:Decrypt
-              - kms:DescribeKey
-            Effect: Allow
-            Resource:
-              Fn::GetAtt:
-                - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
-                - Arn
         Version: "2012-10-17"
       PolicyName: IotOnboardingPipelineDeploydeployInfraConfigToS3CodePipelineActionRoleDefaultPolicyF65C3F27
       Roles:
