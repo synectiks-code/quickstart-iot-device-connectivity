@@ -63,7 +63,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     })
 
     const infraBuild = new codebuild.PipelineProject(this, 'infraBuilProject', {
-      projectName: "code-build-iot-onboarding-infra",
+      projectName: "code-build-iot-onboarding-infra-" + envNameVal.valueAsString,
       role: buildProjectRole,
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
