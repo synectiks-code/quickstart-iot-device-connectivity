@@ -2,16 +2,19 @@
 
 ==== Prepare your AWS account
 
-===== AWS SSO activation (Optional)
-This is optional if you don't want to use an AWS IOT Sitewise dashboard.
-AWS SSO provides identity federation for AWS IoT SiteWise Monitor so that you can control access to your portals. With AWS SSO, users sign-in with their corporate email and password instead of an AWS account. Follow the steps under Enabling AWS SSO in the https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html[AWS IOT sitewise documentationn]
+===== Activate AWS SSO (optional)
+AWS Single Sign-On (AWS SSO) is optional if you don't want to use an AWS IoT SiteWise dashboard.
 
-===== Create a Quicksight account (Optional)
-This is optional if you don't want to use an AWS Quicksight dashboard or are already signed up for AWS QuickSight.
-If you haven't already, sign-up for Amazon QuickSight using the steps in the https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html[AWS documentation]. If you plan to deploy the default dashboard, you need an Amazon QuickSight Enterprise account.
+AWS SSO provides identity federation for AWS IoT SiteWise Monitor so that you can control access to your portals. With AWS SSO, users sign in with their corporate email and password instead of an AWS account. For more information, see https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html[Getting started with AWS IoT SiteWise Monitor] and follow the steps in the *Enabling AWS SSO* section. 
 
-===== Validate your email address with SES
-This QuickStart uses the email address provided in input to the AWS CloudFormation template as both sender and receiver of email notifications. These notifications will provide you with the key credentials to use the device onboarding Micro-services. More specifically, for users of the https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card[Alegro Kit], the email will provide the data necessary to use the Rigado Wizard to automatically onboard the Rigado Gateway. In order to be able to use this email address, SES requires you to verify the provided email as described in the https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html[Amazon SES Documentation]. 
+===== Create a QuickSight account (optional)
+Creating a QuickSite account is optional if you already have an account or you don't want to use a QuickSight dashboard.
 
-==== Enable Logging for AWS IoT Core
-Enabling logging for AWS IoT Core will facilitate troubleshooting of device connectivity. This is especially useful is you are not using a Rigado device. See instruction in the https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html[AWS IoT Core documentation]
+To sign up for QuickSight, see https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html[Signing Up for an Amazon QuickSight Subscription]. If you plan to deploy the default dashboard, you must have a QuickSight Enterprise account.
+
+===== Validate your email address with Amazon SES
+This Quick Start uses the email address that you provide in the AWS CloudFormation template for sending and receiving email notifications. These notifications provide the key credentials to use the device onboarding microservices. For users of the http://rigado.com/knowledge-base/introduction-to-the-rigado-allegro-kit[Rigado Allegro Kit], the email provides the data required to use the Rigado wizard to automatically onboard the Rigado Gateway. To use the email address, Amazon Simple Email Service (Amazon SES) requires you to verify the email address. See https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html[Verifying email addresses in Amazon SES] for more information. 
+
+
+==== Enable logging for AWS IoT Core
+Enabling logging for AWS IoT Core helps you troubleshoot device connectivity. Troubleshooting is especially useful if you are not using a Rigado device. For more information, see https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html[Configure AWS IoT logging].

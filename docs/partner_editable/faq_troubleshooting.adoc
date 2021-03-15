@@ -15,37 +15,37 @@ For more information, see https://docs.aws.amazon.com/AWSCloudFormation/latest/U
 
 *A.* Launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template-size limitations. For more information, see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html[AWS CloudFormation quotas^].
 
-*Q.* My Amazon QuickSight dashboard displays errors in the Widgets.
+*Q.* My Amazon QuickSight dashboard displays errors in the widgets.
 
-*A.* Errors displayed in the widgets of the QuickSight Dashboard typically results from one of the following causes:
+*A.* Errors displayed in the widgets of the QuickSight dashboard typically result from one of the following causes:
 
-1. Access to the S3 Bucket created by the CDK script to store the data solution: Follow the Amazon QuickSight instructions to provide access to the bucket.
-2. No Data is not available yet in the datalake (data either not yet crawled or not yet received) solution: If data has already been received, you can manually trigger the on-demand trigger from the Glue console
+* No access to the S3 bucket created by the CDK script to store the data solution. To provide access to the bucket, see the Amazon QuickSight product documentation.
+* No data is available in the data lake. The data is either not yet crawled or received. To resolve this issue, if the data has already been received, you can manually envoke the on-demand trigger from the AWS Glue console.
 
-*Q.* My quicksight deployment script fails with an error.
+*Q.* My QuickSight deployment script fails with an error.
 
-*A.* This can happen when the deployment of a previous version has been only partially completed. As a result, some resources already exists and others not yet. solution: Go to QuickSight and delete the existing dashboard and dataset before you retry the pipeline stage.
+*A.* This error can occur when the deployment of a previous version has been only partially completed. As a result, some resources already exist and others not yet. To resolve this issue, go to QuickSight and delete the existing dashboard and dataset and then retry the AWS CodePipeline steps.
 
-*Q.* My code pipeline action fails with errors about concurrent build allowed.
+*Q.* My CodePipeline action fails with errors related to the concurrent build.
 
-*A.* Some AWS accounts are by default configured to only allow 1 concurrent build using Code Pipeline. A workaround to this issue is to retry the pipeline stage. This will only retry the failed build. A long term solution consists in requesting a Code Build Service limit increase by contacting AWS Support.
+*A.* Some AWS accounts are by default configured to allow only one concurrent build using CodePipeline. To fix the problem, you can retry the CodePipeline steps for the failed build. As a long-term solution, request an AWS CodeBuild service limit increase from AWS Support.
 
-*Q.* My Sitewise script fails with ResourceAlreadyExistsException.
+*Q.* My AWS IoT SiteWise script fails with an *ResourceAlreadyExistsException* error.
 
-*A.* To solve the following error:
+*A.* To resolve the following error:
 ```
 An error occurred (ResourceAlreadyExistsException) when calling the CreateAssetModel operation: Another resource is already using the name `RigadoHoboMX100QsTestint`.
 ```
-Delete the Sitewise resources and re-run the pipeline stage.
+Delete the AWS IoT SiteWise resources and retry the CodePipeline steps. 
 
-*Q.* I am using the Alegro kit and I don't see any column in my AWS Quicksight dataset.
+*Q.* I am using the Rigado Allegro Kit and I don't see a column in my AWS QuickSight dataset.
 
-*A.* Data takes up to one day to propagate to IoT Datalake due to the schedule chosen for the Crawler for cost optimization reason. Ensure data is flowing using IoT Core Monitor and manually trigger the crawlers and jobs using the ON_DEMAND trigger from the Glue Console
+*A.* Data takes up to one day to propagate to the IoT data lake due to the crawler schedule. You can confirm that data is flowing by using AWS IoT Core Monitor and manually triggering the crawlers and jobs using the ON_DEMAND trigger from the AWS Glue console.
 
 *Q.* Deleting the infrastructure stack fails.
 
-*A.* A common issue when deleting the stack is when Amazon S3 buckets contain data. In this case, they fail to delete to avoid unintended data loss. S3 Buckets must be manually emptied and deleted prior to retying the stack deletion.
+*A.* The Amazon S3 buckets may still contain data. In this case, they fail to delete to avoid unintended data loss. You must manually empty and delete S3 buckets prior to retrying the stack deletion.
 
-*Q.* Deleting AWS IoT SiteWise Portal fails.
+*Q.* Deleting AWS IoT SiteWise portal fails.
 
-*A.* A common issue while deleting a Sitewise portal is the existence of a project associated to the portal. You can delete the project from the created portal if you can login as administrator. If you are unable to login as an admin, you can delete the underlying project using the AWS IoT Sitewise CLI.
+*A.* A project associated with the portal may still exist. You can delete the project from the created portal if you can log in as administrator. If you are unable to login as an administrator, you can delete the underlying project using the AWS IoT SiteWise CLI.
