@@ -7,7 +7,7 @@ sourceTemplateArn=$4
 qsUserRegion=$5
 
 #update this variable to specify the name of your loval env
-LOCAL_ENV_NAME=dev
+LOCAL_ENV_NAME=local_dev_env
 
 echo "**********************************************"
 echo "* IOT Onboarding: Create Quicksight Dashboard from template for env '$env' "
