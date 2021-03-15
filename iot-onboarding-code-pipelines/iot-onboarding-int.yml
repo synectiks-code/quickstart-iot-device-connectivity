@@ -447,7 +447,11 @@ Resources:
         Fn::GetAtt:
           - IotOnboardingPipelineArtifactsBucketEncryptionKey8D939A4E
           - Arn
-      Name: code-build-iot-onboarding-infra
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-infra-
+            - Ref: environment
     Metadata:
       aws:cdk:path: IotOnboardingCodePipelinesStackint/infraBuilProject/Resource
   lambdaBuilProject0493A313:
