@@ -12,8 +12,10 @@ let stack = new IOTOnboardingInfraStack(app, 'IOTOnboardingInfraStack' + envName
         account: process.env.CDK_DEFAULT_ACCOUNT,
         region: process.env.CDK_DEFAULT_REGION,
 
-    }
+    },
+    description: "Deploys the IoT Device connectivity pipeline to run the CDK deployment (qs-1rmapn8de)",
 });
+stack.templateOptions.metadata = { "QuickStartDocumentation": { EntrypointName: "Launch Deployment Pipeline" } }
 
 
 /**************

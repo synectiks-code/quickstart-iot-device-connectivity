@@ -37,7 +37,8 @@
 * Change default public template ARN
 * add flic button.
 * add case issue in FAQ when IOT core rule fail.
-
+* add description of new parameters (env and quicksight user region) : aws quicksight list-users  --aws-account-id 045495081976 --namespace default
+* comments on the duplicate fields issue
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
@@ -216,7 +217,9 @@ Enablling logging for AWS IoT Core will facilitate troubleshooting of device con
 Input  | Description
 ------------- | -------------
 contactEmail  | Email of an administrator ussed for the AWS IoT SiteWise portal creation. (see [AWS documentation](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins))
+environment  | You can leave this parametter default value to 'int'. This parametter can be used to create multiple stacks in the same AWS region and the same AWS account (for example, one for development and one for production)
 quickSightAdminUserName  | The username of an Amazon QuickSight user with an **ADMIN** role. You can list all Amazon QuickSight users by going to the [Amazon QuickSight administration Screen](https://us-east-1.quicksight.aws.amazon.com/sn/admin). If Omitted, the CICD pipeline will not include the QuickSight dahsboard
+quickSightAdminUserRegion  | The region in which the above quickSIght user was created. It is usually the regionn in which the use subscribed to Amazon QuickSight and can be obtain by the command ```aws quicksight list-users  --aws-account-id <account-id> --namespace <namespace or default>```
 rootMqttTopic  | The root MQTT topic your devices publishes to. If you are using the Rigado [Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card), the default value (data/#) does not need to be changed.
 sourceTemplateArn  | use: **arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev** This is a static location of a public QuickSight dashboard template that we created for the purpose of this QuickStart. This allows you to get started quickly with a fully functional dashboard. Note that this example dahsboard is created specifically for the users of the [Rigado Alegro Kit](https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card). If you are not using rigado devices you will need to create you own dataset, analysis and dahsboard based on the devices you use. The ETL process and Glue Crawler that ingest the data from the IoT Broker to make them available in Amazon QuickSight are data-model agnostic so you just need to link the created AWS Glue table as a datasource in Amazon QuickSight
 

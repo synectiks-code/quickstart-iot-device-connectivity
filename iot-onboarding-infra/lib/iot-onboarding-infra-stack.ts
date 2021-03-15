@@ -47,13 +47,11 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
     //data role 
     const firehoseRole = new iam.Role(this, "iot-onboarding-data-firehose-role-" + envName, {
       assumedBy: new iam.ServicePrincipal("firehose.amazonaws.com"),
-      description: "firehose role for ingesting raw sensors data ",
-      roleName: "iot-onboarding-sensors-data-firehose-role-" + envName
+      description: "firehose role for ingesting raw sensors data "
     })
     const glueRole = new iam.Role(this, "iot-onboarding-data-glue-role-" + envName, {
       assumedBy: new iam.ServicePrincipal("glue.amazonaws.com"),
-      description: "Glue role for crawling raw data bucket on sensors data ",
-      roleName: "iot-onboarding-sensors-data-glue-role-" + envName
+      description: "Glue role for crawling raw data bucket on sensors data "
     })
     //granting general logging
     glueRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSGlueServiceRole"))
