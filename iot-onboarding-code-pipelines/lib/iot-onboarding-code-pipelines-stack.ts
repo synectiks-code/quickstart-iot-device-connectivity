@@ -51,7 +51,7 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
       description: "Environment name. Change only if you would like to deploy the same stack several time in the same region and account"
     });
 
-    const artifactBucket = new Bucket(this, "iotOnboardingArtifacts", {
+    const artifactBucket = new Bucket(this, "iotOnboardingArtifacts" + envNameVal.valueAsString, {
       removalPolicy: RemovalPolicy.DESTROY,
       versioned: true
     })
