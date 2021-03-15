@@ -1,0 +1,20 @@
+// If no preparation is required, remove all content from here
+
+==== Prepare your AWS account
+
+===== Activate AWS SSO (optional)
+AWS Single Sign-On (AWS SSO) is optional if you don't want to use an AWS IoT SiteWise dashboard.
+
+AWS SSO provides identity federation for AWS IoT SiteWise Monitor so that you can control access to your portals. With AWS SSO, users sign in with their corporate email and password instead of an AWS account. For more information, see https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html[Getting started with AWS IoT SiteWise Monitor] and follow the steps in the *Enabling AWS SSO* section. 
+
+===== Create a QuickSight account (optional)
+Creating a QuickSite account is optional if you already have an account or you don't want to use a QuickSight dashboard.
+
+To sign up for QuickSight, see https://docs.aws.amazon.com/quicksight/latest/user/signing-up.html[Signing Up for an Amazon QuickSight Subscription]. If you plan to deploy the default dashboard, you must have a QuickSight Enterprise account.
+
+===== Validate your email address with Amazon SES
+This Quick Start uses the email address that you provide in the AWS CloudFormation template for sending and receiving email notifications. These notifications provide the key credentials to use the device onboarding microservices. For users of the http://rigado.com/knowledge-base/introduction-to-the-rigado-allegro-kit[Rigado Allegro Kit], the email provides the data required to use the Rigado wizard to automatically onboard the Rigado Gateway. To use the email address, Amazon Simple Email Service (Amazon SES) requires you to verify the email address. See https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html[Verifying email addresses in Amazon SES] for more information. 
+
+
+==== Enable logging for AWS IoT Core
+Enabling logging for AWS IoT Core helps you troubleshoot device connectivity. Troubleshooting is especially useful if you are not using a Rigado device. For more information, see https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html[Configure AWS IoT logging].

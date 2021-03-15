@@ -1,0 +1,10 @@
+This Quick Start supports all Regions supported by the followings services:
+
+* AWS IoT Sitewise
+* AWS IoT Core
+* Amazon QuickSight
+* Amazon Simple Email Service (SES)
+
+Please refer to the dedicated service regional availability to validate that a specific region is included.
+
+//Full list: https://docs.aws.amazon.com/general/latest/gr/rande.html

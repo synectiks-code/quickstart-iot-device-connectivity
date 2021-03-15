@@ -1,0 +1,51 @@
+// Add any tips or answers to anticipated questions.
+
+== FAQ
+
+*Q.* I encountered a *CREATE_FAILED* error when I launched the Quick Start.
+
+*A.* If AWS CloudFormation fails to create the stack, relaunch the template with *Rollback on failure* set to *Disabled*. This setting is under *Advanced* in the AWS CloudFormation console on the *Configure stack options* page. With this setting, the stack’s state is retained, and the instance keeps running so that you can troubleshoot the issue. (For Windows, look at the log files in `%ProgramFiles%\Amazon\EC2ConfigService` and `C:\cfn\log`.)
+// Customize this answer if needed. For example, if you’re deploying on Linux instances, either provide the location for log files on Linux or omit the final sentence. If the Quick Start has no EC2 instances, revise accordingly (something like "and the assets keep running").
+
+WARNING: When you set *Rollback on failure* to *Disabled*, you continue to incur AWS charges for this stack. Delete the stack when you finish troubleshooting.
+
+For more information, see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html[Troubleshooting AWS CloudFormation^].
+
+*Q.* I encountered a size-limitation error when I deployed the AWS CloudFormation templates.
+
+*A.* Launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template-size limitations. For more information, see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html[AWS CloudFormation quotas^].
+
+*Q.* My Amazon QuickSight dashboard displays errors in the widgets.
+
+*A.* Errors displayed in the widgets of the QuickSight dashboard typically result from one of the following causes:
+
+* No access to the S3 bucket created by the CDK script to store the data solution. To provide access to the bucket, see the Amazon QuickSight product documentation.
+* No data is available in the data lake. The data is either not yet crawled or received. To resolve this issue, if the data has already been received, you can manually envoke the on-demand trigger from the AWS Glue console.
+
+*Q.* My QuickSight deployment script fails with an error.
+
+*A.* This error can occur when the deployment of a previous version has been only partially completed. As a result, some resources already exist and others not yet. To resolve this issue, go to QuickSight and delete the existing dashboard and dataset and then retry the AWS CodePipeline steps.
+
+*Q.* My CodePipeline action fails with errors related to the concurrent build.
+
+*A.* Some AWS accounts are by default configured to allow only one concurrent build using CodePipeline. To fix the problem, you can retry the CodePipeline steps for the failed build. As a long-term solution, request an AWS CodeBuild service limit increase from AWS Support.
+
+*Q.* My AWS IoT SiteWise script fails with an *ResourceAlreadyExistsException* error.
+
+*A.* To resolve the following error:
+```
+An error occurred (ResourceAlreadyExistsException) when calling the CreateAssetModel operation: Another resource is already using the name `RigadoHoboMX100QsTestint`.
+```
+Delete the AWS IoT SiteWise resources and retry the CodePipeline steps. 
+
+*Q.* I am using the Rigado Allegro Kit and I don't see a column in my AWS QuickSight dataset.
+
+*A.* Data takes up to one day to propagate to the IoT data lake due to the crawler schedule. You can confirm that data is flowing by using AWS IoT Core Monitor and manually triggering the crawlers and jobs using the ON_DEMAND trigger from the AWS Glue console.
+
+*Q.* Deleting the infrastructure stack fails.
+
+*A.* The Amazon S3 buckets may still contain data. In this case, they fail to delete to avoid unintended data loss. You must manually empty and delete S3 buckets prior to retrying the stack deletion.
+
+*Q.* Deleting AWS IoT SiteWise portal fails.
+
+*A.* A project associated with the portal may still exist. You can delete the project from the created portal if you can log in as administrator. If you are unable to login as an administrator, you can delete the underlying project using the AWS IoT SiteWise CLI.

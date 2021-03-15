@@ -7,3 +7,6 @@ e2e/key.pk
 e2e/pk.pem
 e2e/tokens.json
 iot-onboarding-quicksight/infra-config.json
+docs/index.html
+.DS_Store
+docs/.DS_Store
