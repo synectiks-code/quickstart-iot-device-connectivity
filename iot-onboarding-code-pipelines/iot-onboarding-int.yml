@@ -6,26 +6,26 @@ Parameters:
   contactEmail:
     Type: String
     AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
-    Description: A contact email address for the solution administrator
+    Description: Email address for the administrator. This is also used for the IoT Sitewise portal creation.
   quickSightAdminUserName:
     Type: String
-    Description: The Name of an existing Amin user created for Amazon Quicksihght (see quickstart guide). Omit this input if you do not want to deploy a QuickSight dashboard
+    Description: (Optional) Username of an Amazon QuickSight user with an Admin role. If left blank, the QuickSight dashboard will not be included
   quickSightAdminUserRegion:
     Type: String
-    Description: The region where the existing Amin user was created for Amazon Quicksihght (see quickstart guide)
+    Description: "The region of the above QuickSight user. E.g.: us-east-1"
   sourceTemplateArn:
     Type: String
-    Description: The Arn of a the source public template (see quickstart guide)
+    Description: (Optional) ARN of a public QuickSight dashboard. If using Rigado Alegro kit use arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev for an example dashboard.
   rootMqttTopic:
     Type: String
     Default: data/#
     AllowedPattern: .+
-    Description: the root MQTT topic where onboarded devices publish (see quickstart guide)
+    Description: The root MQTT topic to which devices publish data. Leave the default (data/#) if using the Rigado Alegro kit. If using your own devices, you can create your own dataset, analysis and dashboard based on your devices.
   environment:
     Type: String
     Default: int
     AllowedPattern: .+
-    Description: Environment name. Change only if you would like to deploy the samse stack several time in the same region and account
+    Description: Your environment name. Change to a unique name only if deploy the stack multiple times in the same region and account.
 Resources:
   iotOnboardingArtifacts020AADAB:
     Type: AWS::S3::Bucket

@@ -26,31 +26,31 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     const contactEmail = new CfnParameter(this, "contactEmail", {
       type: "String",
       allowedPattern: "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
-      description: "A contact email address for the solution administrator"
+      description: "Email address for the administrator. This is also used for the IoT Sitewise portal creation."
     });
     const quickSightAdminUserName = new CfnParameter(this, "quickSightAdminUserName", {
       type: "String",
-      description: "The Name of an existing Amin user created for Amazon Quicksihght (see quickstart guide). Omit this input if you do not want to deploy a QuickSight dashboard"
+      description: "(Optional) Username of an Amazon QuickSight user with an Admin role. If left blank, the QuickSight dashboard will not be included"
     });
     const quickSightAdminUserRegion = new CfnParameter(this, "quickSightAdminUserRegion", {
       type: "String",
-      description: "The region where the existing Amin user was created for Amazon Quicksihght (see quickstart guide)"
+      description: "The region of the above QuickSight user. E.g.: us-east-1"
     });
     const sourceTemplateArn = new CfnParameter(this, "sourceTemplateArn", {
       type: "String",
-      description: "The Arn of a the source public template (see quickstart guide)"
+      description: "(Optional) ARN of a public QuickSight dashboard. If using Rigado Alegro kit use arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev for an example dashboard."
     });
     const rootMqttTopic = new CfnParameter(this, "rootMqttTopic", {
       type: "String",
       allowedPattern: ".+",
       default: "data/#",
-      description: "the root MQTT topic where onboarded devices publish (see quickstart guide)"
+      description: "The root MQTT topic to which devices publish data. Leave the default (data/#) if using the Rigado Alegro kit. If using your own devices, you can create your own dataset, analysis and dashboard based on your devices."
     });
     const envNameVal = new CfnParameter(this, "environment", {
       type: "String",
       allowedPattern: ".+",
       default: "int",
-      description: "Environment name. Change only if you would like to deploy the samse stack several time in the same region and account"
+      description: "Your environment name. Change to a unique name only if deploy the stack multiple times in the same region and account."
     });
 
     const artifactBucket = new Bucket(this, "iotOnboardingArtifacts", {
