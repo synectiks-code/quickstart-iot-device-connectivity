@@ -20,6 +20,7 @@ Enabling logging for AWS IoT Core helps you troubleshoot device connectivity. Tr
 
 ==== GitHub fork and access token
 This QuickStart deploys a CICD Pipeline using AWS Code Pipeline from source code hosted on GitHub. As AWS CodePipeline requires private access to GitHub Repositories, you must have a GitHub account and have completed the following steps:
+
 * Log in to GitHub and fork the https://github.com/aws-quickstart/quickstart-iot-device-connectivity[quickstart-iot-device-connectivity^] repository.
 * Create a https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token[personal access token^] for your GitHub Account.
 * Save the token and user name for use in the deployment parameters.
