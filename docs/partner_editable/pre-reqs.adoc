@@ -15,6 +15,12 @@ To sign up for QuickSight, see https://docs.aws.amazon.com/quicksight/latest/use
 ===== Validate your email address with Amazon SES
 This Quick Start uses the email address that you provide in the AWS CloudFormation template for sending and receiving email notifications. These notifications provide the key credentials to use the device onboarding microservices. For users of the http://rigado.com/knowledge-base/introduction-to-the-rigado-allegro-kit[Rigado Allegro Kit], the email provides the data required to use the Rigado wizard to automatically onboard the Rigado Gateway. To use the email address, Amazon Simple Email Service (Amazon SES) requires you to verify the email address. See https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html[Verifying email addresses in Amazon SES] for more information. 
 
-
 ==== Enable logging for AWS IoT Core
 Enabling logging for AWS IoT Core helps you troubleshoot device connectivity. Troubleshooting is especially useful if you are not using a Rigado device. For more information, see https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html[Configure AWS IoT logging].
+
+==== GitHub fork and access token
+This QuickStart deploys a CICD Pipeline using AWS Code Pipeline from source code hosted on GitHub. As AWS CodePipeline requires private access to GitHub Repositories, you must have a GitHub account and have completed the following steps:
+
+* Log in to GitHub and fork the https://github.com/aws-quickstart/quickstart-iot-device-connectivity[quickstart-iot-device-connectivity^] repository.
+* Create a https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token[personal access token^] for your GitHub Account.
+* Save the token and user name for use in the deployment parameters.
