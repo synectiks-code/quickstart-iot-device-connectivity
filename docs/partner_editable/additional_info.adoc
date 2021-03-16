@@ -3,15 +3,15 @@
 
 === View the CDK deployment using AWS CodePipeline
  
-Once the AWS CloudFormation template has deployed successfully, open AWS CodePipeline to see the pipeline executing.
+Once the AWS CloudFormation template has deployed successfully, open AWS CodePipeline to see the pipeline running.
 
 [#codePipeline1]
-.CodePipeline console
+.AWS CodePipeline console
 image::../images/quickstart-cicd-3.png[CodePipeline]
 
 If you choose the pipeline name, you can see the steps of the pipeline running:
 [#codePipeline2]
-.CodePipeline console
+.AWS CodePipeline console
 image::../images/quickstart-cicd-2.png[ExecutingPipeline]
 
 After the pipeline has deployed the CDK code, open the CloudFormation console, choose the template (it will be named something similar to *IOTOnboardingInfraStackint*), and then choose *Outputs* to view the created resources.
@@ -103,9 +103,9 @@ To speed up your IoT project, this Quick Start deploys a predefined dashboard wi
 * An Amazon QuickSight Enterprise customer.
 * Use of the Rigado Allegro Kit for your devices.
 
-While the AWS Glue ETL service that ingests and processes the data is not device-agnostic, the dashboard makes assumptions about the names of the fields received and therefore works only for Rigado Allegro Kit users. By default, the data is processed by a scheduled Glue crawler and ETL service every 24 hours. This default value helps minimize the cost of running the IoT data lake and can be updated easily by changing a cron expression in the AWS CDK script or directly from the AWS Glue console. The Quick Start also creates a glue trigger that can start the data refresh on demand directly from the AWS Glue console.
+While the AWS Glue ETL service that ingests and processes the data is not device-agnostic, the dashboard makes assumptions about the names of the fields received and therefore works only for Rigado Allegro Kit users. By default, the data is processed by a scheduled glue crawler and ETL service every 24 hours. This default value helps minimize the cost of running the IoT data lake and can be updated easily by changing a cron expression in the AWS CDK script or directly from the AWS Glue console. The Quick Start also creates a glue trigger that can start the data refresh on demand directly from the AWS Glue console.
 
-When accessing the Amazon QuickSight dashboard for the first time, you must provide access to the Amazon S3 bucket that contains the refined data (the data processed by the ETL script). For instructions on giving Amazon QuickSight access to the Amazon S3 bucket, see https://docs.aws.amazon.com/quicksight/latest/user/troubleshoot-connect-athena.html[I Can't Connect to Amazon Athena]. After deploying the Quick Start, you should see an analysis called *Rigado Quick Start Dashboard* in your Amazon QuickSight account in the selected Regions, as shown below.
+When accessing the Amazon QuickSight dashboard for the first time, you must provide access to the Amazon S3 bucket that contains the refined data (the data processed by the ETL script). For instructions on giving Amazon QuickSight access to the Amazon S3 bucket, see https://docs.aws.amazon.com/quicksight/latest/user/troubleshoot-connect-athena.html[I Can't Connect to Amazon Athena]. After deploying the Quick Start, you should see an analysis called *Rigado Quick Start Dashboard* in your Amazon QuickSight account, as shown below.
 [#quickSightAnalysis]
 .Newly created Analysis in Amazon QuickSight
 image::../images/rigado-dahsboard.png[QuickSightAnalysis]
@@ -140,7 +140,7 @@ Now, you can use the portal to design dashboards for your devices.
 NOTE: If you are not a Rigado Allegro Kit user, you must create your own AWS IoT Core broker rule to ingest the properly formatted data into AWS IoT SiteWise. You can follow the same model as the one created in the Quick Start. You must also manually create the assets models and assets following the AWS IoT SiteWise documentation.
 
 == Cleaning up
-This Quick Start uses a combination of command-line interface (CLI) and CDK for deploying AWS resources. This is because some services such as Amazon QuickSight and AWS IoT SiteWise are not yet supported by AWS CloudFormation. Consequently, the following steps are required to clean up the deployed resources in the user account:
+This Quick Start uses a combination of command line interface (CLI) and CDK for deploying AWS resources. This is because some services such as Amazon QuickSight and AWS IoT SiteWise are not yet supported by AWS CloudFormation. Consequently, the following steps are required to clean up the deployed resources in the user account:
 
 . Identify the buckets created by the stack, which are prefixed by *iotonboardinginfrastack*, and delete their contents before deleting the stack.
 . Go to the AWS CloudFormation console and delete the infrastructure stack, starting with *IoTOnboardingInfraStack*.

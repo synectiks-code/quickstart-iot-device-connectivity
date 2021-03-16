@@ -38,29 +38,24 @@ An error occurred (ResourceAlreadyExistsException) when calling the CreateAssetM
 ```
 Delete the AWS IoT SiteWise resources and retry the CodePipeline steps. 
 
-*Q.* I am using the Rigado Allegro Kit and I don't see a column in my AWS QuickSight dataset.
+*Q.* I am using the Rigado Allegro Kit and I don't see a column in my Amazon QuickSight dataset.
 
 *A.* Data takes up to one day to propagate to the IoT data lake due to the crawler schedule. You can confirm that data is flowing by using AWS IoT Core Monitor and manually triggering the crawlers and jobs using the ON_DEMAND trigger from the AWS Glue console.
 
 *Q.* Deleting the infrastructure stack fails.
 
-*A.* The Amazon S3 buckets may still contain data. If so, they are not removed to avoid unintended data loss. You must manually empty and delete S3 buckets prior to retrying the stack deletion.
+*A.* The Amazon S3 buckets may still contain data. If so, they are not removed to avoid unintended data loss. Manually empty and delete S3 buckets before retrying the stack deletion.
 
 *Q.* Deleting AWS IoT SiteWise portal fails.
 
-*A.* A project associated with the portal may still exist. You can delete the project from the created portal if you can log in as administrator. If you are unable to login as an administrator, you can delete the underlying project using the AWS IoT SiteWise CLI.
+*A.* A project associated with the portal may still exist. Ff you can log in as administrator, you can delete the project from the created portal. If you are unable to log in as an administrator, you can delete the underlying project using the AWS IoT SiteWise CLI.
 
 ifdef::parameters_as_appendix[]
 
 == Parameter reference
 
-NOTE: Unless you are customizing the Quick Start templates for your own deployment projects, keep the default settings for the following parameters:
-
-* Quick Start S3 bucket name
-* Quick Start S3 bucket Region
-* Quick Start S3 key prefix
-
-Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the https://aws-quickstart.github.io/option1.html[AWS Quick Start Contributor’s Guide^].
+NOTE: Unless you are customizing the Quick Start templates for your own deployment projects, keep the default settings for the parameters labeled `Quick Start S3 bucket name`, `Quick Start S3 bucket
+Region`, and `Quick Start S3 key prefix`. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the https://aws-quickstart.github.io/option1.html[AWS Quick Start Contributor’s Guide^].
 
 include::../{generateddir}/parameters/index.adoc[]
 endif::parameters_as_appendix[]
