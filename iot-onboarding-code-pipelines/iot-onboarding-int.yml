@@ -26,6 +26,14 @@ Parameters:
     Default: int
     AllowedPattern: .+
     Description: Your environment name. Change to a unique name only if deploy the stack multiple times in the same region and account.
+  gitHubUserName:
+    Type: String
+    AllowedPattern: .+
+    Description: Your github user name (see pre-deployment steps)
+  githubtoken:
+    Type: String
+    AllowedPattern: .+
+    Description: Your github Personal access tokens allowing access to the forked repository (see pre-deployment steps)
 Resources:
   iotOnboardingArtifacts020AADAB:
     Type: AWS::S3::Bucket
@@ -790,10 +798,12 @@ Resources:
                 Provider: GitHub
                 Version: "1"
               Configuration:
-                Owner: grollat
+                Owner:
+                  Ref: gitHubUserName
                 Repo: quickstart-iot-device-connectivity
-                Branch: feature/iot-quickstart-with-rigado
-                OAuthToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+                Branch: main
+                OAuthToken:
+                  Ref: githubtoken
                 PollForSourceChanges: false
               Name: GitHub_Source
               OutputArtifacts:
@@ -950,7 +960,8 @@ Resources:
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+        SecretToken:
+          Ref: githubtoken
       Filters:
         - JsonPath: $.ref
           MatchEquals: refs/heads/{Branch}
