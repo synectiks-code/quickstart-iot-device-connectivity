@@ -2,21 +2,20 @@ import cdk = require('@aws-cdk/core');
 import codebuild = require('@aws-cdk/aws-codebuild');
 import codepipeline = require('@aws-cdk/aws-codepipeline');
 import codepipeline_actions = require('@aws-cdk/aws-codepipeline-actions');
-import { CfnParameter, StackProps, RemovalPolicy } from "@aws-cdk/core";
+import { CfnParameter, StackProps, RemovalPolicy, ScopedAws, SecretValue } from "@aws-cdk/core";
 import { Bucket, BucketEncryption } from "@aws-cdk/aws-s3";
 import { Role, ServicePrincipal, ManagedPolicy } from "@aws-cdk/aws-iam";
 import kms = require('@aws-cdk/aws-kms');
 
-// We hardcode the github token because it is required by CodePipeline CDKConstruct even if the repo is public
-var AWS_QUICKSTART_GITHUB_TOKEN = "5deb69a5f5c91dcea3099eac2b400bda1a8146f8"
 
 export class IotOnboardingCodePipelinesStack extends cdk.Stack {
 
   constructor(scope: cdk.Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const region = (props && props.env) ? props.env.region : ""
-    const account = (props && props.env) ? props.env.account : ""
+    const {
+      region,
+    } = new ScopedAws(this)
 
     //const gitHubRepo = "aws-quickstart/quickstart-iot-device-connectivity"
     const gitHubRepo = "quickstart-iot-device-connectivity"
@@ -50,6 +49,17 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
       allowedPattern: ".+",
       default: "int",
       description: "Your environment name. Change to a unique name only if deploy the stack multiple times in the same region and account."
+    });
+    const gitHubUserName = new CfnParameter(this, "gitHubUserName", {
+      type: "String",
+      allowedPattern: ".+",
+      description: "Your github user name (see pre-deployment steps)"
+    });
+
+    const githubtoken = new CfnParameter(this, "githubtoken", {
+      type: "String",
+      allowedPattern: ".+",
+      description: "Your github Personal access tokens allowing access to the forked repository (see pre-deployment steps)"
     });
 
     const artifactBucket = new Bucket(this, "iotOnboardingArtifacts", {
@@ -227,6 +237,11 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
     const siteWiseOutput = new codepipeline.Artifact('siteWiseOutput');
     const quickSightOutput = new codepipeline.Artifact('quickSightOutput');
 
+
+    const sourceBucker = Bucket.fromBucketAttributes(this, 'iotQuickstartSourceBucket', {
+      bucketName: "aws-quickstart-" + region
+    });
+
     let stages: codepipeline.StageProps[] = []
     //Source  stage
     stages.push({
@@ -235,9 +250,9 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
         new codepipeline_actions.GitHubSourceAction({
           actionName: 'GitHub_Source',
           repo: gitHubRepo,
-          oauthToken: new cdk.SecretValue(AWS_QUICKSTART_GITHUB_TOKEN),
-          branch: "v1",
-          owner: 'grollat',
+          oauthToken: SecretValue.plainText(githubtoken.valueAsString),
+          branch: "main",
+          owner: gitHubUserName.valueAsString,
           output: sourceOutput,
         }),
       ],
