@@ -1,11 +1,11 @@
 Description: Deploys the IoT Device connectivity pipeline to run the CDK deployment (qs-1rmapn8de)
 Metadata:
   QuickStartDocumentation:
-    EntrypointName: Launch Deployment Pipeline
+    EntrypointName: Parameters for launching the deployment pipeline
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: IoT device connectivity
+          default: IoT Device Connectivity
         Parameters:
           - contactEmail
           - quickSightAdminUserName

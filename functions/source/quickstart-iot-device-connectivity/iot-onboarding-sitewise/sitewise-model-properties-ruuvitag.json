@@ -1,0 +1,27 @@
+[
+    {
+        "dataType": "STRING",
+        "name": "DeviceId",
+        "type": {
+            "attribute": {
+                "defaultValue": "1"
+            }
+        }
+    },
+    {
+        "dataType": "DOUBLE",
+        "name": "Temperature",
+        "type": {
+            "measurement": {}
+        },
+        "unit": "C"
+    },
+    {
+        "dataType": "DOUBLE",
+        "name": "Humidity",
+        "type": {
+            "measurement": {}
+        },
+        "unit": "RH"
+    }
+]
