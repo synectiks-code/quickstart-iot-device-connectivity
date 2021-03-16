@@ -1,0 +1,6 @@
+// Edit this placeholder text to accurately describe your architecture.
+
+This Quick Start deploys a continuous delivery and/or continuous deployment (CICD) pipeline using AWS CodePipeline. 
+
+If you prefer not to sign up with Amazon QuickSight, you can exclude the QuickSight dashboard from the deployment by omitting the QuickSight ADMIN user name on the AWS CloudFormation template. 
+

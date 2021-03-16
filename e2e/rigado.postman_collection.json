@@ -1,0 +1,283 @@
+{
+	"info": {
+		"_postman_id": "32064959-c532-4ea2-a03e-de897ed3c901",
+		"name": "rigado",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1b085405-aa10-4b73-bce2-ca346410be27",
+						"exec": [
+							"pm.test(\"Access tken returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.access_token).to.length.gt(0)",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"accessToken\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic ",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{tokenEnpoint}}?grant_type=refresh_token&client_id={{clientId}}&refresh_token={{refreshToken}}",
+					"host": [
+						"{{tokenEnpoint}}"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "refresh_token"
+						},
+						{
+							"key": "client_id",
+							"value": "{{clientId}}"
+						},
+						{
+							"key": "refresh_token",
+							"value": "{{refreshToken}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "onboardDevice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7f2d2b48-eb98-4ad2-9df0-1f56075cd8bb",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Device successfully created\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.thingId).length.gt(1)",
+							"    pm.expect(jsonData.error.code).eq(\"\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{accessToken}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}api/onboard/DEV_00000001",
+					"host": [
+						"{{baseUrl}}api"
+					],
+					"path": [
+						"onboard",
+						"DEV_00000001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getOnboardedDevice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3310359-d5f3-4fa8-a611-a425fae923bc",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Device successfully retreived\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.thingId).length.gt(1)",
+							"    pm.expect(jsonData.error.code).eq(\"\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{accessToken}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}api/onboard/DEV_00000001",
+					"host": [
+						"{{baseUrl}}api"
+					],
+					"path": [
+						"onboard",
+						"DEV_00000001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteDevice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "499c62f5-d350-4283-9efa-34bb302e6ac8",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Device successfully deleted\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.thingId).eq(\"\")",
+							"    pm.expect(jsonData.error.code).eq(\"\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{accessToken}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}api/onboard/DEV_00000001",
+					"host": [
+						"{{baseUrl}}api"
+					],
+					"path": [
+						"onboard",
+						"DEV_00000001"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8d8d8323-7639-4105-b94b-557637d8bda1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "717508dd-e6ff-4dcc-963b-4bf7736b7848",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "331da972-1157-43c6-87c5-fbf5a30f985f",
+			"key": "clientId",
+			"value": "245u9q20sm3ak58b1ns4eeuced"
+		},
+		{
+			"id": "2452fe6f-de46-4bb5-8b02-8e068d65dd3d",
+			"key": "refreshToken",
+			"value": "eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.bkZgbxYjuavtckuMgcZNlv83ng5I_154iMRnAIfn6UR-_nYqYRVcAfXpLjISpxgPSBvuTeoN9S..."
+		},
+		{
+			"id": "b6f39cb2-f1bf-4d87-a46d-e8bad39e18c0",
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"id": "8be395c0-9fc4-49a4-8994-b831f73d921c",
+			"key": "baseUrl",
+			"value": "https://jtnlkqjb0c.execute-api.eu-central-1.amazonaws.com/"
+		},
+		{
+			"id": "0745635d-190c-461a-a1a4-d42a82b5fcf7",
+			"key": "tokenEnpoint",
+			"value": "https://rigado-quickstart-dev.auth.eu-central-1.amazoncognito.com/oauth2/token"
+		},
+		{
+			"id": "334bcf81-2999-4895-8498-b29efc4f38ad",
+			"key": "tokenEnpoint",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}

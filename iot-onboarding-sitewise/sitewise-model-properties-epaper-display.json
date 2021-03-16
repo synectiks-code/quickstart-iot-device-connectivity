@@ -1,0 +1,41 @@
+[
+    {
+        "dataType": "STRING",
+        "name": "DeviceId",
+        "type": {
+            "attribute": {
+                "defaultValue": "1"
+            }
+        }
+    },
+    {
+        "dataType": "DOUBLE",
+        "name": "Temperature",
+        "type": {
+            "measurement": {}
+        },
+        "unit": "C"
+    },
+    {
+        "dataType": "DOUBLE",
+        "name": "AvgTemperature",
+        "type": {
+            "metric": {
+                "expression": "avg(var_temperature)",
+                "variables": [
+                    {
+                        "name": "var_temperature",
+                        "value": {
+                            "propertyId": "Temperature"
+                        }
+                    }
+                ],
+                "window": {
+                    "tumbling": {
+                        "interval": "5m"
+                    }
+                }
+            }
+        }
+    }
+]

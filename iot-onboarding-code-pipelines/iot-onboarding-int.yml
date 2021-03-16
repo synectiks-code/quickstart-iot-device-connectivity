@@ -1,0 +1,1330 @@
+Description: Deploys the IoT Device connectivity pipeline to run the CDK deployment (qs-1rmapn8de)
+Metadata:
+  QuickStartDocumentation:
+    EntrypointName: Launch Deployment Pipeline
+Parameters:
+  contactEmail:
+    Type: String
+    AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    Description: Email address for the administrator. This is also used for the IoT Sitewise portal creation.
+  quickSightAdminUserName:
+    Type: String
+    Description: (Optional) Username of an Amazon QuickSight user with an Admin role. If left blank, the QuickSight dashboard will not be included
+  quickSightAdminUserRegion:
+    Type: String
+    Description: "The region of the above QuickSight user. E.g.: us-east-1"
+  sourceTemplateArn:
+    Type: String
+    Description: (Optional) ARN of a public QuickSight dashboard. If using Rigado Alegro kit use arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev for an example dashboard.
+  rootMqttTopic:
+    Type: String
+    Default: data/#
+    AllowedPattern: .+
+    Description: The root MQTT topic to which devices publish data. Leave the default (data/#) if using the Rigado Alegro kit. If using your own devices, you can create your own dataset, analysis and dashboard based on your devices.
+  environment:
+    Type: String
+    Default: int
+    AllowedPattern: .+
+    Description: Your environment name. Change to a unique name only if deploy the stack multiple times in the same region and account.
+Resources:
+  iotOnboardingArtifacts020AADAB:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/iotOnboardingArtifacts/Resource
+  buildRoleDCAA7F5D:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/AdministratorAccess
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/buildRole/Resource
+  buildRoleDefaultPolicyA2B1D36E:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: infraBuilProjectBFDFAE30
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: infraBuilProjectBFDFAE30
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: infraBuilProjectBFDFAE30
+                  - -*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: lambdaBuilProject0493A313
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: lambdaBuilProject0493A313
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: lambdaBuilProject0493A313
+                  - -*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: glueETLBuilProject6FDBBD31
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: glueETLBuilProject6FDBBD31
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: glueETLBuilProject6FDBBD31
+                  - -*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: siteWiseBuildProject4DE67409
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: siteWiseBuildProject4DE67409
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: siteWiseBuildProject4DE67409
+                  - -*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: quicksightBuildProject76314B23
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: quicksightBuildProject76314B23
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: quicksightBuildProject76314B23
+                  - -*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: testProject6C027672
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: testProject6C027672
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: testProject6C027672
+                  - -*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - iotOnboardingPipelineArtifacts25940A30
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - iotOnboardingPipelineArtifacts25940A30
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: buildRoleDefaultPolicyA2B1D36E
+      Roles:
+        - Ref: buildRoleDCAA7F5D
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/buildRole/DefaultPolicy/Resource
+  infraBuilProjectBFDFAE30:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - buildRoleDCAA7F5D
+          - Arn
+      Source:
+        BuildSpec:
+          Fn::Join:
+            - ""
+            - - >-
+                {
+                  "version": "0.2",
+                  "phases": {
+                    "install": {
+                      "runtime-versions": {
+                        "nodejs": 10
+                      },
+                      "commands": [
+                        "echo \"CodeBuild is running in $AWS_REGION\" && aws configure set region $AWS_REGION",
+                        "npm install -g aws-cdk@1.91.0",
+                        "npm -g install typescript@4.2.2",
+                        "cdk --version",
+                        "cd iot-onboarding-infra",
+                        "npm install"
+                      ]
+                    },
+                    "build": {
+                      "commands": [
+                        "echo \"Build and Deploy Infrastructure\"",
+                        "pwd && sh deploy.sh 
+              - Ref: environment
+              - " "
+              - Ref: iotOnboardingArtifacts020AADAB
+              - " "
+              - Ref: rootMqttTopic
+              - " "
+              - Ref: contactEmail
+              - >-
+                "
+                      ]
+                    }
+                  },
+                  "artifacts": {
+                    "discard-path": "yes",
+                    "files": [
+                      "iot-onboarding-infra/infra-config-
+              - Ref: environment
+              - >-
+                .json"
+                    ]
+                  }
+                }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-infra-
+            - Ref: environment
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/infraBuilProject/Resource
+  lambdaBuilProject0493A313:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - buildRoleDCAA7F5D
+          - Arn
+      Source:
+        BuildSpec:
+          Fn::Join:
+            - ""
+            - - >-
+                {
+                  "version": "0.2",
+                  "phases": {
+                    "install": {
+                      "runtime-versions": {
+                        "golang": 1.13
+                      }
+                    },
+                    "build": {
+                      "commands": [
+                        "echo \"Build and Deploy lambda Function\"",
+                        "cd iot-onboarding-service",
+                        "pwd && sh lbuild.sh 
+              - Ref: environment
+              - " "
+              - Ref: iotOnboardingArtifacts020AADAB
+              - >-
+                "
+                      ]
+                    }
+                  }
+                }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-lambda-
+            - Ref: environment
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/lambdaBuilProject/Resource
+  glueETLBuilProject6FDBBD31:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - buildRoleDCAA7F5D
+          - Arn
+      Source:
+        BuildSpec:
+          Fn::Join:
+            - ""
+            - - >-
+                {
+                  "version": "0.2",
+                  "phases": {
+                    "build": {
+                      "commands": [
+                        "echo \"Uploading ETK script to s3\"",
+                        "cd iot-onboarding-data-processing",
+                        "pwd && sh ./deploy.sh 
+              - Ref: environment
+              - " "
+              - Ref: iotOnboardingArtifacts020AADAB
+              - >-
+                "
+                      ]
+                    }
+                  }
+                }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-etl-
+            - Ref: environment
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/glueETLBuilProject/Resource
+  siteWiseBuildProject4DE67409:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - buildRoleDCAA7F5D
+          - Arn
+      Source:
+        BuildSpec:
+          Fn::Join:
+            - ""
+            - - >-
+                {
+                  "version": "0.2",
+                  "phases": {
+                    "build": {
+                      "commands": [
+                        "echo \"Building sitewise Assets model and project\"",
+                        "cd iot-onboarding-sitewise",
+                        "pwd && sh ./sitewise.sh 
+              - Ref: environment
+              - " "
+              - Ref: iotOnboardingArtifacts020AADAB
+              - " "
+              - Ref: contactEmail
+              - >-
+                "
+                      ]
+                    }
+                  }
+                }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-sitewise-
+            - Ref: environment
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/siteWiseBuildProject/Resource
+  quicksightBuildProject76314B23:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - buildRoleDCAA7F5D
+          - Arn
+      Source:
+        BuildSpec:
+          Fn::Join:
+            - ""
+            - - >-
+                {
+                  "version": "0.2",
+                  "phases": {
+                    "build": {
+                      "commands": [
+                        "echo \"Building Quicksight Dashboard\"",
+                        "cd iot-onboarding-quicksight",
+                        "pwd && sh ./create-dashboard.sh 
+              - Ref: environment
+              - " "
+              - Ref: iotOnboardingArtifacts020AADAB
+              - " "
+              - Ref: quickSightAdminUserName
+              - " "
+              - Ref: sourceTemplateArn
+              - " "
+              - Ref: quickSightAdminUserRegion
+              - >-
+                "
+                      ]
+                    }
+                  }
+                }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-quicksight-
+            - Ref: environment
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/quicksightBuildProject/Resource
+  testProject6C027672:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - buildRoleDCAA7F5D
+          - Arn
+      Source:
+        BuildSpec:
+          Fn::Join:
+            - ""
+            - - >-
+                {
+                  "version": "0.2",
+                  "phases": {
+                    "install": {
+                      "runtime-versions": {
+                        "nodejs": 10
+                      },
+                      "commands": [
+                        "yum -y install epel-release",
+                        "yum -y install mosquitto",
+                        "npm install -g newman@5.2.2"
+                      ]
+                    },
+                    "build": {
+                      "commands": [
+                        "echo \"Testing Deployed on boarding service\"",
+                        "cd e2e",
+                        "pwd && sh ./test.sh 
+              - Ref: environment
+              - " "
+              - Ref: iotOnboardingArtifacts020AADAB
+              - >-
+                "
+                      ]
+                    }
+                  }
+                }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name:
+        Fn::Join:
+          - ""
+          - - code-build-iot-onboarding-test-
+            - Ref: environment
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/testProject/Resource
+  iotOnboardingPipelineArtifacts25940A30:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/iotOnboardingPipelineArtifacts/Resource
+  IotOnboardingPipelineRoleBE3C14BE:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Role/Resource
+  IotOnboardingPipelineRoleDefaultPolicy2C555B7B:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - iotOnboardingPipelineArtifacts25940A30
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - iotOnboardingPipelineArtifacts25940A30
+                        - Arn
+                    - /*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - IotOnboardingPipelineBuilduploadELTScriptCodePipelineActionRole04945FCB
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - IotOnboardingPipelineBuildbuildLambdaCodeCodePipelineActionRole692FC7D5
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - IotOnboardingPipelineBuilddeployInfraCodePipelineActionRole33EA541B
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - IotOnboardingPipelineTesttestOnboardingServiceCodePipelineActionRole3CD81D9C
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - IotOnboardingPipelineDeploydeployInfraConfigToS3CodePipelineActionRole1E8B9F93
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - IotOnboardingPipelineDeploysetupQuicksightCodePipelineActionRole62F2AB52
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - IotOnboardingPipelineDeploysetupSitewiseCodePipelineActionRole758DAA52
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: IotOnboardingPipelineRoleDefaultPolicy2C555B7B
+      Roles:
+        - Ref: IotOnboardingPipelineRoleBE3C14BE
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Role/DefaultPolicy/Resource
+  IotOnboardingPipeline6824DB70:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - IotOnboardingPipelineRoleBE3C14BE
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: "1"
+              Configuration:
+                Owner: grollat
+                Repo: quickstart-iot-device-connectivity
+                Branch: feature/iot-quickstart-with-rigado
+                OAuthToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+                PollForSourceChanges: false
+              Name: GitHub_Source
+              OutputArtifacts:
+                - Name: Artifact_Source_GitHub_Source
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: glueETLBuilProject6FDBBD31
+              InputArtifacts:
+                - Name: Artifact_Source_GitHub_Source
+              Name: uploadELTScript
+              OutputArtifacts:
+                - Name: CdkBuildOutputETL
+              RoleArn:
+                Fn::GetAtt:
+                  - IotOnboardingPipelineBuilduploadELTScriptCodePipelineActionRole04945FCB
+                  - Arn
+              RunOrder: 1
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: lambdaBuilProject0493A313
+              InputArtifacts:
+                - Name: Artifact_Source_GitHub_Source
+              Name: buildLambdaCode
+              OutputArtifacts:
+                - Name: CdkBuildOutputLambda
+              RoleArn:
+                Fn::GetAtt:
+                  - IotOnboardingPipelineBuildbuildLambdaCodeCodePipelineActionRole692FC7D5
+                  - Arn
+              RunOrder: 2
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: infraBuilProjectBFDFAE30
+              InputArtifacts:
+                - Name: Artifact_Source_GitHub_Source
+              Name: deployInfra
+              OutputArtifacts:
+                - Name: CdkBuildOutputInfra
+              RoleArn:
+                Fn::GetAtt:
+                  - IotOnboardingPipelineBuilddeployInfraCodePipelineActionRole33EA541B
+                  - Arn
+              RunOrder: 3
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: testProject6C027672
+              InputArtifacts:
+                - Name: Artifact_Source_GitHub_Source
+              Name: testOnboardingService
+              OutputArtifacts:
+                - Name: CdkBuildOutputTest
+              RoleArn:
+                Fn::GetAtt:
+                  - IotOnboardingPipelineTesttestOnboardingServiceCodePipelineActionRole3CD81D9C
+                  - Arn
+              RunOrder: 1
+          Name: Test
+        - Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                BucketName:
+                  Ref: iotOnboardingArtifacts020AADAB
+                Extract: "true"
+              InputArtifacts:
+                - Name: CdkBuildOutputInfra
+              Name: deployInfraConfigToS3
+              RoleArn:
+                Fn::GetAtt:
+                  - IotOnboardingPipelineDeploydeployInfraConfigToS3CodePipelineActionRole1E8B9F93
+                  - Arn
+              RunOrder: 1
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: quicksightBuildProject76314B23
+              InputArtifacts:
+                - Name: Artifact_Source_GitHub_Source
+              Name: setupQuicksight
+              OutputArtifacts:
+                - Name: quickSightOutput
+              RoleArn:
+                Fn::GetAtt:
+                  - IotOnboardingPipelineDeploysetupQuicksightCodePipelineActionRole62F2AB52
+                  - Arn
+              RunOrder: 2
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: siteWiseBuildProject4DE67409
+              InputArtifacts:
+                - Name: Artifact_Source_GitHub_Source
+              Name: setupSitewise
+              OutputArtifacts:
+                - Name: siteWiseOutput
+              RoleArn:
+                Fn::GetAtt:
+                  - IotOnboardingPipelineDeploysetupSitewiseCodePipelineActionRole758DAA52
+                  - Arn
+              RunOrder: 2
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: iotOnboardingPipelineArtifacts25940A30
+        Type: S3
+      Name:
+        Fn::Join:
+          - ""
+          - - code-pipeline-iot-onboarding-
+            - Ref: environment
+    DependsOn:
+      - IotOnboardingPipelineRoleDefaultPolicy2C555B7B
+      - IotOnboardingPipelineRoleBE3C14BE
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Resource
+  IotOnboardingPipelineSourceGitHubSourceWebhookResource083E7AE3:
+    Type: AWS::CodePipeline::Webhook
+    Properties:
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+      Filters:
+        - JsonPath: $.ref
+          MatchEquals: refs/heads/{Branch}
+      TargetAction: GitHub_Source
+      TargetPipeline:
+        Ref: IotOnboardingPipeline6824DB70
+      TargetPipelineVersion: 1
+      RegisterWithThirdParty: true
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Source/GitHub_Source/WebhookResource
+  IotOnboardingPipelineBuilduploadELTScriptCodePipelineActionRole04945FCB:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Build/uploadELTScript/CodePipelineActionRole/Resource
+  IotOnboardingPipelineBuilduploadELTScriptCodePipelineActionRoleDefaultPolicyE0D713FD:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - glueETLBuilProject6FDBBD31
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: IotOnboardingPipelineBuilduploadELTScriptCodePipelineActionRoleDefaultPolicyE0D713FD
+      Roles:
+        - Ref: IotOnboardingPipelineBuilduploadELTScriptCodePipelineActionRole04945FCB
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Build/uploadELTScript/CodePipelineActionRole/DefaultPolicy/Resource
+  IotOnboardingPipelineBuildbuildLambdaCodeCodePipelineActionRole692FC7D5:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Build/buildLambdaCode/CodePipelineActionRole/Resource
+  IotOnboardingPipelineBuildbuildLambdaCodeCodePipelineActionRoleDefaultPolicyD4431A99:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - lambdaBuilProject0493A313
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: IotOnboardingPipelineBuildbuildLambdaCodeCodePipelineActionRoleDefaultPolicyD4431A99
+      Roles:
+        - Ref: IotOnboardingPipelineBuildbuildLambdaCodeCodePipelineActionRole692FC7D5
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Build/buildLambdaCode/CodePipelineActionRole/DefaultPolicy/Resource
+  IotOnboardingPipelineBuilddeployInfraCodePipelineActionRole33EA541B:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Build/deployInfra/CodePipelineActionRole/Resource
+  IotOnboardingPipelineBuilddeployInfraCodePipelineActionRoleDefaultPolicy80FBBFD4:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - infraBuilProjectBFDFAE30
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: IotOnboardingPipelineBuilddeployInfraCodePipelineActionRoleDefaultPolicy80FBBFD4
+      Roles:
+        - Ref: IotOnboardingPipelineBuilddeployInfraCodePipelineActionRole33EA541B
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Build/deployInfra/CodePipelineActionRole/DefaultPolicy/Resource
+  IotOnboardingPipelineTesttestOnboardingServiceCodePipelineActionRole3CD81D9C:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Test/testOnboardingService/CodePipelineActionRole/Resource
+  IotOnboardingPipelineTesttestOnboardingServiceCodePipelineActionRoleDefaultPolicy795931FD:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - testProject6C027672
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: IotOnboardingPipelineTesttestOnboardingServiceCodePipelineActionRoleDefaultPolicy795931FD
+      Roles:
+        - Ref: IotOnboardingPipelineTesttestOnboardingServiceCodePipelineActionRole3CD81D9C
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Test/testOnboardingService/CodePipelineActionRole/DefaultPolicy/Resource
+  IotOnboardingPipelineDeploydeployInfraConfigToS3CodePipelineActionRole1E8B9F93:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Deploy/deployInfraConfigToS3/CodePipelineActionRole/Resource
+  IotOnboardingPipelineDeploydeployInfraConfigToS3CodePipelineActionRoleDefaultPolicyF65C3F27:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - iotOnboardingArtifacts020AADAB
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - iotOnboardingArtifacts020AADAB
+                        - Arn
+                    - /*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - iotOnboardingPipelineArtifacts25940A30
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - iotOnboardingPipelineArtifacts25940A30
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: IotOnboardingPipelineDeploydeployInfraConfigToS3CodePipelineActionRoleDefaultPolicyF65C3F27
+      Roles:
+        - Ref: IotOnboardingPipelineDeploydeployInfraConfigToS3CodePipelineActionRole1E8B9F93
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Deploy/deployInfraConfigToS3/CodePipelineActionRole/DefaultPolicy/Resource
+  IotOnboardingPipelineDeploysetupQuicksightCodePipelineActionRole62F2AB52:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Deploy/setupQuicksight/CodePipelineActionRole/Resource
+  IotOnboardingPipelineDeploysetupQuicksightCodePipelineActionRoleDefaultPolicy440F7B9F:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - quicksightBuildProject76314B23
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: IotOnboardingPipelineDeploysetupQuicksightCodePipelineActionRoleDefaultPolicy440F7B9F
+      Roles:
+        - Ref: IotOnboardingPipelineDeploysetupQuicksightCodePipelineActionRole62F2AB52
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Deploy/setupQuicksight/CodePipelineActionRole/DefaultPolicy/Resource
+  IotOnboardingPipelineDeploysetupSitewiseCodePipelineActionRole758DAA52:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Deploy/setupSitewise/CodePipelineActionRole/Resource
+  IotOnboardingPipelineDeploysetupSitewiseCodePipelineActionRoleDefaultPolicy670C5586:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - siteWiseBuildProject4DE67409
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: IotOnboardingPipelineDeploysetupSitewiseCodePipelineActionRoleDefaultPolicy670C5586
+      Roles:
+        - Ref: IotOnboardingPipelineDeploysetupSitewiseCodePipelineActionRole758DAA52
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/IotOnboardingPipeline/Deploy/setupSitewise/CodePipelineActionRole/DefaultPolicy/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.89.0,@aws-cdk/assets=1.86.0,@aws-cdk/aws-applicationautoscaling=1.86.0,@aws-cdk/aws-autoscaling=1.86.0,@aws-cdk/aws-autoscaling-common=1.86.0,@aws-cdk/aws-autoscaling-hooktargets=1.86.0,@aws-cdk/aws-cloudformation=1.86.0,@aws-cdk/aws-cloudwatch=1.86.0,@aws-cdk/aws-codebuild=1.86.0,@aws-cdk/aws-codeguruprofiler=1.86.0,@aws-cdk/aws-codepipeline=1.86.0,@aws-cdk/aws-codepipeline-actions=1.86.0,@aws-cdk/aws-ec2=1.86.0,@aws-cdk/aws-ecr=1.86.0,@aws-cdk/aws-ecr-assets=1.86.0,@aws-cdk/aws-ecs=1.86.0,@aws-cdk/aws-elasticloadbalancingv2=1.86.0,@aws-cdk/aws-events=1.86.0,@aws-cdk/aws-events-targets=1.86.0,@aws-cdk/aws-iam=1.86.0,@aws-cdk/aws-kms=1.86.0,@aws-cdk/aws-lambda=1.86.0,@aws-cdk/aws-logs=1.86.0,@aws-cdk/aws-s3=1.86.0,@aws-cdk/aws-s3-assets=1.86.0,@aws-cdk/aws-servicediscovery=1.86.0,@aws-cdk/aws-sns=1.86.0,@aws-cdk/aws-sns-subscriptions=1.86.0,@aws-cdk/aws-sqs=1.86.0,@aws-cdk/aws-ssm=1.86.0,@aws-cdk/cloud-assembly-schema=1.86.0,@aws-cdk/core=1.86.0,@aws-cdk/custom-resources=1.86.0,@aws-cdk/cx-api=1.86.0,@aws-cdk/region-info=1.86.0,jsii-runtime=node.js/v14.15.4
+    Metadata:
+      aws:cdk:path: IotOnboardingCodePipelinesStackint/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2
+
