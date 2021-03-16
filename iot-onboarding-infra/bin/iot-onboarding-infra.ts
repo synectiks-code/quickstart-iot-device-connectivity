@@ -15,7 +15,7 @@ let stack = new IOTOnboardingInfraStack(app, 'IOTOnboardingInfraStack' + envName
     },
     description: "Deploys the IoT Device connectivity pipeline to run the CDK deployment (qs-1rmapn8de)",
 });
-stack.templateOptions.metadata = { "QuickStartDocumentation": { EntrypointName: "Launch Deployment Pipeline" } }
+stack.templateOptions.metadata = { "QuickStartDocumentation": { EntrypointName: "Parameters for launching the deployment pipeline" } }
 
 
 /**************

@@ -13,11 +13,13 @@ Metadata:
           - sourceTemplateArn
           - rootMqttTopic
           - environment
+          - gitHubUserName
+          - githubtoken
     ParameterLabels:
       contactEmail:
         default: Email address
       quickSightAdminUserName:
-        default: QuickSight username
+        default: QuickSight user name
       quickSightAdminUserRegion:
         default: QuickSight user region
       sourceTemplateArn:
@@ -26,31 +28,42 @@ Metadata:
         default: MQTT topic
       environment:
         default: Environment name
-
+      gitHubUserName:
+        default: GitHub user name
+      githubtoken:
+        default: GitHub token
 Parameters:
   contactEmail:
     Type: String
     AllowedPattern: ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
-    Description: (Optional) Email address for the administrator. This is also used for the AWS IoT SiteWise portal creation.
+    Description: Email address for the administrator. This is also used for the IoT Sitewise portal creation.
   quickSightAdminUserName:
     Type: String
-    Description: (Optional) User name of an Amazon QuickSight user with an administrator role. If left blank, the QuickSight dashboard will not be included.
+    Description: (Optional) Username of an Amazon QuickSight user with an Admin role. If left blank, the QuickSight dashboard will not be included
   quickSightAdminUserRegion:
     Type: String
-    Description: The Region of the above QuickSight user (for example, us-east-1).
+    Description: "The region of the above QuickSight user. E.g.: us-east-1"
   sourceTemplateArn:
     Type: String
-    Description: "(Optional) Amazon Resource Name (ARN) of a public QuickSight dashboard. If using Rigado Allegro Kit, use ‘arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev’ for an example dashboard."
+    Description: (Optional) ARN of a public QuickSight dashboard. If using Rigado Alegro kit use arn:aws:quicksight:eu-central-1:660526416360:template/iotOnboardingRigadoQuicksightPublicTemplatedev for an example dashboard.
   rootMqttTopic:
     Type: String
     Default: data/#
     AllowedPattern: .+
-    Description: The root MQTT topic to which devices publish data. Leave the default (data/#) if using the Rigado Allegro Kit. If using your own devices, create your own dataset, analysis, and dashboard based on your devices.
+    Description: The root MQTT topic to which devices publish data. Leave the default (data/#) if using the Rigado Alegro kit. If using your own devices, you can create your own dataset, analysis and dashboard based on your devices.
   environment:
     Type: String
     Default: int
     AllowedPattern: .+
-    Description: Your environment name. Change to a unique name only if deploying the stack multiple times in the same Region and account.
+    Description: The environment name. Change to a unique name only if deploy the stack multiple times in the same region and account.
+  gitHubUserName:
+    Type: String
+    AllowedPattern: .+
+    Description: GitHub user name.
+  githubtoken:
+    Type: String
+    AllowedPattern: .+
+    Description: GitHub personal access token allowing access to the forked repository.
 Resources:
   iotOnboardingArtifacts020AADAB:
     Type: AWS::S3::Bucket
@@ -815,10 +828,12 @@ Resources:
                 Provider: GitHub
                 Version: "1"
               Configuration:
-                Owner: grollat
+                Owner:
+                  Ref: gitHubUserName
                 Repo: quickstart-iot-device-connectivity
-                Branch: feature/iot-quickstart-with-rigado
-                OAuthToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+                Branch: main
+                OAuthToken:
+                  Ref: githubtoken
                 PollForSourceChanges: false
               Name: GitHub_Source
               OutputArtifacts:
@@ -975,7 +990,8 @@ Resources:
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+        SecretToken:
+          Ref: githubtoken
       Filters:
         - JsonPath: $.ref
           MatchEquals: refs/heads/{Branch}
