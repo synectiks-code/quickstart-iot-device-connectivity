@@ -1,12 +1,12 @@
-This Quick Start helps AWS Internet of Things (IoT) customers get started with an IoT landing zone on the AWS Cloud. It sets up the required resources and services for device onboarding along with example dashboards for visualization. Typical use cases for this Quick Start include management of IoT devices for smart kitchens or retail stores.
+This Quick Start helps AWS Internet of Things (IoT) customers get started with an IoT landing zone on the AWS Cloud. It sets up the required resources and services for device onboarding along with example dashboards for visualization. Typical use cases for this Quick Start include management of IoT devices for smart kitchens and retail stores.
 
-This architecture is built in partnership with AWS IoT Partner https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card[Rigado], a travel and hospitality AWS Partner. The Quick Start is designed to provide an optimized onboarding experience for users of the http://rigado.com/knowledge-base/introduction-to-the-rigado-allegro-kit[Rigado Allegro Kit], although it can be adapted for any device that supports standard MQ Telemetry Transport (MQTT) connectivity.
+This architecture is built in coorperation with https://www.rigado.com/market-solutions/smart-hospitality-retail-solutions-powered-by-aws-iot/?did=pa_card&trk=pa_card[Rigado], a travel and hospitality AWS Partner. The Quick Start is designed to provide an optimized onboarding experience for users of the http://rigado.com/knowledge-base/introduction-to-the-rigado-allegro-kit[Rigado Allegro Kit], although it can be adapted for any device that supports standard MQ Telemetry Transport (MQTT) connectivity.
 
 The Quick Start sets up:
 
-* A REST serverless microservice to onboard devices and gateways by serial number. The service creates the AWS IoT Core resources to securely connect to the MQ Telemetry Transport (MQTT) broker.
+* A REST serverless microservice to onboard devices and gateways by serial number. The service creates the AWS IoT Core resources to connect to the MQTT broker.
 * An IoT data lake for ingesting data from the long-term storage and analytics.
-* An example AWS Quicksight dashboard to display data form the data lake (compatible devices only).
+* An example Amazon QuickSight dashboard to display data from the data lake (compatible devices only).
 * An example IoT device real-time monitoring dashboard using AWS IoT SiteWise (compatible devices only).
 
 
