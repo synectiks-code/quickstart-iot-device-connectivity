@@ -1,7 +1,9 @@
 project:
   name: quickstart-iot-device-connectivity
   owner: quickstart-eng@amazon.com
-  s3_regional_buckets: True
+  s3_regional_buckets: true
+  lambda_source_path: functions/source
+  lambda_zip_path: functions/packages
   regions:
     - us-east-1
     - us-east-2
