@@ -13,20 +13,25 @@ Metadata:
           - sourceTemplateArn
           - rootMqttTopic
           - environment
+          - gitHubUserName
+          - githubtoken
     ParameterLabels:
       contactEmail:
         default: Email address
       quickSightAdminUserName:
-        default: QuickSight username
+        default: QuickSight user name
       quickSightAdminUserRegion:
-        default: QuickSight user region
+        default: QuickSight user Region
       sourceTemplateArn:
         default: QuickSight dashboard ARN
       rootMqttTopic:
         default: MQTT topic
       environment:
         default: Environment name
-
+      gitHubUserName:
+        default: GitHub user name
+      githubtoken:
+        default: GitHub token
 Parameters:
   contactEmail:
     Type: String
@@ -51,6 +56,14 @@ Parameters:
     Default: int
     AllowedPattern: .+
     Description: Your environment name. Change to a unique name only if deploying the stack multiple times in the same Region and account.
+  gitHubUserName:
+    Type: String
+    AllowedPattern: .+
+    Description: GitHub user name.
+  githubtoken:
+    Type: String
+    AllowedPattern: .+
+    Description: GitHub personal access token allowing access to the forked repository.
 Resources:
   iotOnboardingArtifacts020AADAB:
     Type: AWS::S3::Bucket
@@ -815,10 +828,12 @@ Resources:
                 Provider: GitHub
                 Version: "1"
               Configuration:
-                Owner: grollat
+                Owner:
+                  Ref: gitHubUserName
                 Repo: quickstart-iot-device-connectivity
-                Branch: feature/iot-quickstart-with-rigado
-                OAuthToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+                Branch: main
+                OAuthToken:
+                  Ref: githubtoken
                 PollForSourceChanges: false
               Name: GitHub_Source
               OutputArtifacts:
@@ -975,7 +990,8 @@ Resources:
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+        SecretToken:
+          Ref: githubtoken
       Filters:
         - JsonPath: $.ref
           MatchEquals: refs/heads/{Branch}
