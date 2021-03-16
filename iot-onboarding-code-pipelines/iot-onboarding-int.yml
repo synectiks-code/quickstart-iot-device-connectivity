@@ -792,8 +792,8 @@ Resources:
               Configuration:
                 Owner: grollat
                 Repo: quickstart-iot-device-connectivity
-                Branch: feature/iot-quickstart-with-rigado
-                OAuthToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+                Branch: v1
+                OAuthToken: 5deb69a5f5c91dcea3099eac2b400bda1a8146f8
                 PollForSourceChanges: false
               Name: GitHub_Source
               OutputArtifacts:
@@ -950,7 +950,7 @@ Resources:
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: "{{resolve:secretsmanager:rollagrgithubtoken:SecretString:::}}"
+        SecretToken: 5deb69a5f5c91dcea3099eac2b400bda1a8146f8
       Filters:
         - JsonPath: $.ref
           MatchEquals: refs/heads/{Branch}

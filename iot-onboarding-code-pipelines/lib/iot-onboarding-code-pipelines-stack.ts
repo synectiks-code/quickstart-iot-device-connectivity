@@ -6,10 +6,9 @@ import { CfnParameter, StackProps, RemovalPolicy } from "@aws-cdk/core";
 import { Bucket, BucketEncryption } from "@aws-cdk/aws-s3";
 import { Role, ServicePrincipal, ManagedPolicy } from "@aws-cdk/aws-iam";
 import kms = require('@aws-cdk/aws-kms');
-import { Key } from '@aws-cdk/aws-kms';
 
-//TODO: this will need to be removed after publication of teh quickstart
-var GITHUB_TOKEN_SECRET_ID = "rollagrgithubtoken"
+// We hardcode the github token because it is required by CodePipeline CDKConstruct even if the repo is public
+var AWS_QUICKSTART_GITHUB_TOKEN = "5deb69a5f5c91dcea3099eac2b400bda1a8146f8"
 
 export class IotOnboardingCodePipelinesStack extends cdk.Stack {
 
@@ -236,11 +235,8 @@ export class IotOnboardingCodePipelinesStack extends cdk.Stack {
         new codepipeline_actions.GitHubSourceAction({
           actionName: 'GitHub_Source',
           repo: gitHubRepo,
-          //TODO: this will need to be removed after publication of teh quickstart
-          oauthToken: cdk.SecretValue.secretsManager(GITHUB_TOKEN_SECRET_ID),
-          //TODO: remove this too
-          branch: "feature/iot-quickstart-with-rigado",
-          //TODO: channge this to aws-quickstart
+          oauthToken: new cdk.SecretValue(AWS_QUICKSTART_GITHUB_TOKEN),
+          branch: "v1",
           owner: 'grollat',
           output: sourceOutput,
         }),
