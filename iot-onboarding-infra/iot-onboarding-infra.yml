@@ -1,0 +1,1119 @@
+Parameters:
+  devicesRootTopic:
+    Type: String
+    Default: data/#
+    Description: the root MQTT topic where onboarded devices publish
+Resources:
+  iotonboardingdatafirehoseroledev3FF75F25:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: firehose.amazonaws.com
+        Version: "2012-10-17"
+      Description: "firehose role for ingesting raw sensors data "
+      RoleName: iot-onboarding-sensors-data-firehose-role-dev
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-data-firehose-role-dev/Resource
+  iotonboardingdatafirehoseroledevDefaultPolicy8B114AD1:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - iotOnboardingSensorsDeviceBucket38257702
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - iotOnboardingSensorsDeviceBucket38257702
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: iotonboardingdatafirehoseroledevDefaultPolicy8B114AD1
+      Roles:
+        - Ref: iotonboardingdatafirehoseroledev3FF75F25
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-data-firehose-role-dev/DefaultPolicy/Resource
+  iotonboardingdataglueroledev84BC0531:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: glue.amazonaws.com
+        Version: "2012-10-17"
+      Description: "Glue role for crawling raw data bucket on sensors data "
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSGlueServiceRole
+      RoleName: iot-onboarding-sensors-data-glue-role-dev
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-data-glue-role-dev/Resource
+  iotonboardingdataglueroledevDefaultPolicy9D58EA91:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+              - logs:DescribeLogStreams
+            Effect: Allow
+            Resource: arn:aws:logs:eu-central-1:660526416360:log-group:/*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :s3:::iot-onboarding-quickstart-artifacts
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :s3:::iot-onboarding-quickstart-artifacts/*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - iotOnboardingSensorsDeviceBucket38257702
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - iotOnboardingSensorsDeviceBucket38257702
+                        - Arn
+                    - /*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - iotOnboardingSensorsDataBucketRefinedF36B1822
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - iotOnboardingSensorsDataBucketRefinedF36B1822
+                        - Arn
+                    - /*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - iotOnboardingSensorsDataBucketTemp59073F13
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - iotOnboardingSensorsDataBucketTemp59073F13
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: iotonboardingdataglueroledevDefaultPolicy9D58EA91
+      Roles:
+        - Ref: iotonboardingdataglueroledev84BC0531
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-data-glue-role-dev/DefaultPolicy/Resource
+  iotonboardingdatagluedatabasedev329E034F:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: "660526416360"
+      DatabaseInput:
+        Name: iot-onboarding-sensors-data-dev
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-data-glue-database-dev/Resource
+  iotOnboardingSensorsDeviceBucket38257702:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnboardingSensorsDeviceBucket/Resource
+  iotOnboardingSensorsDataBucketTemp59073F13:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnboardingSensorsDataBucketTemp/Resource
+  iotOnboardingSensorsDataBucketRefinedF36B1822:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnboardingSensorsDataBucketRefined/Resource
+  iotOnboardingSensorsDataDeliveryStream:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: iotOnboardingSensorsDataDeliveryStreamdev
+      DeliveryStreamType: DirectPut
+      S3DestinationConfiguration:
+        BucketARN:
+          Fn::GetAtt:
+            - iotOnboardingSensorsDeviceBucket38257702
+            - Arn
+        RoleARN:
+          Fn::GetAtt:
+            - iotonboardingdatafirehoseroledev3FF75F25
+            - Arn
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnboardingSensorsDataDeliveryStream
+  iotonboardingsensordatacrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Role:
+        Fn::GetAtt:
+          - iotonboardingdataglueroledev84BC0531
+          - Arn
+      Targets:
+        S3Targets:
+          - Path:
+              Fn::Join:
+                - ""
+                - - s3://
+                  - Ref: iotOnboardingSensorsDeviceBucket38257702
+      Configuration: >-
+        {
+                "Version": 1.0,
+                "Grouping": {
+                   "TableGroupingPolicy": "CombineCompatibleSchemas" }
+             }
+      DatabaseName:
+        Ref: iotonboardingdatagluedatabasedev329E034F
+      Name: iot-onboarding-sensor-data-crawler-dev
+      Tags:
+        application-env: dev
+        application-name: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-sensor-data-crawler
+  iotonboardingsensordatacrawlerrefined:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Role:
+        Fn::GetAtt:
+          - iotonboardingdataglueroledev84BC0531
+          - Arn
+      Targets:
+        S3Targets:
+          - Path:
+              Fn::Join:
+                - ""
+                - - s3://
+                  - Ref: iotOnboardingSensorsDataBucketRefinedF36B1822
+      Configuration: >-
+        {
+                "Version": 1.0,
+                "Grouping": {
+                   "TableGroupingPolicy": "CombineCompatibleSchemas" }
+             }
+      DatabaseName:
+        Ref: iotonboardingdatagluedatabasedev329E034F
+      Name: iot-onboarding-sensor-data-crawler-refined-dev
+      Tags:
+        application-env: dev
+        application-name: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-sensor-data-crawler-refined
+  iotonboardingsensorflatteningjobdev:
+    Type: AWS::Glue::Job
+    Properties:
+      Command:
+        Name: glueetl
+        ScriptLocation: s3://iot-onboarding-quickstart-artifacts/dev/etl/iotOnboardingSensorFlatteningJob.py
+      Role:
+        Fn::GetAtt:
+          - iotonboardingdataglueroledev84BC0531
+          - Arn
+      DefaultArguments:
+        --enable-continuous-cloudwatch-log: "true"
+        --job-bookmark-option: job-bookmark-enable
+        --enable-metrics: "true"
+        --GLUE_DB:
+          Ref: iotonboardingdatagluedatabasedev329E034F
+        --SOURCE_TABLE:
+          Fn::Join:
+            - _
+            - Fn::Split:
+                - "-"
+                - Ref: iotOnboardingSensorsDeviceBucket38257702
+        --TEMP_BUCKET:
+          Ref: iotOnboardingSensorsDataBucketTemp59073F13
+        --DEST_BUCKET:
+          Ref: iotOnboardingSensorsDataBucketRefinedF36B1822
+      ExecutionProperty:
+        MaxConcurrentRuns: 1
+      GlueVersion: "2.0"
+      MaxRetries: 0
+      Name: iotOnboardingSensorFlatteningJobdev
+      Tags:
+        application-env: dev
+        application-name: iot-onboarding
+      Timeout: 60
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-sensor-flattening-job-dev
+  iotonboardingsensorworkflowtriggerdev:
+    Type: AWS::Glue::Trigger
+    Properties:
+      Actions:
+        - CrawlerName: iot-onboarding-sensor-data-crawler-dev
+      Type: SCHEDULED
+      Name: iotOnboardingSensorWorkflowTriggerdev
+      Schedule: cron(0 * ? * * *)
+      StartOnCreation: true
+      Tags:
+        application-env: dev
+        application-name: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-sensor-workflow-trigger-dev
+  iotonboardingsensorflatteningjobtriggerdev:
+    Type: AWS::Glue::Trigger
+    Properties:
+      Actions:
+        - JobName: iotOnboardingSensorFlatteningJobdev
+      Type: SCHEDULED
+      Name: iotOnboardingSensorFlatteningJobTriggerdev
+      Schedule: cron(5 * ? * * *)
+      StartOnCreation: true
+      Tags:
+        application-env: dev
+        application-name: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-sensor-flattening-job-trigger-dev
+  iotonboardingsensorrefinedtriggerdev:
+    Type: AWS::Glue::Trigger
+    Properties:
+      Actions:
+        - CrawlerName: iot-onboarding-sensor-data-crawler-refined-dev
+      Type: CONDITIONAL
+      Name: iotOnboardingSensorRefinedTrigger-dev
+      Predicate:
+        Conditions:
+          - JobName: iotOnboardingSensorFlatteningJobdev
+            LogicalOperator: EQUALS
+            State: SUCCEEDED
+      StartOnCreation: true
+      Tags:
+        application-env: dev
+        application-name: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iot-onboarding-sensor-refined-trigger-dev
+  IOTOnboardingInfraStackdeviotonboardingSensorTable69154505:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        - AttributeName: deviceId
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: deviceId
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: "N"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: iot-onboarding-sensors-dev
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/IOTOnboardingInfraStackdeviotonboardingSensorTable/Resource
+  IOTOnboardingInfraStackdeviotonboardingOnbordingTableFFD1949D:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        - AttributeName: deviceGroup
+          KeyType: HASH
+        - AttributeName: serialNumber
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: deviceGroup
+          AttributeType: S
+        - AttributeName: serialNumber
+          AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: iot-onboarding-onboarding-dev
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/IOTOnboardingInfraStackdeviotonboardingOnbordingTable/Resource
+  IOTOnboardingInfraStackdeviotonboardingOnboardingUserPool03972459:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_phone_number
+            Priority: 1
+          - Name: verified_email
+            Priority: 2
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+      AutoVerifiedAttributes:
+        - email
+      EmailVerificationMessage: The verification code to your new account is {####}
+      EmailVerificationSubject: Verify your new account
+      SmsVerificationMessage: The verification code to your new account is {####}
+      UsernameAttributes:
+        - email
+      UserPoolName: iotonboardingOnboardingUserpooldev
+      UserPoolTags:
+        application-env: dev
+        application-name: iot-onboarding
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+        EmailMessage: The verification code to your new account is {####}
+        EmailSubject: Verify your new account
+        SmsMessage: The verification code to your new account is {####}
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/IOTOnboardingInfraStackdeviotonboardingOnboardingUserPool/Resource
+  IOTOnboardingInfraStackdeviotonboardingOnboardingUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId:
+        Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingUserPool03972459
+      AllowedOAuthFlows:
+        - implicit
+        - code
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - openid
+        - profile
+        - aws.cognito.signin.user.admin
+      CallbackURLs:
+        - http://localhost:4200
+      ClientName: iotonboardingOnboardingWizard
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      GenerateSecret: false
+      LogoutURLs:
+        - http://localhost:4200
+      RefreshTokenValidity: 2650
+      SupportedIdentityProviders:
+        - COGNITO
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/IOTOnboardingInfraStackdeviotonboardingOnboardingUserPoolClient
+  IOTOnboardingInfraStackdevCognitoDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: iot-onboarding-quickstart-dev
+      UserPoolId:
+        Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingUserPool03972459
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/IOTOnboardingInfraStackdevCognitoDomain
+  iotonboardingCertificatedevF5E4544D:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotonboardingCertificate-dev/Resource
+  iotOnBoardingLambdadevServiceRole9F0F5F7A:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnBoardingLambdadev/ServiceRole/Resource
+  iotOnBoardingLambdadevServiceRoleDefaultPolicy04037A2B:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - xray:PutTraceSegments
+              - xray:PutTelemetryRecords
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - iotonboardingCertificatedevF5E4544D
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - iotonboardingCertificatedevF5E4544D
+                        - Arn
+                    - /*
+          - Action: dynamodb:*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - IOTOnboardingInfraStackdeviotonboardingOnbordingTableFFD1949D
+                  - Arn
+              - Ref: AWS::NoValue
+          - Action:
+              - iot:CreateKeysAndCertificate
+              - iot:CreatePolicy
+              - iot:CreateThing
+              - iot:DeleteCertificate
+              - iot:DeletePolicy
+              - iot:DeleteThing
+              - iot:DescribeThing
+              - iot:DescribeEndpoint
+              - iot:DetachThingPrincipal
+              - iot:ListThings
+              - iot:AttachThingPrincipal
+              - iot:AttachPolicy
+              - iot:DetachPolicy
+              - iot:UpdateCertificate
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: iotOnBoardingLambdadevServiceRoleDefaultPolicy04037A2B
+      Roles:
+        - Ref: iotOnBoardingLambdadevServiceRole9F0F5F7A
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnBoardingLambdadev/ServiceRole/DefaultPolicy/Resource
+  iotOnBoardingLambdadevE1E1F824:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: iot-onboarding-quickstart-artifacts
+        S3Key: dev/iotOnBoarding/main.zip
+      Role:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevServiceRole9F0F5F7A
+          - Arn
+      Environment:
+        Variables:
+          LAMBDA_ENV: dev
+          S3_MULTIMEDIA:
+            Ref: iotonboardingCertificatedevF5E4544D
+          ONBOARDING_TABLE_NAME:
+            Ref: IOTOnboardingInfraStackdeviotonboardingOnbordingTableFFD1949D
+          ONBOARDING_TABLE_PK: deviceGroup
+          ONBOARDING_TABLE_SK: serialNumber
+          MAIN_TOPIC:
+            Ref: devicesRootTopic
+      FunctionName: iotOnBoardingdev
+      Handler: main
+      Runtime: go1.x
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+      Timeout: 60
+      TracingConfig:
+        Mode: Active
+    DependsOn:
+      - iotOnBoardingLambdadevServiceRoleDefaultPolicy04037A2B
+      - iotOnBoardingLambdadevServiceRole9F0F5F7A
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnBoardingLambdadev/Resource
+  iotOnBoardingLambdadevinvokePermissionPartner8B7022EF:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-central-1:660526416360:"
+            - Ref: rogadoOnboardingdevD8BF94C5
+            - /*/*/onboard
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnBoardingLambdadev/invokePermissionPartner
+  iotOnBoardingLambdadevinvokePermissionPartnerWithId0F80E87A:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:eu-central-1:660526416360:"
+            - Ref: rogadoOnboardingdevD8BF94C5
+            - /*/*/onboard/*
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnBoardingLambdadev/invokePermissionPartnerWithId
+  rogadoOnboardingdevD8BF94C5:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      CorsConfiguration:
+        AllowHeaders:
+          - "*"
+        AllowMethods:
+          - OPTIONS
+          - GET
+          - POST
+          - PUT
+          - DELETE
+        AllowOrigins:
+          - "*"
+      Name: iotonboardingOnboardingdev
+      ProtocolType: HTTP
+      Tags:
+        application-env: dev
+        application-name: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/Resource
+  rogadoOnboardingdevDefaultStageEEF2344A:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      StageName: $default
+      AutoDeploy: true
+      Tags:
+        application-env: dev
+        application-name: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/DefaultStage/Resource
+  rogadoOnboardingdevPOSTonboardidIOTOnboardingInfraStackdevrogadoOnboardingdevPOSTonboardid22731EA3PermissionC84C049F:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:eu-central-1:660526416360:"
+            - Ref: rogadoOnboardingdevD8BF94C5
+            - /*/*/onboard/{id}
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/POST--onboard--{id}/IOTOnboardingInfraStackdevrogadoOnboardingdevPOSTonboardid22731EA3-Permission
+  rogadoOnboardingdevPOSTonboardidPOSTonboardidIntegrationE4421B99:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      PayloadFormatVersion: "1.0"
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/POST--onboard--{id}/POST--onboard--{id}-Integration/Resource
+  rogadoOnboardingdevPOSTonboardid4FB113CC:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      RouteKey: POST /onboard/{id}
+      AuthorizationType: JWT
+      AuthorizerId:
+        Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingAuthorizer
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: rogadoOnboardingdevPOSTonboardidPOSTonboardidIntegrationE4421B99
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/POST--onboard--{id}/Resource
+  rogadoOnboardingdevGETonboardidIOTOnboardingInfraStackdevrogadoOnboardingdevGETonboardid7CB58A60Permission289C814F:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:eu-central-1:660526416360:"
+            - Ref: rogadoOnboardingdevD8BF94C5
+            - /*/*/onboard/{id}
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/GET--onboard--{id}/IOTOnboardingInfraStackdevrogadoOnboardingdevGETonboardid7CB58A60-Permission
+  rogadoOnboardingdevGETonboardidGETonboardidIntegration5D516C01:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      PayloadFormatVersion: "1.0"
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/GET--onboard--{id}/GET--onboard--{id}-Integration/Resource
+  rogadoOnboardingdevGETonboardid9E1D4348:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      RouteKey: GET /onboard/{id}
+      AuthorizationType: JWT
+      AuthorizerId:
+        Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingAuthorizer
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: rogadoOnboardingdevGETonboardidGETonboardidIntegration5D516C01
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/GET--onboard--{id}/Resource
+  rogadoOnboardingdevPUTonboardidIOTOnboardingInfraStackdevrogadoOnboardingdevPUTonboardid145EBC73Permission2242B92E:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:eu-central-1:660526416360:"
+            - Ref: rogadoOnboardingdevD8BF94C5
+            - /*/*/onboard/{id}
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/PUT--onboard--{id}/IOTOnboardingInfraStackdevrogadoOnboardingdevPUTonboardid145EBC73-Permission
+  rogadoOnboardingdevPUTonboardidPUTonboardidIntegration7D2969AC:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      PayloadFormatVersion: "1.0"
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/PUT--onboard--{id}/PUT--onboard--{id}-Integration/Resource
+  rogadoOnboardingdevPUTonboardid5F5611AE:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      RouteKey: PUT /onboard/{id}
+      AuthorizationType: JWT
+      AuthorizerId:
+        Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingAuthorizer
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: rogadoOnboardingdevPUTonboardidPUTonboardidIntegration7D2969AC
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/PUT--onboard--{id}/Resource
+  rogadoOnboardingdevDELETEonboardidIOTOnboardingInfraStackdevrogadoOnboardingdevDELETEonboardid64C335A6PermissionFDFB8D22:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:eu-central-1:660526416360:"
+            - Ref: rogadoOnboardingdevD8BF94C5
+            - /*/*/onboard/{id}
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/DELETE--onboard--{id}/IOTOnboardingInfraStackdevrogadoOnboardingdevDELETEonboardid64C335A6-Permission
+  rogadoOnboardingdevDELETEonboardidDELETEonboardidIntegration20B22DD1:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+          - iotOnBoardingLambdadevE1E1F824
+          - Arn
+      PayloadFormatVersion: "1.0"
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/DELETE--onboard--{id}/DELETE--onboard--{id}-Integration/Resource
+  rogadoOnboardingdevDELETEonboardidE77537F3:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      RouteKey: DELETE /onboard/{id}
+      AuthorizationType: JWT
+      AuthorizerId:
+        Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingAuthorizer
+      Target:
+        Fn::Join:
+          - ""
+          - - integrations/
+            - Ref: rogadoOnboardingdevDELETEonboardidDELETEonboardidIntegration20B22DD1
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/rogadoOnboardingdev/DELETE--onboard--{id}/Resource
+  IOTOnboardingInfraStackdeviotonboardingOnboardingAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      AuthorizerType: JWT
+      IdentitySource:
+        - $request.header.Authorization
+      Name: iotonboardingOnboardingAuthorizer
+      JwtConfiguration:
+        Audience:
+          - Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingUserPoolClient
+        Issuer:
+          Fn::Join:
+            - ""
+            - - https://cognito-idp.eu-central-1.amazonaws.com/
+              - Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingUserPool03972459
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/IOTOnboardingInfraStackdeviotonboardingOnboardingAuthorizer
+  iotonboardingOnboardingApiStageBAD83D7F:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId:
+        Ref: rogadoOnboardingdevD8BF94C5
+      StageName: api
+      AutoDeploy: true
+      Tags:
+        application-env: dev
+        application-name: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotonboardingOnboardingApiStage/Resource
+  iotonboardingSensorMqttBrokerRoledevD2710A57:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: iot.amazonaws.com
+        Version: "2012-10-17"
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotonboardingSensorMqttBrokerRoledev/Resource
+  iotonboardingSensorMqttBrokerRoledevDefaultPolicy8ED422DC:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: iot:Publish
+            Effect: Allow
+            Resource: arn:aws:iot:eu-central-1:660526416360:topic/alldata_test
+          - Action:
+              - firehose:PutRecord
+              - firehose:PutRecordBatch
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - iotOnboardingSensorsDataDeliveryStream
+                - Arn
+          - Action: iotsitewise:BatchPutAssetPropertyValue
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: iotonboardingSensorMqttBrokerRoledevDefaultPolicy8ED422DC
+      Roles:
+        - Ref: iotonboardingSensorMqttBrokerRoledevD2710A57
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotonboardingSensorMqttBrokerRoledev/DefaultPolicy/Resource
+  iotonboardingIotRuledev:
+    Type: AWS::IoT::TopicRule
+    Properties:
+      TopicRulePayload:
+        Actions:
+          - IotSiteWise:
+              PutAssetPropertyValueEntries:
+                - PropertyAlias: ${device.deviceId}Occupancy
+                  PropertyValues:
+                    - Quality: GOOD
+                      Timestamp:
+                        TimeInSeconds: ${floor(timestamp() / 1E3)}
+                      Value:
+                        BooleanValue: ${cast(measurements.occupied as Bool)}
+                - PropertyAlias: ${device.deviceId}Temperature
+                  PropertyValues:
+                    - Quality: GOOD
+                      Timestamp:
+                        TimeInSeconds: ${floor(timestamp() / 1E3)}
+                      Value:
+                        DoubleValue: ${cast(measurements.temperature as Double)}
+                - PropertyAlias: ${device.deviceId}Humidity
+                  PropertyValues:
+                    - Quality: GOOD
+                      Timestamp:
+                        TimeInSeconds: ${floor(timestamp() / 1E3)}
+                      Value:
+                        DoubleValue: ${cast(measurements.humidity as Double)}
+              RoleArn:
+                Fn::GetAtt:
+                  - iotonboardingSensorMqttBrokerRoledevD2710A57
+                  - Arn
+          - Firehose:
+              DeliveryStreamName: iotOnboardingSensorsDataDeliveryStreamdev
+              RoleArn:
+                Fn::GetAtt:
+                  - iotonboardingSensorMqttBrokerRoledevD2710A57
+                  - Arn
+              Separator: "\n"
+          - Republish:
+              RoleArn:
+                Fn::GetAtt:
+                  - iotonboardingSensorMqttBrokerRoledevD2710A57
+                  - Arn
+              Topic: alldata_test
+        AwsIotSqlVersion: "2016-03-23"
+        RuleDisabled: false
+        Sql:
+          Fn::Join:
+            - ""
+            - - SELECT *,timestamp() as ts FROM '
+              - Ref: devicesRootTopic
+              - "'"
+      RuleName: iotonboardingToIotFirehoseAndSitewisedev
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotonboardingIotRuledev
+  iotOnboardingIotSitewiseRoledevB88694B1:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: monitor.iotsitewise.amazonaws.com
+        Version: "2012-10-17"
+      Tags:
+        - Key: application-env
+          Value: dev
+        - Key: application-name
+          Value: iot-onboarding
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnboardingIotSitewiseRoledev/Resource
+  iotOnboardingIotSitewiseRoledevDefaultPolicy14A4F1BC:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - iotsitewise:CreateProject
+              - iotsitewise:DescribeProject
+              - iotsitewise:UpdateProject
+              - iotsitewise:DeleteProject
+              - iotsitewise:ListProjects
+              - iotsitewise:BatchAssociateProjectAssets
+              - iotsitewise:BatchDisassociateProjectAssets
+              - iotsitewise:ListProjectAssets
+              - iotsitewise:CreateDashboard
+              - iotsitewise:DescribeDashboard
+              - iotsitewise:UpdateDashboard
+              - iotsitewise:DeleteDashboard
+              - iotsitewise:ListDashboards
+              - iotsitewise:CreateAccessPolicy
+              - iotsitewise:DescribeAccessPolicy
+              - iotsitewise:UpdateAccessPolicy
+              - iotsitewise:DeleteAccessPolicy
+              - iotsitewise:ListAccessPolicies
+              - iotsitewise:DescribeAsset
+              - iotsitewise:ListAssets
+              - iotsitewise:ListAssociatedAssets
+              - iotsitewise:DescribeAssetProperty
+              - iotsitewise:GetAssetPropertyValue
+              - iotsitewise:GetAssetPropertyValueHistory
+              - iotsitewise:GetAssetPropertyAggregates
+              - iotsitewise:BatchPutAssetPropertyValue
+              - iotsitewise:ListAssetRelationships
+              - sso-directory:DescribeUsers
+              - iotevents:DescribeAlarmModel
+              - iotevents:BatchPutMessage
+              - iotevents:BatchAcknowledgeAlarm
+              - iotevents:BatchSnoozeAlarm
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: iotOnboardingIotSitewiseRoledevDefaultPolicy14A4F1BC
+      Roles:
+        - Ref: iotOnboardingIotSitewiseRoledevB88694B1
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/iotOnboardingIotSitewiseRoledev/DefaultPolicy/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.86.0,@aws-cdk/assets=1.86.0,@aws-cdk/aws-apigatewayv2=1.86.0,@aws-cdk/aws-apigatewayv2-integrations=1.86.0,@aws-cdk/aws-applicationautoscaling=1.86.0,@aws-cdk/aws-autoscaling-common=1.86.0,@aws-cdk/aws-cloudwatch=1.86.0,@aws-cdk/aws-codeguruprofiler=1.86.0,@aws-cdk/aws-cognito=1.86.0,@aws-cdk/aws-dynamodb=1.86.0,@aws-cdk/aws-ec2=1.86.0,@aws-cdk/aws-ecr=1.86.0,@aws-cdk/aws-ecr-assets=1.86.0,@aws-cdk/aws-elasticloadbalancingv2=1.86.0,@aws-cdk/aws-events=1.86.0,@aws-cdk/aws-glue=1.86.0,@aws-cdk/aws-iam=1.86.0,@aws-cdk/aws-iot=1.86.0,@aws-cdk/aws-kinesisfirehose=1.86.0,@aws-cdk/aws-kms=1.86.0,@aws-cdk/aws-lambda=1.86.0,@aws-cdk/aws-logs=1.86.0,@aws-cdk/aws-s3=1.86.0,@aws-cdk/aws-s3-assets=1.86.0,@aws-cdk/aws-sqs=1.86.0,@aws-cdk/aws-ssm=1.86.0,@aws-cdk/cloud-assembly-schema=1.86.0,@aws-cdk/core=1.86.0,@aws-cdk/custom-resources=1.86.0,@aws-cdk/cx-api=1.86.0,@aws-cdk/region-info=1.86.0,jsii-runtime=node.js/v14.15.4
+    Metadata:
+      aws:cdk:path: IOTOnboardingInfraStackdev/CDKMetadata/Default
+Outputs:
+  glueDbName:
+    Value:
+      Ref: iotonboardingdatagluedatabasedev329E034F
+  athenaTableName:
+    Value:
+      Fn::Join:
+        - _
+        - Fn::Split:
+            - "-"
+            - Ref: iotOnboardingSensorsDataBucketRefinedF36B1822
+  userPoolId:
+    Value:
+      Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingUserPool03972459
+  cognitoAppClientId:
+    Value:
+      Ref: IOTOnboardingInfraStackdeviotonboardingOnboardingUserPoolClient
+  tokenEnpoint:
+    Value: https://iot-onboarding-quickstart-dev.auth.eu-central-1.amazoncognito.com/oauth2/token
+  iotOnboardingApiUrl:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: rogadoOnboardingdevD8BF94C5
+          - .execute-api.eu-central-1.
+          - Ref: AWS::URLSuffix
+          - /
+  iotSitewiseServiceRole:
+    Value:
+      Ref: iotOnboardingIotSitewiseRoledevB88694B1
+

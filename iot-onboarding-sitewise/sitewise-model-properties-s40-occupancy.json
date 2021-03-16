@@ -1,0 +1,19 @@
+[
+    {
+        "dataType": "STRING",
+        "name": "DeviceId",
+        "type": {
+            "attribute": {
+                "defaultValue": "1"
+            }
+        }
+    },
+    {
+        "dataType": "BOOLEAN",
+        "name": "Occupancy",
+        "type": {
+            "measurement": {}
+        },
+        "unit": "Occupancy"
+    }
+]

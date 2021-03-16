@@ -1,0 +1,184 @@
+{
+	"info": {
+		"_postman_id": "a3d503c9-49f3-4016-a0a6-6f08ab21f640",
+		"name": "rigadodelete",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3483570e-86cb-4de7-acca-013dedb8b435",
+						"exec": [
+							"pm.test(\"Access tken returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.access_token).to.length.gt(0)",
+							"});",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"accessToken\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic ",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{tokenEnpoint}}?grant_type=refresh_token&client_id={{clientId}}&refresh_token={{refreshToken}}",
+					"host": [
+						"{{tokenEnpoint}}"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "refresh_token"
+						},
+						{
+							"key": "client_id",
+							"value": "{{clientId}}"
+						},
+						{
+							"key": "refresh_token",
+							"value": "{{refreshToken}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteDevice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cb17476a-3d5b-4bfd-9bc9-867876a620c6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Device successfully deleted\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.thingId).eq(\"\")",
+							"    pm.expect(jsonData.error.code).eq(\"\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{accessToken}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}api/onboard/{{deviceName}}",
+					"host": [
+						"{{baseUrl}}api"
+					],
+					"path": [
+						"onboard",
+						"{{deviceName}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "de5c2534-1150-4668-a77d-4cb26ed28c39",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ccc77d6c-0996-4a3b-9b41-45b1bc16bbe2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "e08aab7b-ccfe-491a-8ec3-ed320346232e",
+			"key": "clientId",
+			"value": "245u9q20sm3ak58b1ns4eeuced"
+		},
+		{
+			"id": "8cd0ef0d-a7ec-42f9-851f-db3013adc04e",
+			"key": "refreshToken",
+			"value": "eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.bkZgbxYjuavtckuMgcZNlv83ng5I_154iMRnAIfn6UR-_nYqYRVcAfXpLjISpxgPSBvuTeoN9S..."
+		},
+		{
+			"id": "fc295904-4df7-4f1a-818e-b04b93ea760f",
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"id": "2acbf260-d92b-49af-81da-9781ed78ee75",
+			"key": "baseUrl",
+			"value": "https://jtnlkqjb0c.execute-api.eu-central-1.amazonaws.com/"
+		},
+		{
+			"id": "14ff6cb3-697a-4cfa-a0a0-1bf1aab3c9e2",
+			"key": "tokenEnpoint",
+			"value": "https://rigado-quickstart-dev.auth.eu-central-1.amazoncognito.com/oauth2/token"
+		},
+		{
+			"id": "96a0512c-72a4-4fe7-adde-bad12c771bd2",
+			"key": "tokenEnpoint",
+			"value": ""
+		},
+		{
+			"id": "b1e897b2-7f54-4071-869e-b3b725ab5fee",
+			"key": "deviceName",
+			"value": "DEV_00000001"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
