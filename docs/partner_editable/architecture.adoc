@@ -24,7 +24,7 @@ For the data plane:
 * An IoT MQTT protocol so data can be sent to the MQTT endpoint from the onboarding microservice. 
 * AWS IoT Core, including an MQTT broker that securely receives traffic from authorized devices that are filtered by the IoT topic. AWS IoT Core uses the following resources:
 
-** An IoT rule to forward traffic to both the AWS IoT Sitewise Monitor and the IoT data lake. You can add more rules to extend the Quick Start for other use cases.
+** An IoT rule to forward traffic to both the AWS IoT SiteWise Monitor and the IoT data lake. You can add more rules to extend the Quick Start for other use cases.
 ** An IoT topic to filter messages. The topic is configured within the AWS CloudFormation template.
 
 * AWS IoT SiteWise to monitor data in real time.

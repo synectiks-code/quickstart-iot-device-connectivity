@@ -1,4 +1,4 @@
-=== The Allegro Kit for AWS
+=== The Rigado Allegro Kit for AWS
 
 The kit helps accelerate IoT proof-of-concept and pilot projects. You can set it up in a few minutes to demonstrate real-world scenarios with live data for a variety of commercial spaces, including retail, travel and hospitality, smart buildings, and more. It uses production sensors and cloud components based on Rigado and AWS IoT reference architectures. 
 
