@@ -340,7 +340,7 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
       apiName: "iotonboardingOnboarding" + envName,
       corsPreflight: {
         allowOrigins: ["*"],
-        allowMethods: [apiGateway2.HttpMethod.OPTIONS, apiGateway2.HttpMethod.GET, apiGateway2.HttpMethod.POST, apiGateway2.HttpMethod.PUT, apiGateway2.HttpMethod.DELETE],
+        allowMethods: [apiGateway2.CorsHttpMethod.OPTIONS, apiGateway2.CorsHttpMethod.GET, apiGateway2.CorsHttpMethod.POST, apiGateway2.CorsHttpMethod.PUT, apiGateway2.CorsHttpMethod.DELETE],
         allowHeaders: ["*"]
       }
     })
@@ -366,8 +366,7 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
     allRoutes = apiV2.addRoutes({
       path: '/' + endpointName + "/{id}",
       methods: [apiGateway2.HttpMethod.POST, apiGateway2.HttpMethod.GET, apiGateway2.HttpMethod.PUT, apiGateway2.HttpMethod.DELETE],
-      integration: new apiGatewayIntegrations.LambdaProxyIntegration({
-        handler: onboardingLambda,
+      integration: new apiGatewayIntegrations.HttpLambdaIntegration("lambdaIntegration" + endpointName, onboardingLambda, {
         payloadFormatVersion: apiGateway2.PayloadFormatVersion.VERSION_1_0,
       })
     });
