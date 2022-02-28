@@ -522,6 +522,7 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
         "iotsitewise:DeleteAccessPolicy",
         "iotsitewise:ListAccessPolicies",
         "iotsitewise:DescribeAsset",
+        "iotsitewise:ListAssetModels",
         "iotsitewise:ListAssets",
         "iotsitewise:ListAssociatedAssets",
         "iotsitewise:DescribeAssetProperty",
