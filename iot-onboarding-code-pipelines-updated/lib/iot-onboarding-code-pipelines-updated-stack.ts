@@ -248,7 +248,7 @@ export class IotOnboardingCodePipelinesUpdatedStack extends cdk.Stack {
         new codepipeline_actions.GitHubSourceAction({
           actionName: 'GitHub_Source',
           repo: gitHubRepo,
-          oauthToken: SecretValue.plainText(githubtoken.valueAsString),
+          oauthToken: SecretValue.unsafePlainText(githubtoken.valueAsString),
           branch: "main",
           owner: gitHubUserName.valueAsString,
           output: sourceOutput,
