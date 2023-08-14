@@ -55,6 +55,7 @@ export class IOTOnboardingInfraStack extends cdk.Stack {
     })
     //granting general logging
     glueRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSGlueServiceRole"))
+    glueRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AWSLakeFormationDataAdmin"))
     glueRole.addToPolicy(new iam.PolicyStatement({
       resources: ["arn:aws:logs:" + this.region + ":" + this.account + ":log-group:/*"],
       actions: ["logs:CreateLogGroup",
