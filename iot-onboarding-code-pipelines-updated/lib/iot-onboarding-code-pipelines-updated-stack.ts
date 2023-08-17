@@ -79,7 +79,7 @@ export class IotOnboardingCodePipelinesUpdatedStack extends cdk.Stack {
         phases: {
           install: {
             "runtime-versions": {
-              nodejs: 10
+              nodejs: 16
             },
             commands: [
               'echo "CodeBuild is running in $AWS_REGION" && aws configure set region $AWS_REGION',
