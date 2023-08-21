@@ -202,7 +202,7 @@ export class IotOnboardingCodePipelinesUpdatedStack extends cdk.Stack {
         phases: {
           install: {
             "runtime-versions": {
-              nodejs: 10
+              nodejs: 16
             },
             commands: [
               "yum -y install epel-release",
