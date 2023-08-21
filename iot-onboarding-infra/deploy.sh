@@ -106,8 +106,8 @@ else
     --------------------------------------------------------------------------------------------</br>'
     echo "$summary"
     
-    echo "Sending stack outputs to email: $email"
-    aws ses send-email --from "$email" --destination "ToAddresses=$email" --message "Subject={Data=Your IOT Connectiviity Quickstart deployment Output,Charset=utf8},Body={Text={Data=$summary,Charset=utf8},Html={Data=$summary,Charset=utf8}}"
+    # echo "Sending stack outputs to email: $email"
+    # aws ses send-email --from "$email" --destination "ToAddresses=$email" --message "Subject={Data=Your IOT Connectiviity Quickstart deployment Output,Charset=utf8},Body={Text={Data=$summary,Charset=utf8},Html={Data=$summary,Charset=utf8}}"
  
  echo "{"\
          "\"env\" : \"$env\","\
