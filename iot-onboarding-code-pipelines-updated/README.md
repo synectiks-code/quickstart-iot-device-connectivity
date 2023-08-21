@@ -12,3 +12,8 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `cdk deploy`      deploy this stack to your default AWS account/region
 * `cdk diff`        compare deployed stack with current state
 * `cdk synth`       emits the synthesized CloudFormation template
+
+cdk --app bin/iot-onboarding-code-pipelines-updated.js synth
+cdk --app bin/iot-onboarding-code-pipelines-updated.js  bootstrap
+cdk --app bin/iot-onboarding-code-pipelines-updated.js deploy
+cdk --app bin/iot-onboarding-code-pipelines-updated.js diff
